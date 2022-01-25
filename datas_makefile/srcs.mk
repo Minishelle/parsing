@@ -1,0 +1,33 @@
+NAME = minishell
+
+# *** #
+# INC #
+# *** #
+
+INCLUDES	=	./includes
+LIBFT		=	./global_libft/bin/libft.a
+
+# *** #
+# DIR #
+# *** #
+
+OBJ_DIR		=	./objs
+SRC_DIR		=	./srcs
+
+# *** #
+# OBJ #
+# *** #
+
+OBJS	= 	$(addprefix ${OBJ_DIR}/,${SRC:.c=.o})
+
+# *** #
+# SRC #
+# *** #
+
+
+SRC += main.c
+SRC += ft_free_all.c
+SRC += find_path.c
+SRC += manip_datas_cmd.c
+SRC += manip_one_cmd.c
+SRC += prompt.c
