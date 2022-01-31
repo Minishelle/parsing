@@ -15,7 +15,7 @@ void	print_test(t_datas_prompt datas_prompt)
 		while (++y < ft_matrixlen(x->all_cmd))
 		{
 			ft_putstr_fd(x->all_cmd[y], 1);
-			ft_putstr_fd(" ", 1);
+			ft_putstr_fd("\n", 1);
 		}
 		ft_putstr_fd("\nInfile Outfile : ", 1);
 		ft_putnbr_fd(x->infile, 1);

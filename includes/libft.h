@@ -16,6 +16,7 @@
 # include <stdlib.h>
 # include <unistd.h>
 # include <stdio.h>
+#include <fcntl.h>
 //# include "../wraloc/wraloc.h"
 
 typedef struct s_one_cmd	t_one_cmd;

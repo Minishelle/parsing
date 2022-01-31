@@ -10,6 +10,10 @@ void	ft_free_one_cmd(t_one_cmd *first_cmd)
 			free(first_cmd->all_cmd[x]);
 	if (first_cmd->all_cmd)
 		free(first_cmd->all_cmd);
+	if (first_cmd->infile > 0)
+		close(first_cmd->infile);
+	if (first_cmd->outfile > 1)
+		close(first_cmd->outfile);
 	if (first_cmd->next)
 		ft_free_one_cmd(first_cmd->next);
 	if (first_cmd)
