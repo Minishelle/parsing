@@ -5,7 +5,7 @@
 # include <stdio.h>
 # include <readline/readline.h>
 # include <readline/history.h>
-//# include "../wraloc/wraloc.h"
+# include "../wraloc/wraloc.h"
 
 # define INPUT "######################################################\n\
 #     __  ____       _      __         ____          #\n\
@@ -20,13 +20,20 @@
 
 typedef struct s_datas_prompt	t_datas_prompt;
 typedef struct s_datas_cmd	t_datas_cmd;
-
+typedef struct s_var_env t_var_env;
 
 struct s_datas_prompt
 {
 	t_datas_cmd	*cmds;
 	char		**envp;
 	int			nb_cmds;
+};
+
+struct s_var_env
+{
+		char *var_txt;
+		char *name_var;
+		t_var_env *next;
 };
 
 struct s_datas_cmd

@@ -13,6 +13,7 @@ char *return_char(char **cmds, int x, int y, char **envp)
 	ft_strlcpy(tmp2, cmds[x], y);
 	tmp3 = ft_strjoin(tmp2, tmp1);
 	free(tmp2);
+	free(tmp1);
 	tmp1 = ft_calloc(sizeof(char), ft_strlen(&cmds[x][y + ft_strlen_up(&cmds[x][y + 1], " \"")]));
 	ft_strlcpy(tmp1, &cmds[x][y + 1+ ft_strlen_up(&cmds[x][y + 1], " \"")], ft_strlen(&cmds[x][y + ft_strlen_up(&cmds[x][y + 1], " \"")]));
 	tmp2 = ft_strjoin(tmp3, tmp1);
