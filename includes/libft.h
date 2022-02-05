@@ -17,7 +17,7 @@
 # include <unistd.h>
 # include <stdio.h>
 #include <fcntl.h>
-# include "../wraloc/wraloc.h"
+//# include "../wraloc/wraloc.h"
 
 typedef struct s_one_cmd	t_one_cmd;
 
@@ -39,6 +39,7 @@ typedef struct s_list
 }	t_list;
 
 char	**ft_split_up(char const *s);
+char	**ft_split_pipex(char const *s, char c);
 
 char	**ft_matrixlcpy(char **matrix_in, int nb_line);
 

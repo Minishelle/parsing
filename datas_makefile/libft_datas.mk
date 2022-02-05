@@ -76,3 +76,4 @@ SRC += ft_lstmap.c
 SRC += ft_lstsize.c
 SRC += get_next_line.c
 SRC += ft_matrixlen.c
+SRC += ft_split_pipex.c

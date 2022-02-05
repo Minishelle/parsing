@@ -37,3 +37,5 @@ SRC += infile.c
 SRC += outfile.c
 SRC += modif_mat.c
 SRC += simple_mat.c
+SRC += pipex.c
+SRC += utils.c

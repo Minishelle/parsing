@@ -6,7 +6,7 @@
 #    By: hgoorick <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/09/04 16:00:11 by hgoorick          #+#    #+#              #
-#    Updated: 2021/09/06 14:01:48 by hgoorick         ###   ########.fr        #
+#    Updated: 2022/02/04 16:33:53 by lbuccher         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -31,7 +31,7 @@ ${NAME}: 	 ${OBJS}
 				@printf "${START_FIRST}${BLUE}%-30s${DEFAULT}\t\t[${GREEN} OK ${DEFAULT}]%40s\n" "Compile" ""
 				@ar rc ${NAME} ${OBJS}
 				@ranlib ${NAME}
-				@mv libft.a bin
+				@mv libft.a ./bin/
 
 build_dir:
 		@mkdir -p ${OBJ_DIR}

@@ -1,6 +1,6 @@
 #include "minishell.h"
 
-void	print_test(t_datas_prompt datas_prompt)
+/*void	print_test(t_datas_prompt datas_prompt)
 {
 	int			y;
 	t_one_cmd	*x;
@@ -42,7 +42,7 @@ void	print_test(t_datas_prompt datas_prompt)
 	ft_putnbr_fd(x->type_next, 1);
 	ft_putstr_fd("\n", 1);
 }
-
+*/
 int ft_allisspace(char *str)
 {
 	int x;
@@ -52,7 +52,7 @@ int ft_allisspace(char *str)
 		;
 	return (x);
 }
-
+/*
 int ft_strchr_up(const char *str, int to_find)
 {
 	int x;
@@ -84,14 +84,64 @@ t_var_env *ft_new_var_env(char *str)
 	out_struct->var_txt = malloc(sizeof(char) * size_word2);
 	ft_strlcpy(out_struct->var_txt, &str[size_word + 1], size_word2);
 	return (out_struct);
+}*/
+
+
+int	count_cmd(char *argv[])
+{
+	int	i;
+	int	nb_cmd;
+
+	i = 1;
+	nb_cmd = 0;
+	while(ft_strncmp(argv[++i], "outfile", 7))
+		nb_cmd ++;
+	return (nb_cmd);
 }
+/*
+int	main(int argc, char *argv[], char *envp[])
+{
+	t_fd	fds;
+	int 	nb_cmd;
+	int 	fd[2];
+	int 	i;
+
+	i = 2;
+	fd[0] = -2;
+	fd[1] = -2;
+	 n'est plus a verifier
+	if ((argc < 5) || (ft_strncmp(argv[argc - 1], "outfile", 7) != 0))
+	{
+		perror(strerror(22));
+		exit(1);
+	}
+
+	//envoyer par Hugo fait par le parsing
+	nb_cmd = count_cmd(argv);
+	fds.f_in = open(argv[1], O_RDONLY);
+	fds.f_out = open(argv[argc - 1], O_CREAT | O_RDWR | O_TRUNC, 0644);
+	if (fds.f_out < 0)
+	{
+		perror(strerror(9));
+		exit(127);
+	}
+	pipex_rec(argv, envp, fd, fds, nb_cmd, i);
+	close(fds.f_in);
+	close(fds.f_out);
+	return (0);
+}*/
+
 
 int	main(int argc, char **argv, char **envp)
 {
 	char			*prompt;
     char            *test;
 	t_datas_prompt	datas_prompt;
+	int 	fd[2];
+	fd[0] = -2;
+	fd[1] = -2;
 	//t_var_env *out_struct;
+
 
 	(void)argc;
 	(void)argv;
@@ -106,21 +156,15 @@ int	main(int argc, char **argv, char **envp)
         test = readline(prompt);
 		if (test[0] && ft_allisspace(test) != -1)
 		{
-			/*if (ft_strchr(test, '=') && (ft_strchr(test, '"') == 0 || ft_strchr(test, '"') > ft_strchr(test, '=')))
-			{
-				out_struct = ft_new_var_env(test);
-				printf("%s\n%s", out_struct->name_var, out_struct->var_txt);
-			}
-			else
-			{*/
 				datas_prompt.cmds = gen_datas_cmd(test, &datas_prompt);
+				pipex_rec(datas_prompt.cmds, envp, fd, datas_prompt.cmds->cmd_first);
 				datas_prompt.nb_cmds++;
-				print_test(datas_prompt);
+				//print_test(datas_prompt);
 				ft_free_datas_cmd(datas_prompt.cmds);
-			//}
 			add_history(test);
 		}
 		free(test);
 		free(prompt);
 	}
+
 }
