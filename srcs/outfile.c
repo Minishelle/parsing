@@ -8,20 +8,13 @@ int open_fd(char *cmd, int stat)
 	str = NULL;
 	fd = 0;
 	if (stat)
-		fd = open(cmd, O_CREAT | O_RDWR, 0644);
+		fd = open(cmd, O_CREAT | O_RDWR | O_APPEND, 0644);
 	else
 		fd = open(cmd, O_CREAT | O_RDWR | O_TRUNC, 0644);
 	if (fd <= 0)
 	{
 		write(2, "Wrong filename\n", 15);
 		exit (1); //free all
-	}
-	if (stat)
-	{
-		while (read(fd, str, 1000) != -1)
-			free(str);
-		if (str)
-			free(str);
 	}
 	return (fd);
 }

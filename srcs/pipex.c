@@ -70,15 +70,20 @@ void pipex_rec(t_datas_cmd *cmds, char *env[], int prev_fd[2], t_one_cmd *cmd)
 			if (dup2(cmd->infile, 0) < 0 || dup2(next_fd[1], 1) < 0)
 				return (perror("first: fd"));
 		}
-		else if (cmd->type_next == 0 && cmds->nb_cmds > 1)
+		else if (cmd->type_next == 0 && cmds->nb_cmds > 1) // suite de condition pour une commande && cmds->nb_cmds > 1)
 		{
 			if (dup2(cmd->outfile, 1) < 0 || dup2(prev_fd[0], 0) < 0)
 				return (perror("last: fd"));
 		}
-		else if (cmds->nb_cmds > 1)
+		else if (cmd->type_next == 1) // suite de condition pour 1 commande if (cmds->nb_cmds > 1)
 		{
 			if (dup2(next_fd[0], 0) < 0 || dup2(next_fd[1], 1) < 0)
 				return (perror("middle: fd"));
+		}
+		else if (cmd->type_next == 0 && cmds->nb_cmds == 1) // suite de condition pour 1 commande if (cmds->nb_cmds > 1)
+		{
+			if (dup2(cmd->infile, 0) < 0 || dup2(cmd->outfile, 1) < 0)
+				return (perror("one cmd: fd"));
 		}
 		close_pipe(next_fd);
 		close_pipe(prev_fd);
