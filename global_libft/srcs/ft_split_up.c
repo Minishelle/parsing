@@ -59,8 +59,7 @@ static int len_word(char const *s, int i)
 			(!status && (s[i + lgWord] == '|' || s[i + lgWord] == '>' ||
 			s[i + lgWord] == '<')))
 		{
-			if (!status && (s[i + lgWord] == s[i + lgWord + 1] ||
-			 	s[i + lgWord] == s[i + lgWord + 1]))
+			if (!status && (s[i + lgWord] == s[i + lgWord + 1]))
 				lgWord += need_line(status, lgWord) * 2;
 			else
 				lgWord += need_line(status, lgWord);
