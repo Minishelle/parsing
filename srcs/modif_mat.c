@@ -2,10 +2,16 @@
 
 char *find_in_struct(char *var_env, t_var_env *out_struct)
 {
+	char *tmp1;
+
 	if (!out_struct)
 		return (NULL);
 	if (!ft_strncmp(var_env, out_struct->name_var, ft_strlen(out_struct->name_var)))
-		return (out_struct->var_txt);
+	{
+		tmp1 = ft_calloc(sizeof(char), ft_strlen(out_struct->var_txt));
+		ft_memcpy(tmp1, out_struct->var_txt, ft_strlen(out_struct->var_txt));
+		return (tmp1);
+	}
 	else if (out_struct->next)
 		return (find_in_struct(var_env, out_struct->next));
 	return (NULL);
@@ -28,24 +34,27 @@ char *return_char(char **cmds, int x, int y, char **envp, t_var_env *out_struct)
 		{
 			tmp1 = malloc(sizeof(char) * 2);
 			tmp1[0] = '\0';
-			return (tmp1);
 		}
-		else
-			return (tmp1);
 	}
 	tmp2 = ft_calloc(sizeof(char), y);
 	ft_strlcpy(tmp2, cmds[x], y);
 	tmp3 = ft_strjoin(tmp2, tmp1);
-	free(tmp2);
-	free(tmp1);
+	if (tmp1)
+		free(tmp1);
+	if (tmp2)
+		free(tmp2);
 	tmp1 = ft_calloc(sizeof(char), ft_strlen(&cmds[x][y + ft_strlen_up(&cmds[x][y + 1], " \"")]));
 	ft_strlcpy(tmp1, &cmds[x][y + 1+ ft_strlen_up(&cmds[x][y + 1], " \"")], ft_strlen(&cmds[x][y + ft_strlen_up(&cmds[x][y + 1], " \"")]));
 	tmp2 = ft_strjoin(tmp3, tmp1);
-	free(tmp1);
-	free(tmp3);
-	free(cmds[x]);
+	if (tmp1)
+		free(tmp1);
+	if (tmp3)
+		free(tmp3);
+	if (cmds[x])
+		free(cmds[x]);
 	return (tmp2);
 }
+
 char **modif_mat(char **cmds, char **envp, t_var_env *out_struct)
 {
 	int x;

@@ -24,7 +24,7 @@
 # /_/  /_/_/_/ /_/_/____/_/ /_/\\___/_/_/             #\n\
 #                                                    #\n\
 # Dev by Lisa Buccheri, Matteo Bucci & Hugo Goorickx #\n\
-# (Version 0.5.5)                                    #\n\
+# (Version 0.6)                                      #\n\
 ######################################################\n"
 
 typedef struct s_datas_prompt	t_datas_prompt;
@@ -36,6 +36,8 @@ struct s_datas_prompt
 	t_datas_cmd	*cmds;
 	char		**envp;
 	int			nb_cmds;
+	t_var_env *env_in_struct;
+	t_var_env *out_struct;
 };
 
 struct s_var_env
@@ -73,7 +75,7 @@ char **simple_mat(char **start_mat);
 t_datas_cmd *gen_datas_cmd(char *x, t_datas_prompt *datas_prompt, t_var_env *out_struct);
 t_datas_cmd *ft_parsing(char *cmd_one_line, t_datas_prompt *datas_prompt);
 
-t_one_cmd	*trans_cmd(char **cmds, char **envp, t_var_env *out_struct);
+t_one_cmd	*trans_cmd(char **cmds, char **envp, t_var_env *out_struct, int status);
 
 //pipex_rec
 

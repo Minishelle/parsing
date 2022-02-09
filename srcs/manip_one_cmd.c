@@ -1,6 +1,6 @@
 #include "minishell.h"
 
-t_one_cmd	*trans_cmd(char **cmds, char **envp, t_var_env *out_struct)
+t_one_cmd	*trans_cmd(char **cmds, char **envp, t_var_env *out_struct, int status)
 {
 	int			x;
 	t_one_cmd	*cmd;
@@ -23,11 +23,11 @@ t_one_cmd	*trans_cmd(char **cmds, char **envp, t_var_env *out_struct)
 	cmd->next = NULL;
 	if (x != ft_matrixlen(cmds))
 	{
-		if (cmds[x][0] == '|')
+		if (status)
 			cmd->type_next = 1;
 		else
 			cmd->type_next = 2;
-		cmd->next = trans_cmd(&(cmds[x + 1]), envp, out_struct);
+		cmd->next = trans_cmd(&(cmds[x + 1]), envp, out_struct, 1);
 	}
 	return(cmd);
 }

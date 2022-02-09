@@ -1,55 +1,5 @@
 #include "minishell.h"
 
-/*
-char **ft_start_env(char **envp)
-{
-	char **new_env;
-	int x;
-
-	new_env = malloc(sizeof(char *) * (ft_matrixlen(envp) + 2));
-	if (!new_env)
-		exit (0); //free all
-	x = -1;
-	while(++x < ft_matrixlen(envp))
-	{
-		new_env[x] =malloc(sizeof(char) * (ft_strlen(envp[x]) + 1));
-		if (!new_env[x])
-			exit(0); //free all
-		ft_strlcpy(new_env[x], envp[x], ft_strlen(envp[x]));
-	}
-	new_env[x] = NULL;
-	return (new_env);
-}
-
-char **ft_new_env(char **envp, char *str)
-{
-	char **new_env;
-	int x;
-
-	new_env = malloc(sizeof(char *) * (ft_matrixlen(envp) + 2));
-	if (!new_env)
-		exit (0); //free all
-	x = -1;
-	while(++x < ft_matrixlen(envp))
-	{
-		new_env[x] =malloc(sizeof(char) * (ft_strlen(envp[x]) + 1));
-		if (!new_env[x])
-			exit(0); //free all
-		ft_strlcpy(new_env[x], envp[x], ft_strlen(envp[x]));
-		if (envp[x])
-			free(envp[x]);
-	}
-	if (envp)
-		free(envp);
-	new_env[x] =malloc(sizeof(char) * (ft_strlen(str) + 1));
-	if (!new_env[x])
-		exit(0); //free all
-	ft_strlcpy(new_env[x], str, ft_strlen(str));
-	new_env[++x] = NULL;
-	return (new_env);
-}
-*/
-
 void	print_test(t_datas_prompt datas_prompt)
 {
 	int			y;
@@ -146,6 +96,41 @@ int	ft_lstsize_up(t_var_env *lst)
 	return (1 + ft_lstsize_up(lst->next));
 }
 
+t_var_env *conv_env(char **envp)
+{
+	int x;
+	t_var_env *out_struct;
+
+	x = -1;
+	out_struct = NULL;
+	while (++x < ft_matrixlen(envp))
+		out_struct = ft_new_var_env(envp[x], out_struct);
+	return (out_struct);
+}
+
+void ft_new_free(t_var_env *input)
+{
+	t_var_env *tmp;
+
+	while (input->next)
+	{
+		tmp = input;
+		if (tmp->var_txt)
+			free(tmp->var_txt);
+		if (tmp->name_var)
+			free(tmp->name_var);
+		input = tmp->next;
+		if (tmp)
+			free(tmp);
+	}
+	if (input->var_txt)
+		free(input->var_txt);
+	if (input->name_var)
+		free(input->name_var);
+	if (input)
+		free(input);
+}
+
 int	main(int argc, char **argv, char **envp)
 {
 	char			*prompt;
@@ -154,15 +139,14 @@ int	main(int argc, char **argv, char **envp)
 	int 	fd[2];
 	fd[0] = -2;
 	fd[1] = -2;
-	t_var_env *out_struct;
-
 
 	(void)argc;
 	(void)argv;
 	datas_prompt.envp = envp;
+	datas_prompt.env_in_struct = conv_env(envp);
 	datas_prompt.nb_cmds = 0;
+	datas_prompt.out_struct = NULL;
 	datas_prompt.cmds = NULL;
-	out_struct = NULL;
 	ft_putstr_fd("\033[2J", 1);
 	ft_putstr_fd(INPUT, 1);
 	while (datas_prompt.nb_cmds < 5)
@@ -172,16 +156,13 @@ int	main(int argc, char **argv, char **envp)
 		if (test[0] && ft_allisspace(test) != -1)
 		{
 			if (ft_strchr(test, '=') && (ft_strchr(test, '"') == 0 || ft_strchr(test, '"') > ft_strchr(test, '=')))
-			{
-				out_struct = ft_new_var_env(test, out_struct);
-				ft_putnbr_fd(ft_lstsize_up(out_struct), 1);
-			}
+				datas_prompt.out_struct = ft_new_var_env(test, datas_prompt.out_struct);
 			else
 			{
-				datas_prompt.cmds = gen_datas_cmd(test, &datas_prompt, out_struct);
+				datas_prompt.cmds = gen_datas_cmd(test, &datas_prompt, datas_prompt.out_struct);
 				pipex_rec(datas_prompt.cmds, envp, fd, datas_prompt.cmds->cmd_first);
 				datas_prompt.nb_cmds++;
-				print_test(datas_prompt);
+				//print_test(datas_prompt);
 				ft_free_datas_cmd(datas_prompt.cmds);
 			}
 			add_history(test);
@@ -189,4 +170,6 @@ int	main(int argc, char **argv, char **envp)
 		free(test);
 		free(prompt);
 	}
+	ft_new_free(datas_prompt.env_in_struct);
+	ft_new_free(datas_prompt.out_struct);
 }

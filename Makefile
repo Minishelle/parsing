@@ -30,7 +30,7 @@ ${OBJ_DIR}/%.o:${SRC_DIR}/%.c
 	@sleep ${FAST}
 
 creat_dir:
-	@mkdir -p ${OBJ_DIR} 
+	@mkdir -p ${OBJ_DIR}
 
 clean:
 	@rm -rf ${OBJ_DIR}
