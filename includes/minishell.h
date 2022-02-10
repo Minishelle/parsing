@@ -24,7 +24,7 @@
 # /_/  /_/_/_/ /_/_/____/_/ /_/\\___/_/_/             #\n\
 #                                                    #\n\
 # Dev by Lisa Buccheri, Matteo Bucci & Hugo Goorickx #\n\
-# (Version 0.6)                                      #\n\
+# (Version 0.6.1)                                    #\n\
 ######################################################\n"
 
 typedef struct s_datas_prompt	t_datas_prompt;
