@@ -1,9 +1,33 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   outfile.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: hgoorick <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/02/10 18:05:17 by hgoorick          #+#    #+#             */
+/*   Updated: 2022/02/10 18:05:19 by hgoorick         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
-int open_fd(char *cmd, int stat)
+/****************************************
+*
+*	Nom : open_fd
+*	Params : - Liste de char relatif au nom de fichier a ouvrir
+*			 - Le status (1 si on doit ajouter, 0 si on doit ecrire par dessus)
+*	Retour : Le fd du outfile
+*	Descritpion:
+*		Essaye d'ouvrir le fichier donne, si l'ouverture ne marche pas il
+*			affiche un message d'erreur
+*
+****************************************/
+
+int	open_fd(char *cmd, int stat)
 {
-	char *str;
-	int fd;
+	char	*str;
+	int		fd;
 
 	str = NULL;
 	fd = 0;
@@ -19,7 +43,18 @@ int open_fd(char *cmd, int stat)
 	return (fd);
 }
 
-int give_me_fd(char **all_cmd, int x)
+/****************************************
+*
+*	Nom : give_me_fd
+*	Params : - La matrice de toute la commande
+*			 - L'index dans la matrice
+*	Retour : Le fd du outfile
+*	Descritpion:
+*		Regarde si il y a > ou >> pour changer le type donne a open_fd
+*
+****************************************/
+
+int	give_me_fd(char **all_cmd, int x)
 {
 	if (ft_strlen(all_cmd[x - 1]) > 1)
 	{
@@ -31,15 +66,26 @@ int give_me_fd(char **all_cmd, int x)
 			exit (1); //free all
 		}
 	}
-	else
-		return (open_fd(all_cmd[x], 0));
-	return (1);
+	return (open_fd(all_cmd[x], 0));
 }
 
-int outfile(char **all_cmd)
+/****************************************
+*
+*	Nom : outfile
+*	Params : - La matrice de toute la commande
+*	Retour : Le fd du outfile
+*	Descritpion:
+*		Parcourt la matrice a la recherche de > si il en trouve alors le fd sera
+*			adpate ou sinon fd sera a 1, si il y a plusieurs fd, ils seront
+*			ouverts et fermes de sorte que seul le dernier fd restera ouvert
+*			pour outfile
+*
+****************************************/
+
+int	outfile(char **all_cmd)
 {
-	int x;
-	int fd;
+	int	x;
+	int	fd;
 
 	fd = 1;
 	while (1)
@@ -51,7 +97,7 @@ int outfile(char **all_cmd)
 			break ;
 		else if (fd > 1)
 			close(fd);
-		if (x == ft_matrixlen(all_cmd) - 1 || x == 0)
+		if (x == ft_matrixlen(all_cmd) - 1 || !x)
 			exit (0); //free all
 		x++;
 		fd = give_me_fd(all_cmd, x);

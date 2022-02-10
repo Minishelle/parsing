@@ -1,73 +1,148 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   modif_mat.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: hgoorick <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/02/10 18:10:53 by hgoorick          #+#    #+#             */
+/*   Updated: 2022/02/10 18:10:57 by hgoorick         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
-char *find_in_struct(char *var_env, t_var_env *out_struct)
-{
-	char *tmp1;
+/****************************************
+*
+*	Nom : find_in_struct
+*	Params : - Liste de char recherchee a travers toute la liste chainee
+*			 - Pointeur vers la premiere strcut de la liste chainee
+*	Retour : La liste de char liee a la lste de char recherchee
+*	Descritpion:
+*		Compare la liste de chars recherchee a celle de la struct, si elles sont
+*			egales alors on retourne une copie de la liste de char liee sinon on
+*			refait la fonction sur la strcut suivante de la liste chainee, si il
+*			n'y en a pas alors le code renvoi nul
+*
+****************************************/
 
-	if (!out_struct)
+char	*find_in_struct(char *var_env, t_var_env *out)
+{
+	char	*tmp1;
+
+	if (!out)
 		return (NULL);
-	if (!ft_strncmp(var_env, out_struct->name_var, ft_strlen(out_struct->name_var)))
+	if (!ft_strncmp(var_env, out->name_var, ft_strlen(out->name_var)))
 	{
-		tmp1 = ft_calloc(sizeof(char), ft_strlen(out_struct->var_txt));
-		ft_memcpy(tmp1, out_struct->var_txt, ft_strlen(out_struct->var_txt));
+		tmp1 = ft_calloc(sizeof(char), ft_strlen(out->var_txt));
+		ft_memcpy(tmp1, out->var_txt, ft_strlen(out->var_txt));
 		return (tmp1);
 	}
-	else if (out_struct->next)
-		return (find_in_struct(var_env, out_struct->next));
+	else if (out->next)
+		return (find_in_struct(var_env, out->next));
 	return (NULL);
-//parcourir la listre chainee pour trouver var env et return sa value else return null
 }
 
-char *return_char(char **cmds, int x, int y, char **envp, t_var_env *out_struct)
-{
-	int size;
-	char *tmp1;
-	char *tmp2;
-	char *tmp3;
+/****************************************
+*
+*	Nom : ft_free_little_matrice
+*	Params : - Matrice de 3 liste de char
+*			 - L'index qui ne doit pas etre free
+*	Retour : Void
+*	Descritpion:
+*		Free les trois index de la matrice sauf si le nombre donne est compris
+*			entre 0 et 2, dans ce cas l'index egal au nombre ne sera pas free
+*
+****************************************/
 
-	size = ft_strlen_up(&cmds[x][y + 1], " \"");
-	tmp1 = find_in_env(envp, &cmds[x][y + 1], size, size + 1);
-	if (tmp1 == NULL)
+void	ft_free_little_matrice(char **mat, int x)
+{
+	int	y;
+
+	y = -1;
+	while (++y < 3)
+		if (y != x)
+			free(mat[y]);
+}
+
+/****************************************
+*
+*	Nom : return_char
+*	Params : - liste de chars liee a la Matrice de la commande
+*			 - la positon dans la liste de chars
+*			 - la matrice d'env
+*			 - la premiere stuct de la liste chainee
+*	Retour : Liste de char modifie ou on remplace la var d'env par sa liste de
+*				char liee
+*	Descritpion:
+*		Defini la longueur de la var d'env, prend ensuite la liste de char liee
+*			a la var d'env, cut avant et apres la variable d'env et colle les
+*			deux partie avec la liste de char liee a la var d'env
+*
+****************************************/
+
+char	*return_char(char *cmds, int y, char **envp, t_var_env *out_struct)
+{
+	int		size;
+	char	**tmp;
+
+	size = ft_strlen_up(&cmds[y + 1], " \"");
+	tmp = malloc(sizeof(char *) * 3);
+	if (!tmp)
+		exit (0); //free all
+	tmp[0] = find_in_env(envp, &cmds[y + 1], size, size + 1);
+	if (tmp[0] == NULL)
 	{
-		tmp1 = find_in_struct(&cmds[x][y + 1], out_struct);
-		if (tmp1 == NULL)
+		tmp[0] = find_in_struct(&cmds[y + 1], out_struct);
+		if (tmp[0] == NULL)
 		{
-			tmp1 = malloc(sizeof(char) * 2);
-			tmp1[0] = '\0';
+			tmp[0] = malloc(sizeof(char) * 2);
+			tmp[0][0] = '\0';
 		}
 	}
-	tmp2 = ft_calloc(sizeof(char), y);
-	ft_strlcpy(tmp2, cmds[x], y);
-	tmp3 = ft_strjoin(tmp2, tmp1);
-	if (tmp1)
-		free(tmp1);
-	if (tmp2)
-		free(tmp2);
-	tmp1 = ft_calloc(sizeof(char), ft_strlen(&cmds[x][y + ft_strlen_up(&cmds[x][y + 1], " \"")]));
-	ft_strlcpy(tmp1, &cmds[x][y + 1+ ft_strlen_up(&cmds[x][y + 1], " \"")], ft_strlen(&cmds[x][y + ft_strlen_up(&cmds[x][y + 1], " \"")]));
-	tmp2 = ft_strjoin(tmp3, tmp1);
-	if (tmp1)
-		free(tmp1);
-	if (tmp3)
-		free(tmp3);
-	if (cmds[x])
-		free(cmds[x]);
-	return (tmp2);
+	tmp[1] = ft_calloc(sizeof(char), y);
+	ft_strlcpy(tmp[1], cmds, y);
+	tmp[2] = ft_strjoin(tmp[1], tmp[0]);
+	ft_free_little_matrice(tmp, 2);
+	tmp[0] = ft_calloc(sizeof(char), ft_strlen(&cmds[y + \
+		ft_strlen_up(&cmds[y + 1], " \"")]));
+	ft_strlcpy(tmp[0], &cmds[y + 1 + ft_strlen_up(&cmds[y + 1], " \"")], \
+		ft_strlen(&cmds[y + ft_strlen_up(&cmds[y + 1], " \"")]));
+	tmp[1] = ft_strjoin(tmp[2], tmp[0]);
+	ft_free_little_matrice(tmp, 1);
+	if (cmds)
+		free(cmds);
+	return (tmp[1]);
 }
 
-char **modif_mat(char **cmds, char **envp, t_var_env *out_struct)
+/****************************************
+*
+*	Nom : modif_mat
+*	Params : - La Matrice de la commande
+*			 - la matrice d'env
+*			 - la premiere stuct de la liste chainee
+*	Retour : La Matrice de la commande ou les vars d'env ont ete remplacees par
+*				leurs valeurs
+*	Descritpion:
+*		Parcour la liste puor trouver un $ signifiant qu'il a trouve une var
+*			d'env, la commande return char var s'occuper de remplacer la var
+*			d'env par sa valeur reelle
+*
+****************************************/
+
+char	**modif_mat(char **cmds, char **envp, t_var_env *out_struct)
 {
-	int x;
-	int y;
+	int	x;
+	int	y;
 
 	x = -1;
-	while(++x < ft_matrixlen(cmds))
+	while (++x < ft_matrixlen(cmds))
 	{
 		y = -1;
 		while (++y < (int)ft_strlen(cmds[x]))
 			if (cmds[x][y] == '$')
 				if ((y > 0 && cmds[x][0] == '"') || (y == 0))
-					cmds[x] = return_char(cmds, x, y, envp, out_struct);
+					cmds[x] = return_char(cmds[x], y, envp, out_struct);
 	}
 	return (cmds);
 }

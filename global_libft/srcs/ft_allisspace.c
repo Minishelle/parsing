@@ -1,37 +1,34 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   prompt.c                                           :+:      :+:    :+:   */
+/*   ft_allisspace.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: hgoorick <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/02/10 18:03:03 by hgoorick          #+#    #+#             */
-/*   Updated: 2022/02/10 18:03:05 by hgoorick         ###   ########.fr       */
+/*   Created: 2022/02/10 18:57:28 by hgoorick          #+#    #+#             */
+/*   Updated: 2022/02/10 18:57:29 by hgoorick         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "libft.h"
 
 /****************************************
 *
-*	Nom : start_prompt
-*	Params : La matrcie d'env
-*	Retour : La ligne qui sera affichee au prompt
+*	Nom : ft_allisspace
+*	Params : La ligne de char que l'on doit parcourir
+*	Retour : la position de l'espace ou du tab (-1 si pas trouve)
 *	Descritpion:
-*		Isole la valeur de user et ajoute le coloris et le @minishell
+*		Parcourt toute la liste afin de trouver un tab ou un espace et renvoi la
+*			position du premier ou -1 si il n'en a pas trouve
 *
 ****************************************/
 
-char	*start_prompt(char **env)
+int	ft_allisspace(char *str)
 {
-	char	*output;
-	char	*tmp;
-	char	*tmp1;
+	int	x;
 
-	tmp = find_in_env(env, "USER=", 5, 5);
-	tmp1 = ft_strjoin("\033[0;91m", tmp);
-	output = ft_strjoin(tmp1, "\033[0;39m@\033[0;92mminishell\033[0;39m > ");
-	free(tmp);
-	free(tmp1);
-	return (output);
+	x = ft_strlen(str);
+	while (--x > -1 && (str[x] == '\t' || str[x] == ' '))
+		;
+	return (x);
 }

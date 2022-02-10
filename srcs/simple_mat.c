@@ -1,9 +1,33 @@
+/* ************************************************************************** */
+/*																			*/
+/*														:::	  ::::::::   */
+/*   simple_mat.c									   :+:	  :+:	:+:   */
+/*													+:+ +:+		 +:+	 */
+/*   By: hgoorick <marvin@42.fr>					+#+  +:+	   +#+		*/
+/*												+#+#+#+#+#+   +#+		   */
+/*   Created: 2022/02/10 18:00:06 by hgoorick		  #+#	#+#			 */
+/*   Updated: 2022/02/10 18:02:37 by hgoorick         ###   ########.fr       */
+/*																			*/
+/* ************************************************************************** */
+
 #include "minishell.h"
 
-int nb_erase(char **tmp, char try)
+/****************************************
+*
+*	Nom : nb_erase
+*	Params : - Matrice de char a parcourir
+*			 - Caractere a compter
+*	Retour : Nombre de fois que le caractere est present
+*	Descritpion:
+*		Le code va parcourir la matrice en comptant le nombre d'iteration du
+*			caractere
+*
+****************************************/
+
+int	nb_erase(char **tmp, char try)
 {
-	int nb_erase;
-	int x;
+	int	nb_erase;
+	int	x;
 
 	nb_erase = 0;
 	x = 0;
@@ -19,9 +43,19 @@ int nb_erase(char **tmp, char try)
 	return (nb_erase);
 }
 
-char *cpy_with_malloc(char *tmp)
+/****************************************
+*
+*	Nom : cpy_with_malloc
+*	Params : La liste de char a copier
+*	Retour : La liste de char copiee
+*	Descritpion:
+*		Copie une chaine avant de la retourner
+*
+****************************************/
+
+char	*cpy_with_malloc(char *tmp)
 {
-	char *out;
+	char	*out;
 
 	out = malloc(sizeof(char) * ft_strlen(tmp) + 1);
 	if (!out)
@@ -30,9 +64,19 @@ char *cpy_with_malloc(char *tmp)
 	return (out);
 }
 
-void ft_clean_mat(char **mat)
+/****************************************
+*
+*	Nom : ft_clean_mat
+*	Params : La matrcie de commande
+*	Retour : Void
+*	Descritpion:
+*		Free toute la matrice et le pointeur de la matrice
+*
+****************************************/
+
+void	ft_clean_mat(char **mat)
 {
-	int x;
+	int	x;
 
 	x = ft_matrixlen(mat);
 	while (--x > -1)
@@ -40,11 +84,22 @@ void ft_clean_mat(char **mat)
 	free(mat);
 }
 
-char **simple_mat(char **start_mat)
+/****************************************
+*
+*	Nom : simple_mat
+*	Params : La matrice de commande
+*	Retour : La matrice de commande simplifiee
+*	Descritpion:
+*		Simplifie la commande pour ne laisser que les commandes et les
+*			parametres
+*
+****************************************/
+
+char	**simple_mat(char **start_mat)
 {
-	char **final_mat;
-	int y;
-	int x;
+	char	**final_mat;
+	int		y;
+	int		x;
 
 	final_mat = malloc(sizeof(char *) * ft_matrixlen(start_mat) - \
 		((nb_erase(start_mat, '>') + nb_erase(start_mat, '<')) * 2) + 1);

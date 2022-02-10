@@ -6,7 +6,7 @@
 /*   By: hgoorick <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/04 15:57:03 by hgoorick          #+#    #+#             */
-/*   Updated: 2021/09/04 15:57:05 by hgoorick         ###   ########.fr       */
+/*   Updated: 2022/02/10 18:48:15 by hgoorick         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,74 +27,67 @@
 
 #include "libft.h"
 
-static char	**ft_clean(char **s, int i)
-{
-	while (i--)
-		free(s[i]);
-	return (0);
-}
-
-static int need_line(int status, int lg_world)
+static int	need_line(int status, int lg_world)
 {
 	if ((status && lg_world) || (!status && !lg_world))
 		return (1);
 	return (0);
 }
 
-static int len_word(char const *s, int i)
+static int	len_word(char const *s, int i)
 {
-	int	lgWord;
-	int status;
+	int	lg_word;
+	int	status;
 
-	lgWord = 0;
+	lg_word = 0;
 	status = 0;
-	while (s[i + lgWord] && (!ft_isspace(s[i + lgWord]) || status))
+	while (s[i + lg_word] && (!ft_isspace(s[i + lg_word]) || status))
 	{
-		if ((s[i + lgWord] == '"') && !status)
+		if ((s[i + lg_word] == '"') && !status)
 			status = 1;
-		else if ((s[i + lgWord] == 39) && !status)
+		else if ((s[i + lg_word] == 39) && !status)
 			status = 2;
-		else if (((s[i + lgWord] == 39) && status == 2) ||
-			((s[i + lgWord] == '"') && status == 1) ||
-			(!status && (s[i + lgWord] == '|' || s[i + lgWord] == '>' ||
-			s[i + lgWord] == '<')))
+		else if (((s[i + lg_word] == 39) && status == 2)
+			|| ((s[i + lg_word] == '"') && status == 1)
+			|| (!status && (s[i + lg_word] == '|'
+					|| s[i + lg_word] == '>' || s[i + lg_word] == '<')))
 		{
-			if (!status && (s[i + lgWord] == s[i + lgWord + 1]))
-				lgWord += need_line(status, lgWord) * 2;
+			if (!status && (s[i + lg_word] == s[i + lg_word + 1]))
+				lg_word += need_line(status, lg_word) * 2;
 			else
-				lgWord += need_line(status, lgWord);
-			break;
+				lg_word += need_line(status, lg_word);
+			break ;
 		}
-		lgWord++;
+		lg_word++;
 	}
-	return (lgWord);
+	return (lg_word);
 }
 
-static int	nbWords(char const *s)
+static int	nb_words(char const *s)
 {
 	int	i;
-	int	nbWords;
-	int	lgWord;
+	int	nb_words;
+	int	lg_word;
 
 	i = 0;
-	nbWords = 0;
+	nb_words = 0;
 	while (s[i])
 	{
 		while (s[i] && (ft_isspace(s[i])))
 			i++;
-		lgWord = len_word(s, i);
-		if (lgWord)
-			nbWords++;
-		i += lgWord;
+		lg_word = len_word(s, i);
+		if (lg_word)
+			nb_words++;
+		i += lg_word;
 	}
-	return (nbWords);
+	return (nb_words);
 }
 
 static char	**ft_split2(char const *s, char **retour, unsigned int nb)
 {
 	unsigned int	i;
 	unsigned int	j;
-	unsigned int	lgWord;
+	unsigned int	lg_word;
 
 	i = 0;
 	j = 0;
@@ -102,12 +95,12 @@ static char	**ft_split2(char const *s, char **retour, unsigned int nb)
 	{
 		while (s[j] && (ft_isspace(s[j])))
 			j++;
-		lgWord = len_word(s, j);
-		retour[i] = malloc(sizeof(char) * (lgWord + 1));
+		lg_word = len_word(s, j);
+		retour[i] = malloc(sizeof(char) * (lg_word + 1));
 		if (!retour[i])
 			return (ft_clean(retour, i));
-		ft_strlcpy(retour[i], &s[j], lgWord);
-		j += lgWord;
+		ft_strlcpy(retour[i], &s[j], lg_word);
+		j += lg_word;
 		i++;
 	}
 	return (retour);
@@ -115,21 +108,21 @@ static char	**ft_split2(char const *s, char **retour, unsigned int nb)
 
 char	**ft_split_up(char const *s)
 {
-	unsigned int	nbWord;
+	unsigned int	nb_word;
 	char			**retour;
 
 	if (!s)
 		return (0);
-	nbWord = nbWords(s);
-	retour = malloc(sizeof(char *) * (nbWord + 1));
+	nb_word = nb_words(s);
+	retour = malloc(sizeof(char *) * (nb_word + 1));
 	if (!retour)
 		return (0);
-	retour = ft_split2(s, retour, nbWord);
+	retour = ft_split2(s, retour, nb_word);
 	if (!retour)
 	{
 		free(retour);
 		return (0);
 	}
-	retour[nbWord] = 0;
+	retour[nb_word] = 0;
 	return (retour);
 }

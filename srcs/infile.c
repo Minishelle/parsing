@@ -1,9 +1,32 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   infile.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: hgoorick <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/02/10 18:34:26 by hgoorick          #+#    #+#             */
+/*   Updated: 2022/02/10 18:34:38 by hgoorick         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
-int infile(char **all_cmd)
+/****************************************
+*
+*	Nom : infile
+*	Params : matrice reprenant toute la commande
+*	Retour : le fd du infile
+*	Descritpion:
+*		Cherche une redirection pour le infile, si il le trouve, il open le file
+* 			donne si il ne trouve pas de redirection le infile est a 0
+*
+****************************************/
+
+int	infile(char **all_cmd)
 {
-	int x;
-	int fd;
+	int	x;
+	int	fd;
 
 	x = 0;
 	fd = 0;

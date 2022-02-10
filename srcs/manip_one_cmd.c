@@ -1,6 +1,37 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   manip_one_cmd.c                                    :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: hgoorick <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/02/10 18:35:02 by hgoorick          #+#    #+#             */
+/*   Updated: 2022/02/10 18:35:05 by hgoorick         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
-t_one_cmd	*trans_cmd(char **cmds, char **envp, t_var_env *out_struct, int status)
+/****************************************
+*
+*	Nom : trans_cmd
+*	Params : - La matrice de toute la ligne de commandes
+* 			 - La matrice d'env
+*			 - la liste chainee de variables d'environnement defini par le user
+*			 - Le status de la fonction (si premier de la liste chainee = 0
+*					else = 1)
+*	Retour : La premiere structure de la liste chainee de one_cmd
+*	Descritpion:
+*		Commence par cree la matrice reprenant tous les elements de la commande
+*			(jusqu'au pipe), init infile et outfile, met en avant la cmd unique
+*			et defini le type du pointeru vers la prochaine commande (0 = pas de
+*			commandes apres, 1 = une commande apres, 2 = une commande apres mais
+*			celle-ci est la premiere) ensuite il lance relance la fonction avec
+*			la commande suivante (si il y en a une)
+*
+****************************************/
+
+t_one_cmd	*trans_cmd(char **cmds, char **envp, t_var_env *out_struct, int st)
 {
 	int			x;
 	t_one_cmd	*cmd;
@@ -23,11 +54,10 @@ t_one_cmd	*trans_cmd(char **cmds, char **envp, t_var_env *out_struct, int status
 	cmd->next = NULL;
 	if (x != ft_matrixlen(cmds))
 	{
-		if (status)
+		cmd->type_next = 2;
+		if (st)
 			cmd->type_next = 1;
-		else
-			cmd->type_next = 2;
 		cmd->next = trans_cmd(&(cmds[x + 1]), envp, out_struct, 1);
 	}
-	return(cmd);
+	return (cmd);
 }

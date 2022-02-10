@@ -6,7 +6,7 @@
 /*   By: hgoorick <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/15 14:36:24 by hgoorick          #+#    #+#             */
-/*   Updated: 2021/09/15 14:38:43 by hgoorick         ###   ########.fr       */
+/*   Updated: 2022/02/10 18:44:57 by hgoorick         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,8 @@
 
 char	*ft_strjoin_gnl(char *line, char buf)
 {
-	int	i;
-	char *new;
+	int		i;
+	char	*new;
 
 	new = malloc(ft_strlen(line) + 2);
 	if (!new)
@@ -35,9 +35,9 @@ char	*ft_strjoin_gnl(char *line, char buf)
 
 char	*get_next_line(int fd)
 {
-	char *line;
-	int ret;
-	char buf[1];
+	char	*line;
+	int		ret;
+	char	buf[1];
 
 	line = NULL;
 	while (buf[0] != '\n')

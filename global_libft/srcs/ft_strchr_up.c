@@ -1,37 +1,40 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   prompt.c                                           :+:      :+:    :+:   */
+/*   ft_strchr_up.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: hgoorick <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/02/10 18:03:03 by hgoorick          #+#    #+#             */
-/*   Updated: 2022/02/10 18:03:05 by hgoorick         ###   ########.fr       */
+/*   Created: 2022/02/10 18:47:08 by hgoorick          #+#    #+#             */
+/*   Updated: 2022/02/10 18:47:10 by hgoorick         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "libft.h"
 
 /****************************************
 *
-*	Nom : start_prompt
-*	Params : La matrcie d'env
-*	Retour : La ligne qui sera affichee au prompt
+*	Nom : ft_strchr_up
+*	Params : - La ligne de char a fouiller
+*			 - Char a chercher
+*	Retour : La position du char a chercher
 *	Descritpion:
-*		Isole la valeur de user et ajoute le coloris et le @minishell
+*		Fonctionne comme strchr mais retourne la valeur de l'index du premier
+*			char recherche
 *
 ****************************************/
 
-char	*start_prompt(char **env)
+int	ft_strchr_up(const char *str, int to_find)
 {
-	char	*output;
-	char	*tmp;
-	char	*tmp1;
+	int	x;
 
-	tmp = find_in_env(env, "USER=", 5, 5);
-	tmp1 = ft_strjoin("\033[0;91m", tmp);
-	output = ft_strjoin(tmp1, "\033[0;39m@\033[0;92mminishell\033[0;39m > ");
-	free(tmp);
-	free(tmp1);
-	return (output);
+	x = 0;
+	while (*str != (char)to_find && *str)
+	{
+		x++;
+		str++;
+	}
+	if (*str == (char)to_find)
+		return (x);
+	return (0);
 }

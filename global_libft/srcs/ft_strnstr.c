@@ -37,23 +37,23 @@
 char	*ft_strnstr(const char *big, const char *little, size_t len)
 {
 	char	*h;
-	size_t	littleLong;
+	size_t	little_long;
 	size_t	j;
 	size_t	i;
 
 	h = (char *)big;
-	littleLong = ft_strlen(little);
-	if (!littleLong)
+	little_long = ft_strlen(little);
+	if (!little_long)
 		return (h);
-	if ((ft_strlen(big) < littleLong) || len < littleLong)
+	if ((ft_strlen(big) < little_long) || len < little_long)
 		return (NULL);
 	i = 0;
-	while (h[i] && i <= len - littleLong)
+	while (h[i] && i <= len - little_long)
 	{
 		j = 0;
 		while (little[j] && (little[j] == h[i + j]))
 			j++;
-		if (j == littleLong)
+		if (j == little_long)
 			return (&h[i]);
 		i++;
 	}

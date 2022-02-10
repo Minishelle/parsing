@@ -29,7 +29,6 @@
 
 typedef struct s_datas_prompt	t_datas_prompt;
 typedef struct s_datas_cmd	t_datas_cmd;
-typedef struct s_var_env t_var_env;
 
 struct s_datas_prompt
 {
@@ -40,12 +39,6 @@ struct s_datas_prompt
 	t_var_env *out_struct;
 };
 
-struct s_var_env
-{
-		char *var_txt;
-		char *name_var;
-		t_var_env *next;
-};
 
 struct s_datas_cmd
 {
@@ -58,6 +51,7 @@ struct s_datas_cmd
 
 void	ft_free_one_cmd(t_one_cmd *first_cmd);
 void ft_free_datas_cmd(t_datas_cmd *datas_cmd);
+void	ft_new_free(t_var_env *input);
 
 int ft_strchr_up(const char *str, int to_find);
 int ft_strlen_up(char *str, char *search);
@@ -72,11 +66,13 @@ char **pipen_t(char **cmds);
 char **modif_mat(char **cmds, char **envp, t_var_env *out_struct);
 char **simple_mat(char **start_mat);
 
-t_datas_cmd *gen_datas_cmd(char *x, t_datas_prompt *datas_prompt, t_var_env *out_struct);
+t_datas_cmd *gen_datas_cmd(char *x, t_datas_prompt *datas_prompt);
 t_datas_cmd *ft_parsing(char *cmd_one_line, t_datas_prompt *datas_prompt);
 
-t_one_cmd	*trans_cmd(char **cmds, char **envp, t_var_env *out_struct, int status);
+t_one_cmd	*trans_cmd(char **cmds, char **envp, t_var_env *out_struct, int st);
 
+t_var_env	*conv_env(char **envp);
+t_var_env	*ft_new_var_env(char *str, t_var_env *old_struct);
 //pipex_rec
 
 typedef struct s_fd
@@ -98,7 +94,8 @@ void	ft_end_process(char *cmd_path, char **cmd, char **path, char **env);
 void	process(char *env[], char **cmd);
 int		count_cmd(char *argv[]);
 void 	cmd_process(t_fd fds, char **argv, char *env[], int j);
-void 	pipex_rec(t_datas_cmd *cmds, char *env[], int prev_fd[2], t_one_cmd *cmd);
+void 	pipex_rec(t_datas_cmd *cmds, char *env[], int prev_fd[2], \
+	t_one_cmd *cmd);
 
 #endif
 

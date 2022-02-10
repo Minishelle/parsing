@@ -39,3 +39,4 @@ SRC += modif_mat.c
 SRC += simple_mat.c
 SRC += pipex.c
 SRC += utils.c
+SRC += manip_env.c
