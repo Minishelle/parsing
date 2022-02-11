@@ -56,7 +56,7 @@ void	ft_new_free(t_var_env *input)
 *
 ****************************************/
 
-void	ft_free_one_cmd(t_one_cmd *first_cmd)
+void	ft_free_one_cmd(t_one_cmd *first_cmd, int status)
 {
 	int	x;
 
@@ -66,12 +66,12 @@ void	ft_free_one_cmd(t_one_cmd *first_cmd)
 			free(first_cmd->all_cmd[x]);
 	if (first_cmd->all_cmd)
 		free(first_cmd->all_cmd);
-	if (first_cmd->infile > 0)
+	if (first_cmd->infile > 0 && !status)
 		close(first_cmd->infile);
-	if (first_cmd->outfile > 1)
+	if (first_cmd->outfile > 1 && !status)
 		close(first_cmd->outfile);
-	if (first_cmd->next)
-		ft_free_one_cmd(first_cmd->next);
+	if (first_cmd->next && !status)
+		ft_free_one_cmd(first_cmd->next, 0);
 	if (first_cmd)
 		free(first_cmd);
 }
@@ -100,7 +100,7 @@ void	ft_free_datas_cmd(t_datas_cmd *datas_cmd)
 		free(datas_cmd->all_cmds);
 	}
 	if (datas_cmd->cmd_first)
-		ft_free_one_cmd(datas_cmd->cmd_first);
+		ft_free_one_cmd(datas_cmd->cmd_first, 0);
 	if (datas_cmd)
 		free(datas_cmd);
 }

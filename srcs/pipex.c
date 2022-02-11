@@ -53,10 +53,62 @@ void	process(char *env[], char **cmd)
 	ft_end_process(cmd_path, cmd, paths, env);
 }
 
-void pipex_rec(t_datas_cmd *cmds, char *env[], int prev_fd[2], t_one_cmd *cmd)
+void	ft_redirection(int fd_in, int fd_out, int simple, int first)
 {
-	int next_fd[2];
-	pid_t pid;
+	if (simple == 1 && first == 1)
+	{
+		close(fd_in);
+		if (dup2(fd_out, 1) < 0)
+			return (perror("first: fd"));
+		close(fd_out);
+	}
+	else if (simple == 1 && first == 0)
+	{
+		close(fd_out);
+		if (dup2(fd_in, 0) < 0)
+			return (perror("last: fd"));
+		close(fd_in);
+	}
+	else
+	{
+		if (dup2(fd_out, 1) < 0 || dup2(fd_in, 0) < 0)
+			return (perror("middle: fd"));
+		close(fd_out);
+		close(fd_in);
+	}
+}
+
+void	multi_pipe(t_datas_cmd *cmds, int n_fd[2], int pr_fd[2], t_one_cmd *cmd)
+{
+	if (cmd->type_next == 2)
+	{
+		if (cmd->infile == 0)
+			ft_redirection(n_fd[0], n_fd[1], 1, 1);
+		else
+			ft_redirection(cmd->infile, n_fd[1], 0, 1);
+	}
+	else if (cmds->nb_cmds > 1 && cmd->type_next != 0)
+	{
+		close(pr_fd[1]);
+		close(n_fd[0]);
+		ft_redirection(pr_fd[0], n_fd[1], 0, 0);
+	}
+	else if (cmds->nb_cmds > 1 && cmd->type_next == 0)
+	{
+		if (cmd->outfile == 1)
+			ft_redirection(pr_fd[0], pr_fd[1], 1, 0);
+		else
+		{
+			close(pr_fd[1]);
+			ft_redirection(pr_fd[0], cmd->outfile, 0, 0);
+		}
+	}
+}
+
+void	pipex_rec(t_datas_cmd *cmds, char *env[], int pre_fd[2], t_one_cmd *cmd)
+{
+	int		next_fd[2];
+	pid_t	pid;
 
 	if (pipe(next_fd) == -1)
 		return (perror("pipe"));
@@ -65,44 +117,21 @@ void pipex_rec(t_datas_cmd *cmds, char *env[], int prev_fd[2], t_one_cmd *cmd)
 		return (perror("fork"));
 	else if (pid == 0)
 	{
-		if (cmd->type_next == 2)
+		if (cmds->nb_cmds == 1)
 		{
-			close(next_fd[0]);
-			if (dup2(next_fd[1], 1) < 0) // dup2(infile, 0)
-				return (perror("first: fd"));
-			close(next_fd[1]);
-			//close_pipe(next_fd);
-			//close_pipe(prev_fd);
+			if (dup2(cmd->outfile, 1) < 0 || dup2(cmd->infile, 0) < 0)
+				return (perror("one cmd: fd"));
 		}
-		else if (cmds->nb_cmds > 1 && cmd->type_next == 0)
-		{
-			close(prev_fd[1]);
-			if (dup2(prev_fd[0], 0) < 0) // dup2(outfile, 1)
-				return (perror("last: fd"));
-			close(prev_fd[0]);
-			//close_pipe(prev_fd);
-			//close_pipe(next_fd);
-		}
-		else if (cmds->nb_cmds > 1 && cmd->type_next != 0)
-		{
-			close(prev_fd[1]);
-			close(next_fd[0]);
-			if (dup2(next_fd[1], 1) < 0 || dup2(prev_fd[0], 0) < 0)
-				return (perror("middle: fd"));
-			close(prev_fd[0]);
-			close(next_fd[1]);
-		//	close_pipe(prev_fd);
-		//	close_pipe(next_fd);
-		}
+		else
+			multi_pipe(cmds, next_fd, pre_fd, cmd);
 		process(env, cmd->all_cmd);
 	}
 	else
 	{
-		close_pipe(prev_fd);
+		close_pipe(pre_fd);
 		waitpid(pid, NULL, 0);
 		if (cmd->next)
 			pipex_rec(cmds, env, next_fd, cmd->next);
 		close_pipe(next_fd);
-		return ;
 	}
 }

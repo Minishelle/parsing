@@ -35,6 +35,7 @@ t_one_cmd	*trans_cmd(char **cmds, t_datas_prompt *datas_prompt, int st, t_one_cm
 {
 	int			x;
 	t_one_cmd	*cmd;
+	t_one_cmd	*tmp;
 	char **envp;
 	t_var_env *out_struct;
 
@@ -48,25 +49,22 @@ t_one_cmd	*trans_cmd(char **cmds, t_datas_prompt *datas_prompt, int st, t_one_cm
 		exit(0); //free
 	cmd->all_cmd = ft_matrixlcpy(cmds, find_next_char(cmds, '|'));
 	cmd->all_cmd = modif_mat(cmd->all_cmd, envp, out_struct);
-	if (old_one)
-	{
-		ft_putstr_fd("Nique ta soeur", 1);
+	if (old_one && infile(cmd->all_cmd) == 0)
 		cmd->infile = old_one->infile;
-		cmd->outfile = old_one->outfile;
-	}
 	else
-	{
-		ft_putstr_fd("Nique ta cousine", 1);
 		cmd->infile = infile(cmd->all_cmd);
+	if (old_one && outfile(cmd->all_cmd) == 1)
+		cmd->outfile = old_one->outfile;
+	else
 		cmd->outfile = outfile(cmd->all_cmd);
-		if (cmd->infile != 0 || cmd->outfile != 1)
-			cmd->all_cmd = simple_mat(cmd->all_cmd);
-	}
+	if (cmd->infile != 0 || cmd->outfile != 1)
+		cmd->all_cmd = simple_mat(cmd->all_cmd);
 	x = find_next_char(cmds, '|');
 	if (!ft_matrixlen(cmd->all_cmd) && 	x != ft_matrixlen(cmds))
 	{
-		ft_putstr_fd("Nique ta mere", 1);
-		cmd->next = trans_cmd(&(cmds[x + 1]), datas_prompt, 1, cmd);
+		tmp = trans_cmd(&(cmds[x + 1]), datas_prompt, 1, cmd);
+		ft_free_one_cmd(cmd, 1);
+		cmd = tmp;
 	}
 	else
 	{
