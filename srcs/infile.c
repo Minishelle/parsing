@@ -14,12 +14,67 @@
 
 /****************************************
 *
-*	Nom : infile
-*	Params : matrice reprenant toute la commande
-*	Retour : le fd du infile
+*	Nom : open_fd
+*	Params : - Liste de char relatif au nom de fichier a ouvrir
+*			 - Le status (1 si on doit ajouter, 0 si on doit ecrire par dessus)
+*	Retour : Le fd du outfile
 *	Descritpion:
-*		Cherche une redirection pour le infile, si il le trouve, il open le file
-* 			donne si il ne trouve pas de redirection le infile est a 0
+*		Essaye d'ouvrir le fichier donne, si l'ouverture ne marche pas il
+*			affiche un message d'erreur
+*
+****************************************/
+
+int	open_fd_infile(char *cmd)
+{
+	char	*str;
+	int		fd;
+
+	str = NULL;
+	fd = open(cmd, O_RDONLY);
+	if (fd <= 0)
+	{
+		write(2, "Wrong filename\n", 15);
+		exit (1); //free all
+	}
+	return (fd);
+}
+
+/****************************************
+*
+*	Nom : give_me_fd
+*	Params : - La matrice de toute la commande
+*			 - L'index dans la matrice
+*	Retour : Le fd du outfile
+*	Descritpion:
+*		Regarde si il y a > ou >> pour changer le type donne a open_fd
+*
+****************************************/
+
+int	give_me_fd_infile(char **all_cmd, int x)
+{
+	if (ft_strlen(all_cmd[x - 1]) > 1)
+	{
+		if (all_cmd[x - 1][1] == '<')
+			return (0);
+		else
+		{
+			write(2, "Wrong operator\n", 15);
+			exit (1); //free all
+		}
+	}
+	return (open_fd_infile(all_cmd[x]));
+}
+
+/****************************************
+*
+*	Nom : outfile
+*	Params : - La matrice de toute la commande
+*	Retour : Le fd du outfile
+*	Descritpion:
+*		Parcourt la matrice a la recherche de > si il en trouve alors le fd sera
+*			adpate ou sinon fd sera a 1, si il y a plusieurs fd, ils seront
+*			ouverts et fermes de sorte que seul le dernier fd restera ouvert
+*			pour outfile
 *
 ****************************************/
 
@@ -28,26 +83,20 @@ int	infile(char **all_cmd)
 	int	x;
 	int	fd;
 
-	x = 0;
 	fd = 0;
 	while (1)
 	{
 		if (fd > 1)
 			all_cmd = &all_cmd[x];
 		x = find_next_char(all_cmd, '<');
-		if (x == ft_matrixlen(all_cmd))
+		if (x == ft_matrixlen(all_cmd) || (ft_strlen(all_cmd[x]) == 2 && all_cmd[x][1] == '<'))
 			break ;
 		else if (fd > 1)
 			close(fd);
 		if (x == ft_matrixlen(all_cmd) - 1)
 			exit (0); //free all
-		x+=2;
-		fd = open(all_cmd[x - 1], O_RDONLY);
-		if (fd <= 0)
-		{
-			write(1, "Wrong filename\n", 15);
-			exit (0); //free all
-		}
+		x++;
+		fd = give_me_fd_infile(all_cmd, x);
 	}
 	return (fd);
 }

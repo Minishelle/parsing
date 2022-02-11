@@ -48,6 +48,7 @@ int			count_cmd(char *argv[]);
 
 char		*find_in_env(char **envp, char *word, int len_word, int len_return);
 char		*start_prompt(char **env);
+char	*cpy_with_malloc(char *tmp);
 
 char		**ft_first_cmd(char **all_cmds);
 char		**get_path(char *env[]);

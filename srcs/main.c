@@ -22,7 +22,7 @@
 *
 ****************************************/
 
-/*void	print_test(t_datas_prompt datas_prompt)
+void	print_test(t_datas_prompt datas_prompt)
 {
 	int			y;
 	t_one_cmd	*x;
@@ -45,6 +45,10 @@
 		ft_putnbr_fd(x->outfile, 1);
 		ft_putstr_fd("\nType next : ", 1);
 		ft_putnbr_fd(x->type_next, 1);
+		ft_putstr_fd("\nType hd : ", 1);
+		ft_putnbr_fd(x->type_hd, 1);
+		ft_putstr_fd("\nMagic word : ", 1);
+		ft_putstr_fd(x->magic_word, 1);
 		x = x->next;
 	}
 	ft_putstr_fd("\n------------------------\nCmd : ", 1);
@@ -62,8 +66,12 @@
 	ft_putnbr_fd(x->outfile, 1);
 	ft_putstr_fd("\nType next : ", 1);
 	ft_putnbr_fd(x->type_next, 1);
+	ft_putstr_fd("\nType hd : ", 1);
+	ft_putnbr_fd(x->type_hd, 1);
+	ft_putstr_fd("\nMagic word : ", 1);
+	ft_putstr_fd(x->magic_word, 1);
 	ft_putstr_fd("\n", 1);
-}*/
+}
 
 
 /****************************************
@@ -110,7 +118,7 @@ int	main(int argc, char **argv, char **envp)
 			else
 			{
 				datas_prompt.cmds = gen_datas_cmd(test, &datas_prompt);
-				//print_test(datas_prompt);
+				print_test(datas_prompt);
 				pipex_rec(datas_prompt.cmds, envp, fd, datas_prompt.cmds->cmd_first);
 				datas_prompt.nb_cmds++;
 				ft_free_datas_cmd(datas_prompt.cmds);

@@ -109,7 +109,7 @@ char	**simple_mat(char **start_mat)
 	y = -1;
 	while (++x < ft_matrixlen(start_mat))
 	{
-		if (x + 1 < ft_matrixlen(start_mat))
+		if (x < ft_matrixlen(start_mat))
 		{
 			if (start_mat[x][0] == '<' || start_mat[x][0] == '>')
 				x++;

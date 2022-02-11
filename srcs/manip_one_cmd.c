@@ -12,6 +12,30 @@
 
 #include "minishell.h"
 
+void search_hd(t_one_cmd *cmd)
+{
+	int x;
+
+	x = 0;
+	cmd->type_hd = 0;
+	cmd->magic_word = NULL;
+	while (1)
+	{
+		x = find_next_char(&cmd->all_cmd[x], '<');
+		if (x < ft_matrixlen(&cmd->all_cmd[x]) + 1 && ft_strlen(cmd->all_cmd[x]) == 2)
+		{
+			if (cmd->all_cmd[x][1] == '<')
+			{
+				cmd->type_hd = 1;
+				cmd->magic_word = cpy_with_malloc(cmd->all_cmd[x + 1]);
+				break;
+			}
+		}
+		else
+			break;
+	}
+}
+
 /****************************************
 *
 *	Nom : trans_cmd
@@ -57,7 +81,8 @@ t_one_cmd	*trans_cmd(char **cmds, t_datas_prompt *datas_prompt, int st, t_one_cm
 		cmd->outfile = old_one->outfile;
 	else
 		cmd->outfile = outfile(cmd->all_cmd);
-	if ((cmd->infile != 0 || cmd->outfile != 1) && (find_next_char(cmd->all_cmd, '<') < find_next_char(cmds, '|') || find_next_char(cmd->all_cmd, '>') < find_next_char(cmds, '|')))
+	search_hd(cmd);
+	if (cmd->type_hd || ((cmd->infile != 0 || cmd->outfile != 1) && (find_next_char(cmd->all_cmd, '<') < find_next_char(cmds, '|') || find_next_char(cmd->all_cmd, '>') < find_next_char(cmds, '|'))))
 		cmd->all_cmd = simple_mat(cmd->all_cmd);
 	x = find_next_char(cmds, '|');
 	if (!ft_matrixlen(cmd->all_cmd) && 	x != ft_matrixlen(cmds))
