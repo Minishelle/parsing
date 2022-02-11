@@ -21,7 +21,7 @@
 *		Affiche le contenu de toutes les commandes une par une
 *
 ****************************************/
-/*
+
 void	print_test(t_datas_prompt datas_prompt)
 {
 	int			y;
@@ -64,7 +64,7 @@ void	print_test(t_datas_prompt datas_prompt)
 	ft_putnbr_fd(x->type_next, 1);
 	ft_putstr_fd("\n", 1);
 }
-*/
+
 
 /****************************************
 *
@@ -112,7 +112,7 @@ int	main(int argc, char **argv, char **envp)
 				datas_prompt.cmds = gen_datas_cmd(test, &datas_prompt);
 				pipex_rec(datas_prompt.cmds, envp, fd, datas_prompt.cmds->cmd_first);
 				datas_prompt.nb_cmds++;
-				//print_test(datas_prompt);
+				print_test(datas_prompt);
 				ft_free_datas_cmd(datas_prompt.cmds);
 			}
 			add_history(test);
