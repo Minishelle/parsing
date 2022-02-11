@@ -62,7 +62,7 @@ t_one_cmd	*trans_cmd(char **cmds, t_datas_prompt *datas_prompt, int st, t_one_cm
 	x = find_next_char(cmds, '|');
 	if (!ft_matrixlen(cmd->all_cmd) && 	x != ft_matrixlen(cmds))
 	{
-		tmp = trans_cmd(&(cmds[x + 1]), datas_prompt, 1, cmd);
+		tmp = trans_cmd(&(cmds[x + 1]), datas_prompt, 0, cmd);
 		ft_free_one_cmd(cmd, 1);
 		cmd = tmp;
 	}
