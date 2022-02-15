@@ -32,6 +32,7 @@ void		ft_new_free(t_var_env *input);
 void		cmd_process(t_fd fds, char **argv, char *env[], int j);
 void		pipex_rec(t_datas_cmd *cmds, char *env[], int prev_fd[2], \
 	t_one_cmd *cmd);
+void		ft_here_doc(t_datas_cmd *cmds, char *end_word);
 void		ft_free(char **paths, char **cmd);
 void		close_pipe(int fd[2]);
 void		parent(t_fd fds, char *argv[], char *env[], int fd[2]);

@@ -80,3 +80,4 @@ SRC += ft_split_pipex.c
 SRC += ft_lstsize_up.c
 SRC += ft_strchr_up.c
 SRC += ft_allisspace.c
+SRC += ft_strjoin_up.c

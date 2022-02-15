@@ -21,7 +21,7 @@
 *		Affiche le contenu de toutes les commandes une par une
 *
 ****************************************/
-
+/*
 void	print_test(t_datas_prompt datas_prompt)
 {
 	int			y;
@@ -71,7 +71,7 @@ void	print_test(t_datas_prompt datas_prompt)
 	ft_putstr_fd("\nMagic word : ", 1);
 	ft_putstr_fd(x->magic_word, 1);
 	ft_putstr_fd("\n", 1);
-}
+}*/
 
 
 /****************************************
@@ -104,8 +104,8 @@ int	main(int argc, char **argv, char **envp)
 	t_datas_prompt	datas_prompt;
 	int				fd[2];
 
-	fd[0] = -2;
-	fd[1] = -2;
+	fd[0] = 6;
+	fd[1] = 6;
 	(void)argc;
 	(void)argv;
 	init_data_prompt(&datas_prompt, envp);
@@ -130,7 +130,9 @@ int	main(int argc, char **argv, char **envp)
 					ft_new_free(datas_prompt.out_struct);
 					exit (0);
 				}
-				print_test(datas_prompt);
+			//	print_test(datas_prompt);
+				if (datas_prompt.cmds->cmd_first->type_hd == 1)
+					ft_here_doc(datas_prompt.cmds, datas_prompt.cmds->cmd_first->magic_word);
 				pipex_rec(datas_prompt.cmds, envp, fd, datas_prompt.cmds->cmd_first);
 				datas_prompt.nb_cmds++;
 				ft_free_datas_cmd(datas_prompt.cmds);
@@ -141,5 +143,6 @@ int	main(int argc, char **argv, char **envp)
 		free(prompt);
 	}
 	ft_new_free(datas_prompt.env_in_struct);
-	ft_new_free(datas_prompt.out_struct);
+	if (datas_prompt.out_struct)
+		ft_new_free(datas_prompt.out_struct);
 }
