@@ -38,7 +38,7 @@ int	open_fd(char *cmd, int stat)
 	if (fd <= 0)
 	{
 		write(2, "Wrong filename\n", 15);
-		exit (1); //free all
+		return (-1);
 	}
 	return (fd);
 }
@@ -63,7 +63,7 @@ int	give_me_fd(char **all_cmd, int x)
 		else
 		{
 			write(2, "Wrong operator\n", 15);
-			exit (1); //free all
+			return (-1);
 		}
 	}
 	return (open_fd(all_cmd[x], 0));
@@ -98,9 +98,11 @@ int	outfile(char **all_cmd)
 		else if (fd > 1)
 			close(fd);
 		if (x == ft_matrixlen(all_cmd) - 1 || !x)
-			exit (0); //free all
+			return (-1);
 		x++;
 		fd = give_me_fd(all_cmd, x);
+		if (fd == -1)
+			return (-1);
 	}
 	return (fd);
 }

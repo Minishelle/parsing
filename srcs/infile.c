@@ -34,7 +34,7 @@ int	open_fd_infile(char *cmd)
 	if (fd <= 0)
 	{
 		write(2, "Wrong filename\n", 15);
-		exit (1); //free all
+		return (-1);
 	}
 	return (fd);
 }
@@ -59,7 +59,7 @@ int	give_me_fd_infile(char **all_cmd, int x)
 		else
 		{
 			write(2, "Wrong operator\n", 15);
-			exit (1); //free all
+			return (-1);
 		}
 	}
 	return (open_fd_infile(all_cmd[x]));
@@ -94,9 +94,11 @@ int	infile(char **all_cmd)
 		else if (fd > 1)
 			close(fd);
 		if (x == ft_matrixlen(all_cmd) - 1)
-			exit (0); //free all
+			return (-1);
 		x++;
 		fd = give_me_fd_infile(all_cmd, x);
+		if (fd == -1)
+			return (-1);
 	}
 	return (fd);
 }

@@ -35,8 +35,20 @@ t_datas_cmd	*gen_datas_cmd(char *x, t_datas_prompt *datas_prompt)
 	if (!cmd)
 		exit (0);
 	cmd->all_cmds = ft_split_up(x);
+	if (!cmd->all_cmds)
+		return (NULL);
 	cmd->full_path = find_in_env(datas_prompt->envp, "PATH=", 5, 5);
+	if (!cmd->full_path)
+	{
+		ft_free_datas_cmd(cmd);
+		return (NULL);
+	}
 	cmd->cmd_first = trans_cmd(cmd->all_cmds, datas_prompt, 0, NULL);
+	if (!cmd->cmd_first)
+	{
+		ft_free_datas_cmd(cmd);
+		return (NULL);
+	}
 	cmd->datas_prompt = datas_prompt;
 	cmd->nb_cmds = ft_lstsize(cmd->cmd_first);
 	return (cmd);

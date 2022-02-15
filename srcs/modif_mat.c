@@ -35,6 +35,8 @@ char	*find_in_struct(char *var_env, t_var_env *out)
 	if (!ft_strncmp(var_env, out->name_var, ft_strlen(out->name_var)))
 	{
 		tmp1 = ft_calloc(sizeof(char), ft_strlen(out->var_txt));
+		if (!tmp1)
+			return (NULL);
 		ft_memcpy(tmp1, out->var_txt, ft_strlen(out->var_txt));
 		return (tmp1);
 	}
@@ -97,18 +99,47 @@ char	*return_char(char *cmds, int y, char **envp, t_var_env *out_struct)
 		if (tmp[0] == NULL)
 		{
 			tmp[0] = malloc(sizeof(char) * 2);
+			if (!tmp[0])
+			{
+				free(tmp);
+				return (NULL);
+			}
 			tmp[0][0] = '\0';
 		}
 	}
 	tmp[1] = ft_calloc(sizeof(char), y);
+	if (!tmp[1])
+	{
+		if (tmp[0])
+		{
+			free(tmp[0]);
+			free(tmp);
+		}
+		return (NULL);
+	}
 	ft_strlcpy(tmp[1], cmds, y);
 	tmp[2] = ft_strjoin(tmp[1], tmp[0]);
+	if (!tmp[2])
+	{
+		ft_free_little_matrice(tmp, 2);
+		return (NULL);
+	}
 	ft_free_little_matrice(tmp, 2);
 	tmp[0] = ft_calloc(sizeof(char), ft_strlen(&cmds[y + \
 		ft_strlen_up(&cmds[y + 1], " \"")]));
+	if (!tmp[0])
+	{
+		ft_free_little_matrice(tmp, 0);
+		return (NULL);
+	}
 	ft_strlcpy(tmp[0], &cmds[y + 1 + ft_strlen_up(&cmds[y + 1], " \"")], \
 		ft_strlen(&cmds[y + ft_strlen_up(&cmds[y + 1], " \"")]));
 	tmp[1] = ft_strjoin(tmp[2], tmp[0]);
+	if (!tmp[1])
+	{
+		ft_free_little_matrice(tmp, 1);
+		return (NULL);
+	}
 	ft_free_little_matrice(tmp, 1);
 	if (cmds)
 		free(cmds);

@@ -88,6 +88,8 @@ void	init_data_prompt(t_datas_prompt *datas_prompt, char **envp)
 {
 	datas_prompt->envp = envp;
 	datas_prompt->env_in_struct = conv_env(envp);
+	if (!datas_prompt->env_in_struct)
+		exit(1);
 	datas_prompt->nb_cmds = 0;
 	datas_prompt->out_struct = NULL;
 	datas_prompt->cmds = NULL;
@@ -109,15 +111,25 @@ int	main(int argc, char **argv, char **envp)
 	init_data_prompt(&datas_prompt, envp);
 	while (datas_prompt.nb_cmds < 5)
 	{
-		prompt = start_prompt(envp);
+		prompt = prompt(envp);
 		test = readline(prompt);
 		if (test[0] && ft_allisspace(test) != -1)
 		{
 			if (ft_strchr(test, '=') && (ft_strchr(test, '"') == 0 || ft_strchr(test, '"') > ft_strchr(test, '=')))
+			{
 				datas_prompt.out_struct = ft_new_var_env(test, datas_prompt.out_struct);
+				if (!datas_prompt.out_struct)
+					exit (0);
+			}
 			else
 			{
 				datas_prompt.cmds = gen_datas_cmd(test, &datas_prompt);
+				if (!datas_prompt.cmds)
+				{
+					ft_new_free(datas_prompt.env_in_struct);
+					ft_new_free(datas_prompt.out_struct);
+					exit (0);
+				}
 				print_test(datas_prompt);
 				pipex_rec(datas_prompt.cmds, envp, fd, datas_prompt.cmds->cmd_first);
 				datas_prompt.nb_cmds++;
@@ -129,6 +141,5 @@ int	main(int argc, char **argv, char **envp)
 		free(prompt);
 	}
 	ft_new_free(datas_prompt.env_in_struct);
-	if (datas_prompt.out_struct)
-		ft_new_free(datas_prompt.out_struct);
+	ft_new_free(datas_prompt.out_struct);
 }

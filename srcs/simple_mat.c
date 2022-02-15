@@ -114,10 +114,28 @@ char	**simple_mat(char **start_mat)
 			if (start_mat[x][0] == '<' || start_mat[x][0] == '>')
 				x++;
 			else
+			{
 				final_mat[++y] = cpy_with_malloc(start_mat[x]);
+				if (!final_mat[y])
+				{
+					ft_clean_mat(final_mat);
+					ft_clean_mat(start_mat);
+					return (NULL);
+				}
+			}
+
 		}
 		else
+		{
 			final_mat[++y] = cpy_with_malloc(start_mat[x]);
+			if (!final_mat[y])
+			{
+				ft_clean_mat(final_mat);
+				ft_clean_mat(start_mat);
+				return (NULL);
+			}
+		}
+
 	}
 	final_mat[++y] = NULL;
 	ft_clean_mat(start_mat);

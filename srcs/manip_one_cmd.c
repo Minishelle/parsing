@@ -28,6 +28,12 @@ void search_hd(t_one_cmd *cmd)
 			{
 				cmd->type_hd = 1;
 				cmd->magic_word = cpy_with_malloc(cmd->all_cmd[x + 1]);
+				if (!cmd->magic_word)
+				{
+					ft_free_one_cmd(cmd);
+					cmd = NULL;
+					return ;
+				}
 				break;
 			}
 		}
@@ -66,13 +72,15 @@ t_one_cmd	*trans_cmd(char **cmds, t_datas_prompt *datas_prompt, int st, t_one_cm
 	envp = datas_prompt->envp;
 	out_struct = datas_prompt->out_struct;
 	cmds = pipen_t(cmds);
-	if (!cmds)
-		return (NULL);
 	cmd = malloc(sizeof(t_one_cmd));
 	if (!cmd)
-		exit(0); //free
+		return(NULL);
 	cmd->all_cmd = ft_matrixlcpy(cmds, find_next_char(cmds, '|'));
+	if (!cmd->all_cmd)
+		free(cmd);
 	cmd->all_cmd = modif_mat(cmd->all_cmd, envp, out_struct);
+	if (!cmd->all_cmd)
+		free(cmd);
 	if (old_one && infile(cmd->all_cmd) == 0)
 		cmd->infile = old_one->infile;
 	else
@@ -81,9 +89,24 @@ t_one_cmd	*trans_cmd(char **cmds, t_datas_prompt *datas_prompt, int st, t_one_cm
 		cmd->outfile = old_one->outfile;
 	else
 		cmd->outfile = outfile(cmd->all_cmd);
+	if (cmd->outfile == -1 || cmd->infile == -1)
+	{
+		ft_free_one_cmd(cmd);
+		return (NULL);
+	}
 	search_hd(cmd);
+	if (cmd == NULL)
+		return (NULL);
+	//on s'est arrete la
 	if (cmd->type_hd || ((cmd->infile != 0 || cmd->outfile != 1) && (find_next_char(cmd->all_cmd, '<') < find_next_char(cmds, '|') || find_next_char(cmd->all_cmd, '>') < find_next_char(cmds, '|'))))
+	{
 		cmd->all_cmd = simple_mat(cmd->all_cmd);
+		if (!cmd->all_cmd)
+		{
+			ft_free_one_cmd(cmd);
+			return (NULL);
+		}
+	}
 	x = find_next_char(cmds, '|');
 	if (!ft_matrixlen(cmd->all_cmd) && 	x != ft_matrixlen(cmds))
 	{
