@@ -1,6 +1,6 @@
 #include "minishell.h"
 
-void ft_here_doc(t_datas_cmd *cmds, char *end_word)
+void	ft_here_doc(t_datas_cmd *cmds, char *end_word)
 {
 	char	*here_doc;
 	char	*join;
@@ -10,7 +10,7 @@ void ft_here_doc(t_datas_cmd *cmds, char *end_word)
 	join = malloc(1);
 	here_fd = open("tmp.txt", O_CREAT | O_WRONLY | O_TRUNC, 0644);
 	if (here_fd == -1)
-		return(perror("open"));
+		return (perror("open"));
 	while (1)
 	{
 		write(1, "heredoc>", 8);
@@ -21,7 +21,7 @@ void ft_here_doc(t_datas_cmd *cmds, char *end_word)
 		free(here_doc);
 	}
 	tmp = malloc((ft_strlen(join) * sizeof(char)) + 1);
-	write(here_fd, join, ft_strlen(join)); //fd par here_fd et ca ecrit dans le fichier
+	write(here_fd, join, ft_strlen(join));
 	close(here_fd);
 	here_fd = open("tmp", O_RDONLY, 0644);
 	free(here_doc);

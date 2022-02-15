@@ -15,13 +15,12 @@
 void	pwd(t_one_cmd *cmd)
 {
 	char	*path;
-	int		fd;
 
+	(void) cmd;
 	path = NULL;
 	path = getcwd(path, 0);
-	fd = ft_open(cmd);
-	ft_putstr_fd(path, fd);
-	write(fd, "\n", 1);
+	ft_putstr_fd(path, 1);
+	write(1, "\n", 1);
 	free(path);
 	path = NULL;
 }

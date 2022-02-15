@@ -28,7 +28,7 @@ char	**get_path(char *env[])
 	return (split_path);
 }
 
-void	process(char *env[], char **cmd)
+void	process(char *env[], char **cmd, t_one_cmd *cmd_struct)
 {
 	int		i;
 	char	*tmp;
@@ -50,7 +50,7 @@ void	process(char *env[], char **cmd)
 		if (paths[i + 1])
 			free(cmd_path);
 	}
-	ft_end_process(cmd_path, cmd, paths, env);
+	ft_end_process(cmd_path, cmd, paths, env, cmd_struct);
 }
 
 void	ft_redirection(int fd_in, int fd_out, int simple, int first)
@@ -110,29 +110,33 @@ void	pipex_rec(t_datas_cmd *cmds, char *env[], int pre_fd[2], t_one_cmd *cmd)
 	int		next_fd[2];
 	pid_t	pid;
 
-	if (pipe(next_fd) == -1)
-		return (perror("pipe"));
-	pid = fork();
-	if (pid < 0)
-		return (perror("fork"));
-	find_builtin(datas_prompt.cmds, datas_prompt.cmds->cmd_first);
-	if (pid == 0)
+	if (ft_strncmp("exit", cmd->cmd, 4))
 	{
-		if (cmds->nb_cmds == 1)
+		if (pipe(next_fd) == -1)
+			return (perror("pipe"));
+		pid = fork();
+		if (pid < 0)
+			return (perror("fork"));
+		if (pid == 0)
 		{
-			if (dup2(cmd->outfile, 1) < 0 || dup2(cmd->infile, 0) < 0)
-				return (perror("one cmd: fd"));
+			if (cmds->nb_cmds == 1)
+			{
+				if (dup2(cmd->outfile, 1) < 0 || dup2(cmd->infile, 0) < 0)
+					return (perror("one cmd: fd"));
+			}
+			else
+				multi_pipe(cmds, next_fd, pre_fd, cmd);
+			process(env, cmd->all_cmd, cmd);
 		}
 		else
-			multi_pipe(cmds, next_fd, pre_fd, cmd);
-		process(env, cmd->all_cmd);
+		{
+			close_pipe(pre_fd);
+			waitpid(pid, NULL, 0);
+			if (cmd->next)
+				pipex_rec(cmds, env, next_fd, cmd->next);
+			close_pipe(next_fd);
+		}
 	}
 	else
-	{
-		close_pipe(pre_fd);
-		waitpid(pid, NULL, 0);
-		if (cmd->next)
-			pipex_rec(cmds, env, next_fd, cmd->next);
-		close_pipe(next_fd);
-	}
+		ft_exit();
 }

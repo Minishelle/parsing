@@ -22,7 +22,7 @@ int	ft_open(t_one_cmd *cmd)
 	fd = open("tmp_build", O_CREAT | O_RDWR | O_TRUNC, 0644);
 	if (fd == -1)
 		return(0);
-	cmd->next->infile = fd;
+	cmd->infile = fd;
 	return (fd);
 }
 

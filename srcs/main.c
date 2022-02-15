@@ -154,9 +154,7 @@ int	main(int argc, char **argv, char **envp)
 			//	print_test(datas_prompt);
 				if (datas_prompt.cmds->cmd_first->type_hd == 1)
 					ft_here_doc(datas_prompt.cmds, datas_prompt.cmds->cmd_first->magic_word);
-				// identifier les builtins si il y en a
-			//	if(find_builtin(datas_prompt.cmds, datas_prompt.cmds->cmd_first))
-					pipex_rec(datas_prompt.cmds, envp, fd, datas_prompt.cmds->cmd_first);
+				pipex_rec(datas_prompt.cmds, envp, fd, datas_prompt.cmds->cmd_first);
 				datas_prompt.nb_cmds++;
 				ft_free_datas_cmd(datas_prompt.cmds);
 			}

@@ -51,11 +51,12 @@ void	perror_cnf(char *str, char *cmd, int fd)
 	write(fd, "\n", 1);
 }
 
-void	ft_end_process(char *cmd_path, char **cmd, char **paths, char **env)
+void	ft_end_process(char *cmd_path, char **cmd, char **paths, char **env, t_one_cmd *cmd_struct)
 {
 	if (ft_strncmp(cmd_path, cmd[0], ft_strlen(cmd_path)) == 0)
 		cmd_path = cmd[0];
-	execve(cmd_path, cmd, env);
+	if (find_builtin(datas_prompt.cmds, cmd_struct))
+		execve(cmd_path, cmd, env);
 	if (access(cmd_path, F_OK) != 0)
 		perror_cnf("command not found: ", cmd[0], 2);
 	free(cmd_path);
