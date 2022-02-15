@@ -31,6 +31,7 @@ ${NAME}: 	 ${OBJS}
 				@printf "${START_FIRST}${BLUE}%-30s${DEFAULT}\t\t[${GREEN} OK ${DEFAULT}]%40s\n" "Compile" ""
 				@ar rc ${NAME} ${OBJS}
 				@ranlib ${NAME}
+				@mkdir -p bin
 				@mv libft.a ./bin/
 
 build_dir:

@@ -115,7 +115,8 @@ void	pipex_rec(t_datas_cmd *cmds, char *env[], int pre_fd[2], t_one_cmd *cmd)
 	pid = fork();
 	if (pid < 0)
 		return (perror("fork"));
-	else if (pid == 0)
+	find_builtin(datas_prompt.cmds, datas_prompt.cmds->cmd_first);
+	if (pid == 0)
 	{
 		if (cmds->nb_cmds == 1)
 		{

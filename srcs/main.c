@@ -97,11 +97,32 @@ void	init_data_prompt(t_datas_prompt *datas_prompt, char **envp)
 	ft_putstr_fd(INPUT, 1);
 }
 
+int	find_builtin(t_datas_cmd *cmds, t_one_cmd *cmd)
+{
+	if (!ft_strncmp("cd", cmd->cmd, 2))
+		cd(ft_matrixlen(cmd->all_cmd), cmd->all_cmd);
+	else if (!ft_strncmp("echo", cmd->cmd, 4))
+		echo(ft_matrixlen(cmd->all_cmd), cmd->all_cmd);
+	else if (!ft_strncmp("env", cmd->cmd, 3))
+		env(cmds->datas_prompt->env_in_struct);
+	else if (!ft_strncmp("pwd", cmd->cmd, 3))
+		pwd(cmd);
+	//else if (!ft_strncmp("export", cmd->cmd, 6))
+		//export(ft_matrixlen(cmd->all_cmd), cmd->all_cmd);
+	//else if (!ft_strncmp("unset", cmd->cmd, 5))
+		//unset(ft_matrixlen(cmd->all_cmd), cmd->all_cmd);
+	else if (!ft_strncmp("exit", cmd->cmd, 4))
+		ft_exit();
+	else
+		return (1);
+	return (0);
+}
+
+
 int	main(int argc, char **argv, char **envp)
 {
 	char			*prompt;
 	char			*test;
-	t_datas_prompt	datas_prompt;
 	int				fd[2];
 
 	fd[0] = 6;
@@ -109,7 +130,7 @@ int	main(int argc, char **argv, char **envp)
 	(void)argc;
 	(void)argv;
 	init_data_prompt(&datas_prompt, envp);
-	while (datas_prompt.nb_cmds < 5)
+	while (5)
 	{
 		prompt = start_prompt(envp);
 		test = readline(prompt);
@@ -133,7 +154,9 @@ int	main(int argc, char **argv, char **envp)
 			//	print_test(datas_prompt);
 				if (datas_prompt.cmds->cmd_first->type_hd == 1)
 					ft_here_doc(datas_prompt.cmds, datas_prompt.cmds->cmd_first->magic_word);
-				pipex_rec(datas_prompt.cmds, envp, fd, datas_prompt.cmds->cmd_first);
+				// identifier les builtins si il y en a
+			//	if(find_builtin(datas_prompt.cmds, datas_prompt.cmds->cmd_first))
+					pipex_rec(datas_prompt.cmds, envp, fd, datas_prompt.cmds->cmd_first);
 				datas_prompt.nb_cmds++;
 				ft_free_datas_cmd(datas_prompt.cmds);
 			}

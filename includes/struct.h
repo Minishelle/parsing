@@ -52,9 +52,10 @@ struct s_one_cmd
 	int			infile;
 	int			outfile;
 	int			type_next;
-    int type_hd;
-    char *magic_word;
+    int 		type_hd;
+    char 		*magic_word;
 	t_one_cmd	*next;
+	int 		fd;
 };
 
 struct s_var_env

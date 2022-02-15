@@ -26,6 +26,8 @@
 # (Version 0.6.2)                                    #\n\
 ######################################################\n"
 
+t_datas_prompt	datas_prompt;
+
 void		ft_free_one_cmd(t_one_cmd *first_cmd, int status);
 void		ft_free_datas_cmd(t_datas_cmd *datas_cmd);
 void		ft_new_free(t_var_env *input);
@@ -40,16 +42,24 @@ void		child(t_fd fds, char *argv[], char *env[], int fd[2]);
 void		perror_cnf(char *str, char *cmd, int fd);
 void		ft_end_process(char *cmd_path, char **cmd, char **path, char **env);
 void		process(char *env[], char **cmd);
+void 		cd(int ac, char **av);
+void		echo(int ac, char **av);
+void 		env(t_var_env *list);
+void		pwd(t_one_cmd *cmd);
+void		ft_exit(void);
 
 int			ft_strchr_up(const char *str, int to_find);
 int			ft_strlen_up(char *str, char *search);
 int			infile(char **all_cmd);
 int			outfile(char **all_cmd);
 int			count_cmd(char *argv[]);
+int			find_builtin(t_datas_cmd *cmds, t_one_cmd *cmd);
+int			ft_open(t_one_cmd *cmd);
 
 char		*find_in_env(char **envp, char *word, int len_word, int len_return);
 char		*start_prompt(char **env);
-char	*cpy_with_malloc(char *tmp);
+char		*cpy_with_malloc(char *tmp);
+char		*ft_getenv(char *var_name, t_var_env *list);
 
 char		**ft_first_cmd(char **all_cmds);
 char		**get_path(char *env[]);

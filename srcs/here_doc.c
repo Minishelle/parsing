@@ -8,7 +8,7 @@ void ft_here_doc(t_datas_cmd *cmds, char *end_word)
 	int		here_fd;
 
 	join = malloc(1);
-	here_fd = open("here_doc.txt", O_CREAT | O_WRONLY | O_TRUNC, 0644);
+	here_fd = open("tmp.txt", O_CREAT | O_WRONLY | O_TRUNC, 0644);
 	if (here_fd == -1)
 		return(perror("open"));
 	while (1)
@@ -23,7 +23,7 @@ void ft_here_doc(t_datas_cmd *cmds, char *end_word)
 	tmp = malloc((ft_strlen(join) * sizeof(char)) + 1);
 	write(here_fd, join, ft_strlen(join)); //fd par here_fd et ca ecrit dans le fichier
 	close(here_fd);
-	here_fd = open("here_doc.txt", O_RDONLY, 0644);
+	here_fd = open("tmp", O_RDONLY, 0644);
 	free(here_doc);
 	free(join);
 	if (cmds->nb_cmds == 1 && cmds->cmd_first->cmd)
