@@ -30,7 +30,7 @@ void search_hd(t_one_cmd *cmd)
 				cmd->magic_word = cpy_with_malloc(cmd->all_cmd[x + 1]);
 				if (!cmd->magic_word)
 				{
-					ft_free_one_cmd(cmd);
+					ft_free_one_cmd(cmd, 0);
 					cmd = NULL;
 					return ;
 				}
@@ -91,7 +91,7 @@ t_one_cmd	*trans_cmd(char **cmds, t_datas_prompt *datas_prompt, int st, t_one_cm
 		cmd->outfile = outfile(cmd->all_cmd);
 	if (cmd->outfile == -1 || cmd->infile == -1)
 	{
-		ft_free_one_cmd(cmd);
+		ft_free_one_cmd(cmd, 0);
 		return (NULL);
 	}
 	search_hd(cmd);
@@ -103,7 +103,7 @@ t_one_cmd	*trans_cmd(char **cmds, t_datas_prompt *datas_prompt, int st, t_one_cm
 		cmd->all_cmd = simple_mat(cmd->all_cmd);
 		if (!cmd->all_cmd)
 		{
-			ft_free_one_cmd(cmd);
+			ft_free_one_cmd(cmd, 0);
 			return (NULL);
 		}
 	}

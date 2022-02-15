@@ -111,7 +111,7 @@ int	main(int argc, char **argv, char **envp)
 	init_data_prompt(&datas_prompt, envp);
 	while (datas_prompt.nb_cmds < 5)
 	{
-		prompt = prompt(envp);
+		prompt = start_prompt(envp);
 		test = readline(prompt);
 		if (test[0] && ft_allisspace(test) != -1)
 		{
