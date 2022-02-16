@@ -11,23 +11,6 @@
 /* ************************************************************************** */
 #include "minishell.h"
 
-char	**get_path(char *env[])
-{
-	char	*all_path;
-	char	**split_path;
-
-	while (*env)
-	{
-		if (ft_strncmp(*env, "PATH=", 5) == 0)
-			break ;
-		(*env)++;
-	}
-	all_path = ft_substr(*env, 5, ft_strlen(*env) - 5);
-	split_path = ft_split_pipex(all_path, ':');
-	free(all_path);
-	return (split_path);
-}
-
 void	process(char *env[], char **cmd, t_one_cmd *cmd_struct)
 {
 	int		i;
@@ -105,12 +88,15 @@ void	multi_pipe(t_datas_cmd *cmds, int n_fd[2], int pr_fd[2], t_one_cmd *cmd)
 	}
 }
 
-void	pipex_rec(t_datas_cmd *cmds, char *env[], int pre_fd[2], t_one_cmd *cmd)
+// fonction pour norme pipe rec
+
+void	pipe_rec(t_datas_cmd *cmds, char *env[], int pre_fd[2], t_one_cmd *cmd)
 {
 	int		next_fd[2];
 	pid_t	pid;
 
-	if (ft_strncmp("exit", cmd->cmd, 4))
+	if (!ft_strlen(cmd->cmd) || ft_strncmp("exit", cmd->cmd, \
+		ft_strlen(cmd->cmd)))
 	{
 		if (pipe(next_fd) == -1)
 			return (perror("pipe"));
@@ -133,7 +119,7 @@ void	pipex_rec(t_datas_cmd *cmds, char *env[], int pre_fd[2], t_one_cmd *cmd)
 			close_pipe(pre_fd);
 			waitpid(pid, NULL, 0);
 			if (cmd->next)
-				pipex_rec(cmds, env, next_fd, cmd->next);
+				pipe_rec(cmds, env, next_fd, cmd->next);
 			close_pipe(next_fd);
 		}
 	}

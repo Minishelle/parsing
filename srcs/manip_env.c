@@ -78,9 +78,9 @@ t_var_env	*conv_env(char **envp)
 	int			x;
 	t_var_env	*out_struct;
 
-	x = -1;
+	x = ft_matrixlen(envp);
 	out_struct = NULL;
-	while (++x < ft_matrixlen(envp))
+	while (--x > -1)
 	{
 		out_struct = ft_new_var_env(envp[x], out_struct);
 		if (!out_struct)

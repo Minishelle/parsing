@@ -11,14 +11,21 @@
 /* ************************************************************************** */
 #include "minishell.h"
 
-int	ft_matrix_len(char **matrix)
+char	**get_path(char *env[])
 {
-	int	i;
+	char	*all_path;
+	char	**split_path;
 
-	i = 0;
-	while (matrix && matrix[i])
-		i++;
-	return (i);
+	while (*env)
+	{
+		if (ft_strncmp(*env, "PATH=", 5) == 0)
+			break ;
+		(*env)++;
+	}
+	all_path = ft_substr(*env, 5, ft_strlen(*env) - 5);
+	split_path = ft_split_pipex(all_path, ':');
+	free(all_path);
+	return (split_path);
 }
 
 void	close_pipe(int fd[2])
@@ -32,8 +39,8 @@ void	ft_free(char **paths, char **cmd)
 	int	path_len;
 	int	cmd_len;
 
-	path_len = ft_matrix_len(paths);
-	cmd_len = ft_matrix_len(cmd);
+	path_len = ft_matrixlen(paths);
+	cmd_len = ft_matrixlen(cmd);
 	while (paths && (path_len >= 0))
 		free(paths[path_len--]);
 	while (cmd && (cmd_len >= 0))
@@ -53,6 +60,7 @@ void	perror_cnf(char *str, char *cmd, int fd)
 
 void	ft_end_process(char *cmd_path, char **cmd, char **paths, char **env, t_one_cmd *cmd_struct)
 {
+	(void)env;
 	if (ft_strncmp(cmd_path, cmd[0], ft_strlen(cmd_path)) == 0)
 		cmd_path = cmd[0];
 	if (find_builtin(datas_prompt.cmds, cmd_struct))
