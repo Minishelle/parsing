@@ -48,6 +48,7 @@ void		echo(int ac, char **av);
 void 		env(t_var_env *list);
 void		pwd(t_one_cmd *cmd);
 void		ft_exit(void);
+void	ft_clean_mat(char **mat);
 
 int			ft_strchr_up(const char *str, int to_find);
 int			ft_strlen_up(char *str, char *search);
