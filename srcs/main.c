@@ -125,8 +125,9 @@ char **conv_env_to_mat(void)
 	t_var_env	*tmp;
 
 	x = ft_lstsize_up(datas_prompt.env_in_struct);
-	out_mat = malloc(sizeof(char *) * x);
+	out_mat = malloc(sizeof(char *) * x + 1);
 	tmp  = datas_prompt.env_in_struct;
+	out_mat[x] = NULL;
 	while (--x > -1)
 	{
 		out_mat[x] = malloc(sizeof(char) * (ft_strlen(tmp->var_txt) + ft_strlen(tmp->name_var) + 2));
