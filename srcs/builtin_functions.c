@@ -96,6 +96,13 @@ void	unset(int ac, char **av)
 
 void	ft_exit(void)
 {
+	char **tmp;
+
+	tmp = malloc(sizeof(char *) * 3);
+	tmp[0] = "rm";
+	tmp[1] = "-f";
+	tmp[2] = "tmp";
+	execve("/bin/rm", tmp, datas_prompt.envp);
 	ft_free_datas_cmd(datas_prompt.cmds);
 	ft_new_free(datas_prompt.env_in_struct);
 	if (datas_prompt.out_struct)

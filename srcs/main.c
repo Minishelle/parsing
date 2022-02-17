@@ -90,7 +90,7 @@ void	init_data_prompt(t_datas_prompt *datas_prompt, char **envp)
 	datas_prompt->env_in_struct = conv_env(envp);
 	if (!datas_prompt->env_in_struct)
 		exit(1);
-	datas_prompt->nb_cmds = 0;
+	datas_prompt->last_command_status = 0;
 	datas_prompt->out_struct = NULL;
 	datas_prompt->cmds = NULL;
 	ft_putstr_fd("\033[2J", 1);
@@ -186,7 +186,6 @@ int	main(int argc, char **argv, char **envp)
 				if (datas_prompt.cmds->cmd_first->type_hd == 1)
 					ft_here_doc(datas_prompt.cmds, datas_prompt.cmds->cmd_first->magic_word);
 				pipe_rec(datas_prompt.cmds, envp, fd, datas_prompt.cmds->cmd_first);
-				datas_prompt.nb_cmds++;
 				ft_free_datas_cmd(datas_prompt.cmds);
 			}
 			add_history(test);
