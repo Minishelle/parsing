@@ -56,6 +56,7 @@ int			infile(char **all_cmd);
 int			outfile(char **all_cmd);
 int			count_cmd(char *argv[]);
 int			find_builtin(t_datas_cmd *cmds, t_one_cmd *cmd);
+int			check_builtin(t_one_cmd *cmd);
 int			ft_open(t_one_cmd *cmd);
 
 char		*find_in_env(char **envp, char *word, int len_word, int len_return);

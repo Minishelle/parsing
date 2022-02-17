@@ -118,6 +118,17 @@ int	find_builtin(t_datas_cmd *cmds, t_one_cmd *cmd)
 	return (0);
 }
 
+int	check_builtin(t_one_cmd *cmd)
+{
+	return ((!ft_strncmp("cd", cmd->cmd, 2))
+	|| (!ft_strncmp("echo", cmd->cmd, 4))
+	|| (!ft_strncmp("env", cmd->cmd, 3))
+	|| (!ft_strncmp("pwd", cmd->cmd, 3))
+	|| (!ft_strncmp("export", cmd->cmd, 6))
+	|| (!ft_strncmp("unset", cmd->cmd, 5))
+	|| (!ft_strncmp("exit", cmd->cmd, 4)));
+}
+
 char **conv_env_to_mat(void)
 {
 	char **out_mat;
