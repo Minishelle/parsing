@@ -6,7 +6,7 @@
 /*   By: hgoorick <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/10 18:14:40 by hgoorick          #+#    #+#             */
-/*   Updated: 2022/02/18 13:52:55 by mbucci           ###   ########.fr       */
+/*   Updated: 2022/02/18 13:22:41 by mbucci           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -176,17 +176,14 @@ int	main(int argc, char **argv, char **envp)
 			else
 			{
 				datas_prompt.cmds = gen_datas_cmd(test, &datas_prompt);
-				if (!datas_prompt.cmds)
-				{
-					ft_new_free(datas_prompt.env_in_struct);
-					ft_new_free(datas_prompt.out_struct);
-					exit (0);
-				}
+				if (datas_prompt.cmds)
 			//	print_test(datas_prompt);
-				if (datas_prompt.cmds->cmd_first->type_hd == 1)
-					ft_here_doc(datas_prompt.cmds, datas_prompt.cmds->cmd_first->magic_word);
-				pipe_rec(datas_prompt.cmds, envp, fd, datas_prompt.cmds->cmd_first);
-				ft_free_datas_cmd(datas_prompt.cmds);
+				{
+					if (datas_prompt.cmds->cmd_first->type_hd == 1)
+						ft_here_doc(datas_prompt.cmds, datas_prompt.cmds->cmd_first->magic_word);
+					pipe_rec(datas_prompt.cmds, envp, fd, datas_prompt.cmds->cmd_first);
+					ft_free_datas_cmd(datas_prompt.cmds);
+				}
 			}
 			add_history(test);
 			ft_clean_mat(datas_prompt.envp);

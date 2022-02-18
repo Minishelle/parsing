@@ -45,5 +45,4 @@ SRC += builtin_functions.c
 SRC += cd.c
 SRC += echo.c
 SRC += env.c
-SRC += cd.c
 SRC += pwd.c
