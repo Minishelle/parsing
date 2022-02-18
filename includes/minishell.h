@@ -6,7 +6,7 @@
 /*   By: hgoorick <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/11 15:12:14 by hgoorick          #+#    #+#             */
-/*   Updated: 2022/02/18 13:11:17 by mbucci           ###   ########.fr       */
+/*   Updated: 2022/02/18 13:53:12 by mbucci           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ void		process(char *env[], char **cmd, t_one_cmd *cmd_struct);
 void 		cd(int ac, char **av);
 void		echo(int ac, char **av);
 void 		env(t_var_env *list);
-void		pwd(t_one_cmd *cmd);
+void		pwd(void);
 void		unset(int ac, char **av);
 void		ft_exit(void);
 void		ft_clean_mat(char **mat);

@@ -6,17 +6,16 @@
 /*   By: mbucci <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/25 15:22:12 by mbucci            #+#    #+#             */
-/*   Updated: 2022/02/15 12:54:16 by mbucci           ###   ########.fr       */
+/*   Updated: 2022/02/18 13:52:40 by mbucci           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	pwd(t_one_cmd *cmd)
+void	pwd(void)
 {
 	char	*path;
 
-	(void) cmd;
 	path = NULL;
 	path = getcwd(path, 0);
 	ft_putstr_fd(path, 1);
