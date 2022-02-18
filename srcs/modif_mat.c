@@ -165,6 +165,7 @@ char	**modif_mat(char **cmds, char **envp, t_var_env *out_struct)
 {
 	int	x;
 	int	y;
+	int stat;
 	char *tmp;
 
 	x = -1;
@@ -179,8 +180,26 @@ char	**modif_mat(char **cmds, char **envp, t_var_env *out_struct)
 				else if ((y > 0 && cmds[x][0] == '"') || (y == 0))
 					cmds[x] = return_char(cmds[x], y, envp, out_struct);
 			}
-		if (cmds[x][0] == '"' && cmds[x][ft_strlen(cmds[x]) - 1] == '"')
+		if ((cmds[x][0] == '"' && cmds[x][ft_strlen(cmds[x]) - 1] == '"') || (cmds[x][0] == '\'' && cmds[x][ft_strlen(cmds[x]) - 1] == '\''))
 		{
+			if (cmds[x][0] == '"' && cmds[x][ft_strlen(cmds[x]) - 1] == '"')
+			{
+				stat = ft_strchr_up(&cmds[x][1], '"') + 1;
+				while (stat < (int)ft_strlen(cmds[x]) - 1)
+				{
+					stat = ft_strchr_up(&cmds[x][stat], '"') + stat;
+					if (stat != (int)ft_strlen(cmds[x]) - 1)
+					{
+						tmp = ft_calloc(sizeof(char), ft_strlen(cmds[x]) - 1);
+						ft_strlcpy(tmp, &cmds[x][0], ft_strchr_up(&cmds[x][1], '"') + 1);
+						ft_strlcpy(&tmp[ft_strchr_up(&cmds[x][1], '"') + 1], &cmds[x][ft_strchr_up(&cmds[x][1], '"') + 3], ft_strlen(cmds[x]) - stat);
+						free(cmds[x]);
+						cmds[x] = tmp;
+					}
+					stat = ft_strchr_up(&cmds[x][stat], '"') + stat;
+				}
+
+			}
 			tmp = ft_calloc(sizeof(char), ft_strlen(cmds[x]) - 1);
 			ft_strlcpy(tmp, &cmds[x][1], ft_strlen(cmds[x]) - 2);
 			free(cmds[x]);

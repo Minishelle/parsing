@@ -26,7 +26,7 @@
 # (Version 0.6.2)                                    #\n\
 ######################################################\n"
 
-t_datas_prompt	datas_prompt;
+
 
 void		ft_free_one_cmd(t_one_cmd *first_cmd, int status);
 void		ft_free_datas_cmd(t_datas_cmd *datas_cmd);

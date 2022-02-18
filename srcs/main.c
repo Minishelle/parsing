@@ -92,6 +92,7 @@ void	init_data_prompt(t_datas_prompt *datas_prompt, char **envp)
 		exit(1);
 	datas_prompt->last_command_status = 0;
 	datas_prompt->out_struct = NULL;
+	datas_prompt->txt_echo = NULL;
 	datas_prompt->cmds = NULL;
 	ft_putstr_fd("\033[2J", 1);
 	ft_putstr_fd(INPUT, 1);
