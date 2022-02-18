@@ -37,9 +37,9 @@ void	process(char *env[], char **cmd, t_one_cmd *cmd_struct, int to_exec)
 		ft_end_process(cmd_path, cmd, paths, env, cmd_struct);
 	else
 	{
-		if (access(cmd_path, F_OK) != 0)
+		if (access(cmd_path, F_OK) != 0 && !check_builtin(cmd_struct))
 			datas_prompt.last_command_status = 127;
-		else if (!check_builtin(cmd_struct))
+		else if (!cmd_struct->next && (access(cmd_path, F_OK) == 0))
 			datas_prompt.last_command_status = 0;
 	}
 }
@@ -104,6 +104,7 @@ void	minishell_cmd(char **env)
 	cmd_shell[0] = "./minishell";
 	cmd_shell[1] = "\n";
 	execve(*cmd_shell, cmd_shell, env);
+	free(cmd_shell);
 }
 
 void	pipe_rec(t_datas_cmd *cmds, char **env, int pre_fd[2], t_one_cmd *cmd)
