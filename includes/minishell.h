@@ -6,7 +6,7 @@
 /*   By: hgoorick <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/11 15:12:14 by hgoorick          #+#    #+#             */
-/*   Updated: 2022/02/11 15:13:52 by hgoorick         ###   ########.fr       */
+/*   Updated: 2022/02/18 13:11:17 by mbucci           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,8 +47,9 @@ void 		cd(int ac, char **av);
 void		echo(int ac, char **av);
 void 		env(t_var_env *list);
 void		pwd(t_one_cmd *cmd);
+void		unset(int ac, char **av);
 void		ft_exit(void);
-void	ft_clean_mat(char **mat);
+void		ft_clean_mat(char **mat);
 
 int			ft_strchr_up(const char *str, int to_find);
 int			ft_strlen_up(char *str, char *search);
@@ -69,6 +70,7 @@ char		**get_path(char *env[]);
 char		**pipen_t(char **cmds);
 char		**modif_mat(char **cmds, char **envp, t_var_env *out_struct);
 char		**simple_mat(char **start_mat);
+char		**conv_env_to_mat(void);
 
 t_datas_cmd	*gen_datas_cmd(char *x, t_datas_prompt *datas_prompt);
 t_datas_cmd	*ft_parsing(char *cmd_one_line, t_datas_prompt *datas_prompt);

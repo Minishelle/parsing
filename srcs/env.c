@@ -6,7 +6,7 @@
 /*   By: mbucci <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/26 16:22:49 by mbucci            #+#    #+#             */
-/*   Updated: 2022/02/15 12:51:16 by mbucci           ###   ########.fr       */
+/*   Updated: 2022/02/18 13:36:24 by mbucci           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,9 +28,14 @@ char	*ft_getenv(char *var_name, t_var_env *list)
 
 void	env(t_var_env *list)
 {
+	if (!list)
+		return ;
 	while (list)
 	{
-		printf("%s=%s\n", list->name_var, list->var_txt);
+		ft_putstr_fd(list->name_var, 1);
+		write(1, "=", 1);
+		ft_putstr_fd(list->var_txt, 1);
+		write(1, "\n", 1);
 		list = list->next;
 	}
 }

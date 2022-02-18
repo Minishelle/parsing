@@ -6,12 +6,14 @@
 /*   By: mbucci <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/26 14:49:11 by mbucci            #+#    #+#             */
-/*   Updated: 2022/02/15 12:55:47 by mbucci           ###   ########.fr       */
+/*   Updated: 2022/02/18 13:44:53 by mbucci           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <signal.h>
 #include "minishell.h"
+
+int	ft_list_to_index(char *str, t_var_env *ptr);
 
 int	ft_open(t_one_cmd *cmd)
 {
@@ -25,30 +27,6 @@ int	ft_open(t_one_cmd *cmd)
 	cmd->infile = fd;
 	return (fd);
 }
-
-void	cd(int ac, char **av)
-{
-	int	ret;
-
-	if (ac == 1)
-	{
-		if (!ft_getenv("HOME", datas_prompt.env_in_struct))
-			perror("HOME not set");
-		else
-		{
-			ret = chdir(ft_getenv("HOME", datas_prompt.env_in_struct));
-			if (ret)
-				perror(NULL);
-		}
-	}
-	else
-	{
-		ret = chdir(av[1]);
-		if (ret == -1)
-			perror(NULL);
-	}
-}
-
 
 /*	EXPORT NAME
  *	if NAME is already a variable it will be added to env
@@ -74,25 +52,59 @@ void	cd(int ac, char **av)
 				//	add to env list + delete sys_var List;
 		}
 	}
+}*/
+
+/*void	print_list(void)
+{
+	t_var_env	*ptr;
+
+	ptr = datas_prompt.env_in_struct;
+	while (ptr)
+	{
+		printf("%s=%s\n", ptr->name_var, ptr->var_txt);
+		ptr = ptr->next;
+	}
+}*/
+
+void	ft_remove_link(int index, t_var_env *list)
+{
+	t_var_env	*tmp;
+
+	if (!list)
+		return ;
+	while (list && --index > 0)
+		list = list->next;
+	tmp = list->next;
+	list->next = list->next->next;
+	free(tmp->var_txt);
+	free(tmp->name_var);
+	free(tmp);
+	tmp = NULL;
 }
 
 void	unset(int ac, char **av)
 {
 	int	i;
+	int	x;
 
 	if (ac == 1)
 		return ;
-	i = 0;
+	i = -1;
  	while (++i < ac)
 	{
-		//	if (av[i] in env)
-		//		delete element;
-		//	else if (av[i] in sys_var)
-		//		delete element;
-		//	else
-		//		;
+		x = ft_list_to_index(av[i], datas_prompt.env_in_struct);
+		if (x != -1)
+			ft_remove_link(x, datas_prompt.env_in_struct);
+		else
+		{
+			x = ft_list_to_index(av[i], datas_prompt.out_struct);
+			if (x != -1)
+				ft_remove_link(x, datas_prompt.out_struct);
+		}
 	}
-}*/
+	ft_clean_mat(datas_prompt.envp);
+	datas_prompt.envp = conv_env_to_mat();
+}
 
 void	ft_exit(void)
 {
