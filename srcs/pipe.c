@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pipex.c                                            :+:      :+:    :+:   */
+/*   pipe.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: lbuccher <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/12 16:51:00 by lbuccher          #+#    #+#             */
-/*   Updated: 2022/01/12 17:08:52 by lbuccher         ###   ########.fr       */
+/*   Updated: 2022/02/18 15:56:10 by mbucci           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "minishell.h"
@@ -136,7 +136,7 @@ void	pipe_rec(t_datas_cmd *cmds, char **env, int pre_fd[2], t_one_cmd *cmd)
 		{
 			close_pipe(pre_fd);
 			waitpid(pid, NULL, 0);
-			find_builtin(datas_prompt.cmds, cmd);
+			find_builtin(cmd);
 			if (cmd->next)
 				pipe_rec(cmds, env, next_fd, cmd->next);
 			else // ajouter des conditions pour que le status de la derniere pour quelle reste en memoire mais ne prenne pas en compte si echo $? est exec

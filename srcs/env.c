@@ -6,7 +6,7 @@
 /*   By: mbucci <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/26 16:22:49 by mbucci            #+#    #+#             */
-/*   Updated: 2022/02/18 13:36:24 by mbucci           ###   ########.fr       */
+/*   Updated: 2022/02/18 15:54:03 by mbucci           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,17 +26,19 @@ char	*ft_getenv(char *var_name, t_var_env *list)
 	return (val);
 }
 
-void	env(t_var_env *list)
+void	env(void)
 {
-	if (!list)
+	t_var_env	*ptr;
+
+	ptr = datas_prompt.env_in_struct;
+	if (!ptr)
 		return ;
-	//printf("%s\n", datas_prompt.env_in_struct->var_txt);
-	while (list)
+	while (ptr)
 	{
-		ft_putstr_fd(list->name_var, 1);
+		ft_putstr_fd(ptr->name_var, 1);
 		write(1, "=", 1);
-		ft_putstr_fd(list->var_txt, 1);
+		ft_putstr_fd(ptr->var_txt, 1);
 		write(1, "\n", 1);
-		list = list->next;
+		ptr = ptr->next;
 	}
 }

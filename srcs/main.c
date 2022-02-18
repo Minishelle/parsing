@@ -6,7 +6,7 @@
 /*   By: hgoorick <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/10 18:14:40 by hgoorick          #+#    #+#             */
-/*   Updated: 2022/02/18 13:22:41 by mbucci           ###   ########.fr       */
+/*   Updated: 2022/02/18 15:54:23 by mbucci           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,14 +97,14 @@ void	init_data_prompt(t_datas_prompt *datas_prompt, char **envp)
 	ft_putstr_fd(INPUT, 1);
 }
 
-int	find_builtin(t_datas_cmd *cmds, t_one_cmd *cmd)
+int	find_builtin(t_one_cmd *cmd)
 {
 	if (!ft_strncmp("cd", cmd->cmd, 2))
 		cd(ft_matrixlen(cmd->all_cmd), cmd->all_cmd);
 	else if (!ft_strncmp("echo", cmd->cmd, 4))
 		echo(ft_matrixlen(cmd->all_cmd), cmd->all_cmd);
 	else if (!ft_strncmp("env", cmd->cmd, 3))
-		env(cmds->datas_prompt->env_in_struct);
+		env();
 	else if (!ft_strncmp("pwd", cmd->cmd, 3))
 		pwd();
 	//else if (!ft_strncmp("export", cmd->cmd, 6))
