@@ -30,6 +30,7 @@ void	env(t_var_env *list)
 {
 	if (!list)
 		return ;
+	//printf("%s\n", datas_prompt.env_in_struct->var_txt);
 	while (list)
 	{
 		ft_putstr_fd(list->name_var, 1);

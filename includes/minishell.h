@@ -42,7 +42,7 @@ void		child(t_fd fds, char *argv[], char *env[], int fd[2]);
 void		perror_cnf(char *str, char *cmd, int fd);
 void		ft_end_process(char *cmd_path, char **cmd, char **path, char **env, \
 	t_one_cmd *cmd_struct);
-void		process(char *env[], char **cmd, t_one_cmd *cmd_struct);
+void		process(char *env[], char **cmd, t_one_cmd *cmd_struct, int to_exec);
 void 		cd(int ac, char **av);
 void		echo(int ac, char **av);
 void 		env(t_var_env *list);

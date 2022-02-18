@@ -44,4 +44,5 @@ SRC += here_doc.c
 SRC += builtin_functions.c
 SRC += echo.c
 SRC += env.c
+SRC += cd.c
 SRC += pwd.c

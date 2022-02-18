@@ -11,7 +11,7 @@
 /* ************************************************************************** */
 #include "minishell.h"
 
-void	process(char *env[], char **cmd, t_one_cmd *cmd_struct)
+void	process(char *env[], char **cmd, t_one_cmd *cmd_struct, int to_exec)
 {
 	int		i;
 	char	*tmp;
@@ -33,7 +33,15 @@ void	process(char *env[], char **cmd, t_one_cmd *cmd_struct)
 		if (paths[i + 1])
 			free(cmd_path);
 	}
-	ft_end_process(cmd_path, cmd, paths, env, cmd_struct);
+	if (to_exec)
+		ft_end_process(cmd_path, cmd, paths, env, cmd_struct);
+	else
+	{
+		if (access(cmd_path, F_OK) != 0)
+			datas_prompt.last_command_status = 127;
+		else if (!check_builtin(cmd_struct))
+			datas_prompt.last_command_status = 0;
+	}
 }
 
 void	ft_redirection(int fd_in, int fd_out, int simple, int first)
@@ -88,14 +96,24 @@ void	multi_pipe(t_datas_cmd *cmds, int n_fd[2], int pr_fd[2], t_one_cmd *cmd)
 	}
 }
 
-// fonction pour norme pipe rec
+void	minishell_cmd(char **env)
+{
+	char **cmd_shell;
 
-void	pipe_rec(t_datas_cmd *cmds, char *env[], int pre_fd[2], t_one_cmd *cmd)
+	cmd_shell = malloc(2 * sizeof(char *));
+	cmd_shell[0] = "./minishell";
+	cmd_shell[1] = "\n";
+	execve(*cmd_shell, cmd_shell, env);
+}
+
+void	pipe_rec(t_datas_cmd *cmds, char **env, int pre_fd[2], t_one_cmd *cmd)
 {
 	int		next_fd[2];
 	pid_t	pid;
 
-	if (!ft_strlen(cmd->cmd) || ft_strncmp("exit", cmd->cmd, \
+	if (!ft_strncmp("./minishell", cmd->cmd, ft_strlen(cmd->cmd)))
+		minishell_cmd(env);
+	else if (!ft_strlen(cmd->cmd) || ft_strncmp("exit", cmd->cmd, \
 		ft_strlen(cmd->cmd)))
 	{
 		if (pipe(next_fd) == -1)
@@ -112,7 +130,7 @@ void	pipe_rec(t_datas_cmd *cmds, char *env[], int pre_fd[2], t_one_cmd *cmd)
 			}
 			else
 				multi_pipe(cmds, next_fd, pre_fd, cmd);
-			process(env, cmd->all_cmd, cmd);
+			process(env, cmd->all_cmd, cmd, 1);
 		}
 		else
 		{
@@ -121,6 +139,8 @@ void	pipe_rec(t_datas_cmd *cmds, char *env[], int pre_fd[2], t_one_cmd *cmd)
 			find_builtin(datas_prompt.cmds, cmd);
 			if (cmd->next)
 				pipe_rec(cmds, env, next_fd, cmd->next);
+			else // ajouter des conditions pour que le status de la derniere pour quelle reste en memoire mais ne prenne pas en compte si echo $? est exec
+				process(env, cmd->all_cmd, cmd, 0);
 			close_pipe(next_fd);
 		}
 	}
