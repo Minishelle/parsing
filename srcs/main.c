@@ -6,7 +6,7 @@
 /*   By: hgoorick <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/10 18:14:40 by hgoorick          #+#    #+#             */
-/*   Updated: 2022/02/10 18:14:42 by hgoorick         ###   ########.fr       */
+/*   Updated: 2022/02/18 13:22:41 by mbucci           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,8 +109,8 @@ int	find_builtin(t_datas_cmd *cmds, t_one_cmd *cmd)
 		pwd(cmd);
 	//else if (!ft_strncmp("export", cmd->cmd, 6))
 		//export(ft_matrixlen(cmd->all_cmd), cmd->all_cmd);
-	//else if (!ft_strncmp("unset", cmd->cmd, 5))
-		//unset(ft_matrixlen(cmd->all_cmd), cmd->all_cmd);
+	else if (!ft_strncmp("unset", cmd->cmd, 5))
+		unset(ft_matrixlen(cmd->all_cmd), cmd->all_cmd);
 	else if (!ft_strncmp("exit", cmd->cmd, 4))
 		ft_exit();
 	else
@@ -136,7 +136,7 @@ char **conv_env_to_mat(void)
 	t_var_env	*tmp;
 
 	x = ft_lstsize_up(datas_prompt.env_in_struct);
-	out_mat = malloc(sizeof(char *) * x + 1);
+	out_mat = malloc(sizeof(char *) * (x + 1));
 	tmp  = datas_prompt.env_in_struct;
 	out_mat[x] = NULL;
 	while (--x > -1)
