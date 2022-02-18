@@ -15,14 +15,13 @@ char	**get_path(char *env[])
 {
 	char	*all_path;
 	char	**split_path;
+	int i;
 
-	while (*env)
-	{
-		if (ft_strncmp(*env, "PATH=", 5) == 0)
+	i = -1;
+	while (env[++i])
+		if (ft_strncmp(env[i], "PATH=", 5) == 0)
 			break ;
-		(*env)++;
-	}
-	all_path = ft_substr(*env, 5, ft_strlen(*env) - 5);
+	all_path = ft_substr(env[i], 5, ft_strlen(env[i]) - 5);
 	split_path = ft_split_pipex(all_path, ':');
 	free(all_path);
 	return (split_path);

@@ -87,6 +87,7 @@ void	print_test(t_datas_prompt datas_prompt)
 void	init_data_prompt(t_datas_prompt *datas_prompt, char **envp)
 {
 	datas_prompt->envp = ft_matrixlcpy(envp, ft_matrixlen(envp));
+
 	datas_prompt->env_in_struct = conv_env(envp);
 	if (!datas_prompt->env_in_struct)
 		exit(1);
@@ -182,7 +183,7 @@ int	main(int argc, char **argv, char **envp)
 				{
 					if (datas_prompt.cmds->cmd_first->type_hd == 1)
 						ft_here_doc(datas_prompt.cmds, datas_prompt.cmds->cmd_first->magic_word);
-					pipe_rec(datas_prompt.cmds, envp, fd, datas_prompt.cmds->cmd_first);
+					pipe_rec(datas_prompt.cmds, datas_prompt.envp, fd, datas_prompt.cmds->cmd_first);
 					ft_free_datas_cmd(datas_prompt.cmds);
 				}
 			}
