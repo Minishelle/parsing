@@ -29,7 +29,7 @@ int check_map(char **map)
 		datas_prompt.last_command_status = 1;
 		return (1);
 	}
-	else if (infile(map) < 0 )
+	else if (infile(map) < 0)
 	{
 		ft_putstr_fd("Minishell: ", 1);
 		ft_putstr_fd(map[find_next_char(map, '<') + 1], 1);
@@ -37,10 +37,8 @@ int check_map(char **map)
 		datas_prompt.last_command_status = 1;
 		return (1);
 	}
-	/*else if (outfile(map) > -1)
-	{
-
-	}*/
+	else if (outfile(map) < 0)
+		return (1);
 	return (0);
 }
 
@@ -78,12 +76,6 @@ t_datas_cmd	*gen_datas_cmd(char *x, t_datas_prompt *datas_prompt)
 	{
 		//ft_free_all(cmd->all_cmds);
 		free(cmd);
-		return (NULL);
-	}
-	cmd->full_path = find_in_env(datas_prompt->envp, "PATH=", 5, 5);
-	if (!cmd->full_path)
-	{
-		ft_free_datas_cmd(cmd);
 		return (NULL);
 	}
 	cmd->cmd_first = trans_cmd(cmd->all_cmds, datas_prompt, 0, NULL);

@@ -32,7 +32,6 @@ struct s_datas_prompt
 struct s_datas_cmd
 {
 	char			**all_cmds;
-	char			*full_path;
 	int				nb_cmds;
 	t_one_cmd		*cmd_first;
 	t_datas_prompt	*datas_prompt;
