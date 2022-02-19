@@ -25,7 +25,7 @@ struct s_datas_prompt
 	t_datas_cmd	*cmds;
 	char		**envp;
 	int			last_command_status;
-	char *txt_echo;
+	char		*old_command;
 	t_var_env	*env_in_struct;
 	t_var_env	*out_struct;
 };

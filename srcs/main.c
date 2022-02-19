@@ -93,7 +93,7 @@ void	init_data_prompt(t_datas_prompt *datas_prompt, char **envp)
 		exit(1);
 	datas_prompt->last_command_status = 0;
 	datas_prompt->out_struct = NULL;
-	datas_prompt->txt_echo = NULL;
+	datas_prompt->old_command = NULL;
 	datas_prompt->cmds = NULL;
 	ft_putstr_fd("\033[2J", 1);
 	ft_putstr_fd(INPUT, 1);
@@ -191,7 +191,9 @@ int	main(int argc, char **argv, char **envp)
 			ft_clean_mat(datas_prompt.envp);
 			datas_prompt.envp = conv_env_to_mat();
 		}
-		free(test);
+		if (datas_prompt.old_command)
+			free(datas_prompt.old_command);
+		datas_prompt.old_command = test;
 		free(prompt);
 	}
 	ft_new_free(datas_prompt.env_in_struct);

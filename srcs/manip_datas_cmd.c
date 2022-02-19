@@ -15,6 +15,7 @@
 int check_map(char **map)
 {
 	int x;
+	int y;
 
 	x = ft_matrixlen(map) - 1;
 	if ((map[x][0] == '<') || (map[x][0] == '>'))
@@ -39,6 +40,26 @@ int check_map(char **map)
 	}
 	else if (outfile(map) < 0)
 		return (1);
+	else
+	{
+		x = -1;
+		while (++x < ft_matrixlen(map))
+		{
+			y = -1;
+			while (++y < (int)ft_strlen(map[x]))
+			{
+				if (map[x][y] == '!' && ft_strlen(map[x]) == 2 && map[x][1] == '!')
+				{
+					if (!datas_prompt.old_command)
+					{
+						ft_putstr_fd("Minishell: !!: Event not found\n", 1);
+						return (1);
+					}
+					return (0);
+				}
+			}
+		}
+	}
 	return (0);
 }
 
