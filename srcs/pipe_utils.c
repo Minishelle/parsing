@@ -21,6 +21,8 @@ char	**get_path(char *env[])
 	while (env[++i])
 		if (ft_strncmp(env[i], "PATH=", 5) == 0)
 			break ;
+	if (i == ft_matrixlen(env))
+		return (NULL);
 	all_path = ft_substr(env[i], 5, ft_strlen(env[i]) - 5);
 	split_path = ft_split_pipex(all_path, ':');
 	free(all_path);

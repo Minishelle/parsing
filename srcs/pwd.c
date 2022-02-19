@@ -18,6 +18,7 @@ void	pwd(void)
 
 	path = NULL;
 	path = getcwd(path, 0);
+	datas_prompt.last_command_status = 0;
 	ft_putstr_fd(path, 1);
 	write(1, "\n", 1);
 	free(path);
