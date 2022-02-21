@@ -35,7 +35,6 @@ t_one_cmd	*trans_cmd(char **cmds, t_datas_cmd *datas, int st, t_one_cmd *old)
 {
 	int			x;
 	t_one_cmd	*cmd;
-	//t_one_cmd	*tmp;
 	char		**envp;
 	t_var_env	*out_struct;
 
@@ -68,24 +67,15 @@ t_one_cmd	*trans_cmd(char **cmds, t_datas_cmd *datas, int st, t_one_cmd *old)
 		}
 	}
 	x = find_next_char(cmds, '|');
-	/*if (!ft_matrixlen(cmd->all_cmd) && x != ft_matrixlen(cmds))
+	cmd->cmd = cmd->all_cmd[0];
+	cmd->type_next = 0;
+	cmd->next = NULL;
+	if (x != ft_matrixlen(cmds))
 	{
-		tmp = trans_cmd(&(cmds[x + 1]), datas, 0, cmd);
-		ft_free_one_cmd(cmd, 1);
-		cmd = tmp;
+		cmd->type_next = 2;
+		if (st)
+			cmd->type_next = 1;
+		cmd->next = trans_cmd(&(cmds[x + 1]), datas, 1, NULL);
 	}
-	else
-	{*/
-		cmd->cmd = cmd->all_cmd[0];
-		cmd->type_next = 0;
-		cmd->next = NULL;
-		if (x != ft_matrixlen(cmds))
-		{
-			cmd->type_next = 2;
-			if (st)
-				cmd->type_next = 1;
-			cmd->next = trans_cmd(&(cmds[x + 1]), datas, 1, NULL);
-		}
-//	}
 	return (cmd);
 }

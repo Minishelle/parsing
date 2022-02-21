@@ -90,20 +90,27 @@ void	init_data_prompt(t_datas_prompt *datas_prompt, char **envp)
 	ft_putstr_fd(INPUT, 1);
 }
 
-int	find_builtin(t_one_cmd *cmd)
+int	find_builtin_env(t_one_cmd *cmd)
 {
 	if (!ft_strncmp("cd", cmd->cmd, 2))
 		cd(ft_matrixlen(cmd->all_cmd), cmd->all_cmd);
-	else if (!ft_strncmp("echo", cmd->cmd, 4))
+	//else if (!ft_strncmp("export", cmd->cmd, 6))
+		//export(ft_matrixlen(cmd->all_cmd), cmd->all_cmd);
+	else if (!ft_strncmp("unset", cmd->cmd, 5))
+		unset(ft_matrixlen(cmd->all_cmd), cmd->all_cmd);
+	else
+		return (1);
+	return (0);
+}
+
+int	find_builtin(t_one_cmd *cmd)
+{
+	if (!ft_strncmp("echo", cmd->cmd, 4))
 		echo(ft_matrixlen(cmd->all_cmd), cmd->all_cmd);
 	else if (!ft_strncmp("env", cmd->cmd, 3))
 		env();
 	else if (!ft_strncmp("pwd", cmd->cmd, 3))
 		pwd();
-	//else if (!ft_strncmp("export", cmd->cmd, 6))
-		//export(ft_matrixlen(cmd->all_cmd), cmd->all_cmd);
-	else if (!ft_strncmp("unset", cmd->cmd, 5))
-		unset(ft_matrixlen(cmd->all_cmd), cmd->all_cmd);
 	else if (!ft_strncmp("exit", cmd->cmd, 4))
 		ft_exit();
 	else
