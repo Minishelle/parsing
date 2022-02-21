@@ -31,7 +31,6 @@ SRC += find_path.c
 SRC += manip_datas_cmd.c
 SRC += manip_one_cmd.c
 SRC += prompt.c
-SRC += pipen_t.c
 SRC += ft_strlen_up.c
 SRC += infile.c
 SRC += outfile.c

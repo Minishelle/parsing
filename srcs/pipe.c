@@ -20,23 +20,16 @@ void	process(char *env[], char **cmd, t_one_cmd *cmd_struct, int to_exec)
 
 	i = -1;
 	paths = get_path(env);
-	if (!paths && to_exec)
+	if (!paths)
 	{
-		if (access(cmd_struct->cmd, F_OK) == 0)
-		{
-			datas_prompt.last_command_status = 0;
-			execve(cmd_struct->cmd, cmd, env);
-		}
-		else if (!check_builtin(cmd_struct))
+		if (!check_builtin(cmd_struct))
 		{
 			perror_cnf("command not found: ", cmd[0], 2);
 			datas_prompt.last_command_status = 127;
 		}
 		return ;
 	}
-	else if (!paths && !to_exec)
-		return ;
-	while (paths && paths[++i])
+	while (paths[++i])
 	{
 		cmd_path = ft_strjoin(paths[i], "/");
 		if (ft_strncmp(cmd_path, cmd[0], ft_strlen(cmd_path)) == 0)
@@ -161,11 +154,7 @@ void	pipe_rec(t_datas_cmd *cmds, char **env, int pre_fd[2], t_one_cmd *cmd)
 		{
 			close_pipe(pre_fd);
 			waitpid(pid, NULL, 0);
-			//find_builtin(cmd);
-			//ne fonction pas de cette maniere
-			if (find_builtin(cmd) && cmds->nb_cmds == 1)
-				if (dup2(cmd->outfile, 1) < 0 || dup2(cmd->infile, 0) < 0)
-					return (perror("one cmd: fd"));
+			find_builtin(cmd);
 			if (cmd->next)
 				pipe_rec(cmds, env, next_fd, cmd->next);
 			else
