@@ -26,7 +26,6 @@ struct s_datas_prompt
 	char		*home;
 	char		**envp;
 	int			last_command_status;
-	char		*old_command;
 	t_var_env	*env_in_struct;
 	t_var_env	*out_struct;
 };
@@ -38,7 +37,6 @@ struct s_datas_cmd
 	int 		type_hd;
 	char 		**magic_word;
 	t_one_cmd		*cmd_first;
-	t_datas_prompt	*datas_prompt;
 };
 
 struct s_fd

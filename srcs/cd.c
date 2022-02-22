@@ -26,7 +26,7 @@ int	compare_pwd(void)
 	char	*path;
 	char	*tmp;
 	int		ret;
-	
+
 	tmp = ft_getenv("PWD", datas_prompt.env_in_struct);
 	if (!tmp)
 		return (0);
@@ -34,7 +34,7 @@ int	compare_pwd(void)
 	path = getcwd(path, 0);
 	if (!path)
 		return (0);
-	ret = ft_strcmp(path, tmp);
+	ret = ft_strncmp(path, tmp, 0);
 	free(path);
 	path = NULL;
 	return (ret);
@@ -79,7 +79,7 @@ void	cd(int ac, char **av)
 		{
 			ret = chdir(ft_getenv("HOME", datas_prompt.env_in_struct));
 			if (ret)
-				return (cd_error("cd", 
+				return (cd_error("cd",
 				ft_getenv("HOME", datas_prompt.env_in_struct)));
 		}
 	}
