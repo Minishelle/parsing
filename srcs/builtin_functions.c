@@ -6,27 +6,13 @@
 /*   By: mbucci <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/26 14:49:11 by mbucci            #+#    #+#             */
-/*   Updated: 2022/02/18 13:44:53 by mbucci           ###   ########.fr       */
+/*   Updated: 2022/02/22 13:15:07 by mbucci           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <signal.h>
 #include "minishell.h"
 
-int	ft_list_to_index(char *str, t_var_env *ptr);
-
-int	ft_open(t_one_cmd *cmd)
-{
-	int	fd;
-
-	if (!cmd->type_next)
-		return (1);
-	fd = open("tmp_build", O_CREAT | O_RDWR | O_TRUNC, 0644);
-	if (fd == -1)
-		return(0);
-	cmd->infile = fd;
-	return (fd);
-}
+t_var_env	*ft_find_in_list(char *str, t_var_env *list);
 
 /*	EXPORT NAME
  *	if NAME is already a variable it will be added to env
@@ -66,16 +52,49 @@ int	ft_open(t_one_cmd *cmd)
 	}
 }*/
 
-void	ft_remove_link(int index, t_var_env *list)
+/*void	print_matrix(char **matrix)
+{
+	int	i;
+
+	i = -1;
+	while (matrix[++i])
+		printf("%s\n", matrix[i]);
+}*/
+
+/*int	forbidden_char_in_name(char *s, int *ptr)
+{
+	int		i;
+	char	*invalid;
+
+	i = 0;
+	while (s[i++])
+	{
+		if (!ft_strchr_up(invalid, s[i]) && invalid[0] != s[i])
+		{
+			var_error();
+			*ptr = 1;
+		}
+	}
+}*/
+
+void	ft_remove_link(t_var_env *target, t_var_env **list)
 {
 	t_var_env	*tmp;
 
-	if (!list)
+	if (!list || !*list || !target)
 		return ;
-	while (list && --index > 0)
-		list = list->next;
-	tmp = list->next;
-	list->next = list->next->next;
+	if (target == *list)
+	{
+		tmp = *list;
+		*list = (*list)->next;
+	}
+	else
+	{
+		while (*list && (*list)->next != target)
+			*list = (*list)->next;
+		tmp = (*list)->next;
+		(*list)->next = (*list)->next->next;
+	}
 	free(tmp->var_txt);
 	free(tmp->name_var);
 	free(tmp);
@@ -84,26 +103,33 @@ void	ft_remove_link(int index, t_var_env *list)
 
 void	unset(int ac, char **av)
 {
-	int	i;
-	int	x;
+	int			i;
+	int			status;
+	t_var_env	*found;
 
 	if (ac == 1)
+	{
+		datas_prompt.last_command_status = 0;
 		return ;
+	}
 	i = -1;
  	while (++i < ac)
 	{
-		x = ft_list_to_index(av[i], datas_prompt.env_in_struct);
-		if (x != -1)
-			ft_remove_link(x, datas_prompt.env_in_struct);
+		//check for forbidden characters
+		//	if forbidden char print error message and keep going
+		found = ft_find_in_list(av[i], datas_prompt.env_in_struct);
+		if (found)
+			ft_remove_link(found, &datas_prompt.env_in_struct);
 		else
 		{
-			x = ft_list_to_index(av[i], datas_prompt.out_struct);
-			if (x != -1)
-				ft_remove_link(x, datas_prompt.out_struct);
+			found = ft_find_in_list(av[i], datas_prompt.out_struct);
+			if (found)
+				ft_remove_link(found, &datas_prompt.out_struct);
 		}
 	}
 	ft_clean_mat(datas_prompt.envp);
 	datas_prompt.envp = conv_env_to_mat();
+	datas_prompt.last_command_status = 0;
 }
 
 void	ft_exit(void)

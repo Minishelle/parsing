@@ -6,7 +6,7 @@
 /*   By: mbucci <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/26 16:22:49 by mbucci            #+#    #+#             */
-/*   Updated: 2022/02/18 15:54:03 by mbucci           ###   ########.fr       */
+/*   Updated: 2022/02/22 11:27:58 by mbucci           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,8 +37,8 @@ void	env(void)
 	{
 		ft_putstr_fd(ptr->name_var, 1);
 		write(1, "=", 1);
-		ft_putstr_fd(ptr->var_txt, 1);
-		write(1, "\n", 1);
+		ft_putendl_fd(ptr->var_txt, 1);
 		ptr = ptr->next;
 	}
+	datas_prompt.last_command_status = 0;
 }
