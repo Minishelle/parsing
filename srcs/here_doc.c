@@ -17,8 +17,9 @@ void	ft_here_doc2(t_datas_cmd *cmds, char *here_doc, char *join, int here_fd)
 	char	*tmp;
 	char **tmp1;
 
-
 	tmp1 = ft_split(join, '\n');
+	if (ft_matrixlen(tmp1) == cmds->type_hd - 1)
+		return ;
 	int x = -1;
 	while (++x < (ft_matrixlen(tmp1) + 1) - cmds->type_hd)
 	{
@@ -28,8 +29,10 @@ void	ft_here_doc2(t_datas_cmd *cmds, char *here_doc, char *join, int here_fd)
 			tmp = ft_strjoin_up(tmp, tmp1[x]);
 	}
 	ft_clean_mat(tmp1);
-	ft_putstr_fd(join, here_fd);
+	ft_putstr_fd(tmp, here_fd);
 	close(here_fd);
+	free(tmp);
+	tmp = malloc((ft_strlen(join) * sizeof(char)) + 1);
 	here_fd = open("tmp", O_RDONLY, 0644);
 	free(here_doc);
 	if (cmds->nb_cmds && cmds->cmd_first->cmd)
@@ -74,7 +77,7 @@ void	ft_here_doc(t_datas_cmd *cmds, char **end_word)
 	while (1)
 	{
 		ft_putstr_fd("heredoc>", 1);
-		here_doc = get_next_line(0);
+		here_doc = get_next_line(1);
 		if (here_doc && (ft_strlen(end_word[i]) == ft_strlen(here_doc) - 1)
 			&& !ft_strncmp(here_doc, end_word[i], ft_strlen(end_word[i])))
 				i++;

@@ -93,21 +93,19 @@ char	**ft_cpy_maic_word(t_datas_cmd *cmd, int x, int status)
 
 	if (status)
 	{
-		cmd->magic_word = malloc(sizeof(char *) * 2);
+		cmd->magic_word = malloc(sizeof(char *));
 		cmd->magic_word[0] = cpy_with_malloc(cmd->all_cmds[x + 1]);
 		cmd->magic_word[1] = NULL;
 		return (cmd->magic_word);
 	}
 	tmp = cmd->magic_word;
-	cmd->magic_word = malloc(sizeof(char *) * ft_matrixlen(tmp) + 2);
-	y = -1;
 	k = ft_matrixlen(tmp);
+	cmd->magic_word = malloc(sizeof(char *) * cmd->type_hd + 1);
+	y = -1;
 	while (++y < k)
-	{
 		cmd->magic_word[y] = cpy_with_malloc(tmp[y]);
-		free(tmp[y]);
-	}
 	cmd->magic_word[y] = cpy_with_malloc(cmd->all_cmds[x + 1]);
+	cmd->magic_word[y + 1] = NULL;
 	free(tmp);
 	return (cmd->magic_word);
 }
@@ -135,6 +133,7 @@ void	search_hd(t_datas_cmd *cmd)
 		}
 		x += find_next_char(&cmd->all_cmds[x + 1], '<') + 1;
 	}
+
 }
 
 /****************************************

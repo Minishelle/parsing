@@ -171,7 +171,6 @@ int	main(int argc, char **argv, char **envp)
 			datas_prompt.cmds = gen_datas_cmd(test, &datas_prompt);
 			if (datas_prompt.cmds)
 			{
-				//print_test(datas_prompt);
 				if (datas_prompt.cmds->type_hd)
 					ft_here_doc(datas_prompt.cmds, \
 						datas_prompt.cmds->magic_word);
