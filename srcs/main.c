@@ -78,14 +78,24 @@ void	print_test(t_datas_prompt datas_prompt)
 void	init_data_prompt(t_datas_prompt *datas_prompt, char **envp)
 {
 	datas_prompt->envp = ft_matrixlcpy(envp, ft_matrixlen(envp));
+	if (!datas_prompt->envp)
+		return ;
 	datas_prompt->env_in_struct = conv_env(envp);
 	if (!datas_prompt->env_in_struct)
-		exit(1);
-	datas_prompt->last_command_status = 0;
+	{
+		ft_clean_mat(datas_prompt->envp);
+		return ;
+	}
 	datas_prompt->home = find_in_env(envp, "HOME=", 5, 5);
+	if (!datas_prompt->home)
+	{
+		ft_clean_mat(datas_prompt->envp);
+		ft_new_free(datas_prompt->env_in_struct);
+		return ;
+	}
+	datas_prompt->last_command_status = 0;
 	datas_prompt->out_struct = NULL;
 	datas_prompt->cmds = NULL;
-	ft_putstr_fd("\033[2J", 1);
 	ft_putstr_fd(INPUT, 1);
 }
 
@@ -156,19 +166,25 @@ int	main(int argc, char **argv, char **envp)
 	char			*prompt;
 	char			*test;
 	int				fd[2];
+	int x=-1;
 
 	fd[0] = 6;
 	fd[1] = 6;
 	(void)argc;
 	(void)argv;
 	init_data_prompt(&datas_prompt, envp);
-	while (5)
+	if (!datas_prompt.envp)
+		exit (1);
+	while (19)
 	{
 		prompt = start_prompt(envp);
 		test = readline(prompt);
+		add_history(test);
+		free(prompt);
 		if (test[0] && ft_allisspace(test) != -1)
 		{
 			datas_prompt.cmds = gen_datas_cmd(test, &datas_prompt);
+			free(test);
 			if (datas_prompt.cmds)
 			{
 				if (datas_prompt.cmds->type_hd)
@@ -176,17 +192,8 @@ int	main(int argc, char **argv, char **envp)
 						datas_prompt.cmds->magic_word);
 				pipe_rec(datas_prompt.cmds, datas_prompt.envp, fd, \
 					datas_prompt.cmds->cmd_first);
-
 				ft_free_datas_cmd(datas_prompt.cmds);
 			}
-			add_history(test);
 		}
-		free(test);
-		free(prompt);
 	}
-	ft_new_free(datas_prompt.env_in_struct);
-	if (datas_prompt.out_struct)
-		ft_new_free(datas_prompt.out_struct);
-	if (datas_prompt.home)
-		free(datas_prompt.home);
 }

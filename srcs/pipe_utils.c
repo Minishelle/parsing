@@ -24,7 +24,14 @@ char	**get_path(char *env[])
 	if (i == ft_matrixlen(env))
 		return (NULL);
 	all_path = ft_substr(env[i], 5, ft_strlen(env[i]) - 5);
+	if (!all_path)
+		return (NULL);
 	split_path = ft_split_pipex(all_path, ':');
+	if (!split_path)
+	{
+		free(all_path);
+		return (NULL);
+	}
 	free(all_path);
 	return (split_path);
 }

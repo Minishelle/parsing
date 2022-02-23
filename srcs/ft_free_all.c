@@ -90,6 +90,7 @@ void	ft_free_datas_cmd(t_datas_cmd *datas_cmd)
 {
 	int	x;
 
+
 	if (datas_cmd->all_cmds)
 	{
 		x = ft_matrixlen(datas_cmd->all_cmds);
@@ -98,7 +99,12 @@ void	ft_free_datas_cmd(t_datas_cmd *datas_cmd)
 		free(datas_cmd->all_cmds);
 	}
 	if (datas_cmd->magic_word)
+	{
+		x = datas_cmd->type_hd;
+		while (--x >= 0)
+			free(datas_cmd->magic_word[x]);
 		free(datas_cmd->magic_word);
+	}
 	if (datas_cmd->cmd_first)
 		ft_free_one_cmd(datas_cmd->cmd_first, 0);
 	if (datas_cmd)

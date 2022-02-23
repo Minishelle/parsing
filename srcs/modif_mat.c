@@ -87,6 +87,7 @@ char	*return_char(char *cmds, int y, char **envp, t_var_env *out_struct)
 {
 	int		size;
 	char	**tmp;
+	char	*tmp_out;
 
 	size = ft_strlen_up(&cmds[y + 1], " \"");
 	tmp = malloc(sizeof(char *) * 3);
@@ -143,7 +144,10 @@ char	*return_char(char *cmds, int y, char **envp, t_var_env *out_struct)
 	ft_free_little_matrice(tmp, 1);
 	if (cmds)
 		free(cmds);
-	return (tmp[1]);
+	tmp_out = cpy_with_malloc(tmp[1]);
+	free(tmp[1]);
+	free(tmp);
+	return (tmp_out);
 }
 
 /****************************************

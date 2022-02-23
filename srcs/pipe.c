@@ -20,13 +20,15 @@ void	process(char *env[], char **cmd, t_one_cmd *cmd_struct, int to_exec)
 
 	i = -1;
 	paths = get_path(env);
-
+	if (!paths)
+		return ;
 	datas_prompt.last_command_status = 0;
 	if (!paths && to_exec)
 	{
 		if (access(cmd_struct->cmd, F_OK) == 0)
 		{
 			datas_prompt.last_command_status = 0;
+			ft_clean_mat(paths);
 			execve(cmd_struct->cmd, cmd, env);
 		}
 		else if (!check_builtin(cmd_struct))
@@ -41,10 +43,20 @@ void	process(char *env[], char **cmd, t_one_cmd *cmd_struct, int to_exec)
 	while (cmd_struct->cmd && paths && paths[++i])
 	{
 		cmd_path = ft_strjoin(paths[i], "/");
+		if (!cmd_path)
+		{
+			ft_clean_mat(paths);
+			exit (1);
+		}
 		if (ft_strncmp(cmd_path, cmd[0], ft_strlen(cmd_path)) == 0)
 			break ;
 		tmp = ft_strjoin(cmd_path, cmd[0]);
 		free(cmd_path);
+		if (!tmp)
+		{
+			ft_clean_mat(paths);
+			exit (1);
+		}
 		cmd_path = tmp;
 		if (!access(cmd_path, F_OK))
 			break ;
@@ -63,27 +75,13 @@ void	process(char *env[], char **cmd, t_one_cmd *cmd_struct, int to_exec)
 		//else if (!cmd_struct->next && (access(cmd_path, F_OK) == 0))
 		//	datas_prompt.last_command_status = 0;
 	}
+	if (cmd_path)
+		free(cmd_path);
+	ft_clean_mat(paths);
 }
 
 void	ft_redirection(int fd_in, int fd_out, int simple, int first, t_one_cmd *cmd)
 {
-/*(void)simple;
-	(void)first;
-	if (cmd->type_next == 0 && datas_prompt.cmds->nb_cmds)
-	{
-		if (dup2(fd_out, 1) < 0)
-			return (perror("fd"));
-		write(fd_out, "Here\n", 3);
-	}
-	if (cmd->next)
-	{
-		if (dup2(fd_in, 0) < 0)
-			return (perror("fd"));
-		write(fd_in, "There\n", 3);
-	}
-	close(fd_out);
-	close(fd_in);*/
-
 	(void)cmd;
 	if (simple == 1 && first == 1)
 	{
@@ -143,9 +141,6 @@ void	minishell_cmd(char **env, t_one_cmd *cmd)
 	cmd_shell[0] = cmd->cmd;
 	cmd_shell[1] = "\n";
 	execve(*cmd_shell, cmd_shell, env);
-/*	free(cmd_shell[0]);
-	free(cmd_shell[1]);
-	free(cmd_shell);*/
 }
 
 void	pipe_rec(t_datas_cmd *cmds, char **env, int pre_fd[2], t_one_cmd *cmd)

@@ -74,8 +74,8 @@ int	check_map(char **map)
 
 	x = ft_matrixlen(map) - 1;
 	if ((map[x][0] == '<') || (map[x][0] == '>'))
-		return (er("Minishell: syntax error near unexpected token \
-			`newline'\n", 258, 0));
+		return (er("Minishell: syntax error near unexpected token `newline'\n",\
+			258, 0));
 	else if (map[x][0] == '|')
 		return (er("Minishell: error at the end of command\n", 1, 0));
 	else if (infile(map) < 0 || outfile(map) < 0)
@@ -94,17 +94,44 @@ char	**ft_cpy_maic_word(t_datas_cmd *cmd, int x, int status)
 	if (status)
 	{
 		cmd->magic_word = malloc(sizeof(char *));
+		if (!cmd->magic_word)
+			return (NULL);
 		cmd->magic_word[0] = cpy_with_malloc(cmd->all_cmds[x + 1]);
+		if (!cmd->magic_word[0])
+		{
+			free(cmd->magic_word);
+			return (NULL);
+		}
 		cmd->magic_word[1] = NULL;
 		return (cmd->magic_word);
 	}
 	tmp = cmd->magic_word;
 	k = ft_matrixlen(tmp);
 	cmd->magic_word = malloc(sizeof(char *) * cmd->type_hd + 1);
+	if (!cmd->magic_word)
+		return (NULL);
 	y = -1;
 	while (++y < k)
+	{
 		cmd->magic_word[y] = cpy_with_malloc(tmp[y]);
+		if (!cmd->magic_word[y])
+		{
+			while (--y >= 0)
+				free(cmd->magic_word[y]);
+			free(cmd->magic_word);
+			free(tmp);
+			return (NULL);
+		}
+	}
 	cmd->magic_word[y] = cpy_with_malloc(cmd->all_cmds[x + 1]);
+	if (!cmd->magic_word[y])
+	{
+		while (--y >= 0)
+			free(cmd->magic_word[y]);
+		free(cmd->magic_word);
+		free(tmp);
+		return (NULL);
+	}
 	cmd->magic_word[y + 1] = NULL;
 	free(tmp);
 	return (cmd->magic_word);
@@ -129,6 +156,8 @@ void	search_hd(t_datas_cmd *cmd)
 					cmd->magic_word = ft_cpy_maic_word(cmd, x, 0);
 				else
 					ft_cpy_maic_word(cmd, x, 1);
+				if (!cmd->magic_word)
+					return ;
 			}
 		}
 		x += find_next_char(&cmd->all_cmds[x + 1], '<') + 1;
@@ -226,17 +255,6 @@ t_one_cmd	*move_fd(t_one_cmd *cmd_first, int nb_escape, t_datas_cmd *all)
 		if (!cmd_next && !cmd_prev)
 			return (NULL);
 	}
-	else if ((ft_strchr_up(cmd_now->cmd, '=') && (ft_strchr_up(cmd_now->cmd, '"') == 0
-				|| ft_strchr_up(cmd_now->cmd, '"') > ft_strchr_up(cmd_now->cmd, '='))))
-	{
-		cmd_prev = ft_lstnb(cmd_first, nb_struct - 1);
-		datas_prompt.out_struct = \
-			ft_new_var_env(cmd_now->cmd, datas_prompt.out_struct);
-		ft_free_one_cmd(cmd_now, 1);
-		cmd_prev->type_next = 0;
-		cmd_prev->next = NULL;
-		nb_escape = 0;
-	}
 	else
 		nb_escape++;
 	return (move_fd(cmd_first, nb_escape, all));
@@ -246,9 +264,10 @@ t_datas_cmd	*gen_datas_cmd(char *x, t_datas_prompt *datas_prompt)
 {
 	t_datas_cmd	*cmd;
 
+	(void)datas_prompt;
 	cmd = malloc(sizeof(t_datas_cmd));
 	if (!cmd)
-		exit (0);
+		return (NULL);
 	cmd->all_cmds = ft_split_up(x);
 	search_hd(cmd);
 	if (!cmd->all_cmds)

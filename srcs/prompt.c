@@ -39,6 +39,11 @@ char	*start_prompt(char **env)
 	}
 	output = ft_strjoin(tmp1, "\033[0;39m@\033[0;92mminishell\033[0;39m");
 	free(tmp);
+	if (!output)
+	{
+		free(tmp1);
+		return (NULL);
+	}
 	if (!datas_prompt.last_command_status)
 		tmp = ft_strjoin(output, " \033[0;92m>\033[0;39m ");
 	else

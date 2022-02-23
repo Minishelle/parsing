@@ -37,7 +37,6 @@ t_var_env	*ft_new_var_env(char *str, t_var_env *old_struct)
 	int			size_word;
 	int			size_word2;
 	t_var_env	*out_struct;
-	//t_var_env	*tmp;
 
 	out_struct = malloc(sizeof(t_var_env));
 	if (!out_struct)
@@ -55,14 +54,6 @@ t_var_env	*ft_new_var_env(char *str, t_var_env *old_struct)
 	if (!out_struct->var_txt)
 		return (ft_clean_no_place(out_struct));
 	ft_strlcpy(out_struct->var_txt, &str[size_word + 1], size_word2);
-	/*if (ft_find_in_list(out_struct->name_var, old_struct))
-	{
-		tmp = ft_find_in_list(out_struct->name_var, old_struct);
-		free(tmp->name_var);
-		free(tmp->var_txt);
-		free(tmp);
-		tmp = out_struct
-	}*/
 	out_struct->next = old_struct;
 	return (out_struct);
 }
