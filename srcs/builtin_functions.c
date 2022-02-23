@@ -104,7 +104,6 @@ void	ft_remove_link(t_var_env *target, t_var_env **list)
 void	unset(int ac, char **av)
 {
 	int			i;
-	int			status;
 	t_var_env	*found;
 
 	if (ac == 1)

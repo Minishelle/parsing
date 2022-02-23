@@ -20,6 +20,8 @@ void	process(char *env[], char **cmd, t_one_cmd *cmd_struct, int to_exec)
 
 	i = -1;
 	paths = get_path(env);
+
+	datas_prompt.last_command_status = 0;
 	if (!paths && to_exec)
 	{
 		if (access(cmd_struct->cmd, F_OK) == 0)
@@ -36,7 +38,7 @@ void	process(char *env[], char **cmd, t_one_cmd *cmd_struct, int to_exec)
 	}
 	else if (!paths && !to_exec)
 		return ;
-	while (paths && paths[++i])
+	while (cmd_struct->cmd && paths && paths[++i])
 	{
 		cmd_path = ft_strjoin(paths[i], "/");
 		if (ft_strncmp(cmd_path, cmd[0], ft_strlen(cmd_path)) == 0)
@@ -50,8 +52,11 @@ void	process(char *env[], char **cmd, t_one_cmd *cmd_struct, int to_exec)
 			free(cmd_path);
 	}
 	if (to_exec)
+	{
+		datas_prompt.last_command_status = 0;
 		ft_end_process(cmd_path, cmd, paths, env, cmd_struct);
-	else
+	}
+	else if (cmd_struct->cmd)
 	{
 		if (access(cmd_path, F_OK) != 0 && !check_builtin(cmd_struct))
 			datas_prompt.last_command_status = 127;
@@ -138,9 +143,9 @@ void	minishell_cmd(char **env, t_one_cmd *cmd)
 	cmd_shell[0] = cmd->cmd;
 	cmd_shell[1] = "\n";
 	execve(*cmd_shell, cmd_shell, env);
-	free(cmd_shell[0]);
+/*	free(cmd_shell[0]);
 	free(cmd_shell[1]);
-	free(cmd_shell);
+	free(cmd_shell);*/
 }
 
 void	pipe_rec(t_datas_cmd *cmds, char **env, int pre_fd[2], t_one_cmd *cmd)
@@ -148,9 +153,9 @@ void	pipe_rec(t_datas_cmd *cmds, char **env, int pre_fd[2], t_one_cmd *cmd)
 	int		next_fd[2];
 	pid_t	pid;
 
-//	if (!ft_strncmp("./", cmd->cmd, 2)) // doit etre lancer dans les dans les cmd
-//		minishell_cmd(env, cmd);
-	if (!ft_strlen(cmd->cmd) || ft_strncmp("exit", cmd->cmd, \
+	if (cmd->cmd && !ft_strncmp("./", cmd->cmd, 2))
+		minishell_cmd(env, cmd);
+	else if (!ft_strlen(cmd->cmd) || ft_strncmp("exit", cmd->cmd, \
 		ft_strlen(cmd->cmd)))
 	{
 		if (pipe(next_fd) == -1)
@@ -158,6 +163,7 @@ void	pipe_rec(t_datas_cmd *cmds, char **env, int pre_fd[2], t_one_cmd *cmd)
 		pid = fork();
 		if (pid < 0)
 			return (perror("fork"));
+
 		if (pid == 0)
 		{
 			if (cmds->nb_cmds == 1)
@@ -180,7 +186,8 @@ void	pipe_rec(t_datas_cmd *cmds, char **env, int pre_fd[2], t_one_cmd *cmd)
 		{
 			close_pipe(pre_fd);
 			waitpid(pid, NULL, 0);
-			find_builtin_env(cmd);
+			if (cmd->cmd)
+				find_builtin_env(cmd);
 			if (cmd->next)
 				pipe_rec(cmds, env, next_fd, cmd->next);
 			else

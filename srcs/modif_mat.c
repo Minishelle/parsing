@@ -192,20 +192,6 @@ char	**modif_mat(char **cmds, char **envp, t_var_env *out_struct)
 				else if ((y > 0 && cmds[x][0] == '"') || (y == 0))
 					cmds[x] = return_char(cmds[x], y, envp, out_struct);
 			}
-			else if (cmds[x][y] == '!' && ft_strlen(&cmds[x][y]) >= 2
-						&& cmds[x][y + 1] == '!' && datas_prompt.old_command
-						&& datas_prompt.old_command[0] != '!')
-			{
-				tmp1 = datas_prompt.old_command;
-				tmp = ft_calloc(ft_strlen(cmds[x]) - 2 + ft_strlen(tmp1), \
-					sizeof(char));
-				ft_strlcpy(tmp, cmds[x], y);
-				ft_strlcpy(&tmp[y], tmp1, ft_strlen(tmp1) + 1);
-				ft_strlcpy(&tmp[y + ft_strlen(tmp1)], &cmds[x][y + 2], \
-					ft_strlen(&cmds[x][y + 2]) + 1);
-				free(cmds[x]);
-				cmds[x] = tmp;
-			}
 			if (y == 0 && cmds[x][y] == '~' && ft_strlen(cmds[x]) == 1)
 			{
 				free(cmds[x]);

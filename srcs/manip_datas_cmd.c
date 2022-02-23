@@ -46,21 +46,24 @@ int	check_map2(char **map)
 {
 	int	x;
 	int	y;
+	int count_simple;
+	int count_double;
 
 	x = -1;
 	while (++x < ft_matrixlen(map))
 	{
 		y = -1;
+		count_simple = 0;
+		count_double = 0;
 		while (++y < (int)ft_strlen(map[x]))
 		{
-			if ((map[x][0] == '"' && search_forget(map[x], '"') % 2) || (map[x][0] == '\'' && search_forget(map[x], 39) % 2))
-				return (er("Minishell: error at the end of command\n", 1, 0));
-			else if (map[x][y] == '!' && ft_strlen(map[x]) == 2
-					&& map[x][1] == '!')
-				if (!datas_prompt.old_command)
-					return (er("Minishell: !!: Event not found\n", 1, 0));
+			if (map[x][y] == '"' && !(count_simple % 2))
+					count_double++;
+			if (map[x][y] == 39 && !(count_double % 2))
+					count_simple++;
 		}
-
+		if (count_simple % 2 && count_double % 2)
+			return (er("Minishell: error at the end of command\n", 1, 0));
 	}
 	return (0);
 }
@@ -90,21 +93,19 @@ char	**ft_cpy_maic_word(t_datas_cmd *cmd, int x, int status)
 
 	if (status)
 	{
-		cmd->magic_word = malloc(sizeof(char *) * 2);
+		cmd->magic_word = malloc(sizeof(char *));
 		cmd->magic_word[0] = cpy_with_malloc(cmd->all_cmds[x + 1]);
 		cmd->magic_word[1] = NULL;
 		return (cmd->magic_word);
 	}
 	tmp = cmd->magic_word;
-	cmd->magic_word = malloc(sizeof(char *) * ft_matrixlen(tmp) + 2);
-	y = -1;
 	k = ft_matrixlen(tmp);
+	cmd->magic_word = malloc(sizeof(char *) * cmd->type_hd + 1);
+	y = -1;
 	while (++y < k)
-	{
 		cmd->magic_word[y] = cpy_with_malloc(tmp[y]);
-		free(tmp[y]);
-	}
 	cmd->magic_word[y] = cpy_with_malloc(cmd->all_cmds[x + 1]);
+	cmd->magic_word[y + 1] = NULL;
 	free(tmp);
 	return (cmd->magic_word);
 }
@@ -132,6 +133,7 @@ void	search_hd(t_datas_cmd *cmd)
 		}
 		x += find_next_char(&cmd->all_cmds[x + 1], '<') + 1;
 	}
+
 }
 
 /****************************************
@@ -175,7 +177,7 @@ int	ft_lstsize_down(t_one_cmd *lst)
 	return (1 + ft_lstsize_down(lst->next));
 }
 
-t_one_cmd	*move_fd(t_one_cmd *cmd_first, int nb_escape)
+t_one_cmd	*move_fd(t_one_cmd *cmd_first, int nb_escape, t_datas_cmd *all)
 {
 	t_one_cmd	*cmd_now;
 	t_one_cmd	*cmd_prev;
@@ -186,10 +188,11 @@ t_one_cmd	*move_fd(t_one_cmd *cmd_first, int nb_escape)
 	if (nb_struct == nb_escape)
 		return (cmd_first);
 	cmd_now = ft_lstnb(cmd_first, nb_struct - nb_escape);
-	if (nb_struct == 1)
+	if (nb_struct == 1 && (cmd_now->cmd || all->type_hd))
 		return (cmd_first);
 	if (!cmd_now->cmd)
 	{
+
 		cmd_prev = NULL;
 		if (nb_struct - nb_escape - 1 > 0)
 			cmd_prev = ft_lstnb(cmd_first, nb_struct - nb_escape - 1);
@@ -201,8 +204,6 @@ t_one_cmd	*move_fd(t_one_cmd *cmd_first, int nb_escape)
 			if (cmd_next->outfile == 1 && cmd_now->outfile != 1)
 				cmd_next->outfile = cmd_now->outfile;
 			cmd_first = cmd_next;
-			ft_free_one_cmd(cmd_now, 1);
-			nb_escape = 0;
 		}
 		else if (cmd_next && cmd_prev)
 		{
@@ -211,8 +212,6 @@ t_one_cmd	*move_fd(t_one_cmd *cmd_first, int nb_escape)
 			if (cmd_prev->outfile == 1 && cmd_now->outfile != 1)
 				cmd_prev->outfile = cmd_now->outfile;
 			cmd_prev->next = cmd_next;
-			ft_free_one_cmd(cmd_now, 1);
-			nb_escape = 0;
 		}
 		else if (!cmd_next && cmd_prev)
 		{
@@ -221,9 +220,11 @@ t_one_cmd	*move_fd(t_one_cmd *cmd_first, int nb_escape)
 			if (cmd_prev->infile == 1 && cmd_now->infile != 1)
 				cmd_prev->infile = cmd_now->infile;
 			cmd_prev->next = NULL;
-			ft_free_one_cmd(cmd_now, 1);
-			nb_escape = 0;
 		}
+		ft_free_one_cmd(cmd_now, 1);
+		nb_escape = 0;
+		if (!cmd_next && !cmd_prev)
+			return (NULL);
 	}
 	else if ((ft_strchr_up(cmd_now->cmd, '=') && (ft_strchr_up(cmd_now->cmd, '"') == 0
 				|| ft_strchr_up(cmd_now->cmd, '"') > ft_strchr_up(cmd_now->cmd, '='))))
@@ -234,8 +235,11 @@ t_one_cmd	*move_fd(t_one_cmd *cmd_first, int nb_escape)
 		ft_free_one_cmd(cmd_now, 1);
 		cmd_prev->type_next = 0;
 		cmd_prev->next = NULL;
+		nb_escape = 0;
 	}
-	return (move_fd(cmd_first, nb_escape + 1));
+	else
+		nb_escape++;
+	return (move_fd(cmd_first, nb_escape, all));
 }
 
 t_datas_cmd	*gen_datas_cmd(char *x, t_datas_prompt *datas_prompt)
@@ -253,16 +257,14 @@ t_datas_cmd	*gen_datas_cmd(char *x, t_datas_prompt *datas_prompt)
 		return (NULL);
 	}
 	if (check_map(cmd->all_cmds))
-	{
 		return (ft_free_no_place(cmd));
-	}
-	ft_putstr_fd("test\n", 1);
 	cmd->cmd_first = trans_cmd(cmd->all_cmds, cmd, 0, NULL);
-	ft_putstr_fd("test\n", 1);
-	cmd->cmd_first = move_fd(cmd->cmd_first, 0);
+	cmd->cmd_first = move_fd(cmd->cmd_first, 0, cmd);
+	if (!cmd->cmd_first)
+		return (NULL);
 	if (!cmd->cmd_first->next)
 	{
-		if ((ft_strchr_up(cmd->cmd_first->cmd, '=') && (ft_strchr_up(cmd->cmd_first->cmd, '"') == 0
+		if (cmd->cmd_first->cmd && (ft_strchr_up(cmd->cmd_first->cmd, '=') && (ft_strchr_up(cmd->cmd_first->cmd, '"') == 0
 					|| ft_strchr_up(cmd->cmd_first->cmd, '"') > ft_strchr_up(cmd->cmd_first->cmd, '='))))
 		{
 			datas_prompt->out_struct = \
@@ -276,7 +278,6 @@ t_datas_cmd	*gen_datas_cmd(char *x, t_datas_prompt *datas_prompt)
 		ft_free_datas_cmd(cmd);
 		return (NULL);
 	}
-	cmd->datas_prompt = datas_prompt;
 	cmd->nb_cmds = ft_lstsize(cmd->cmd_first);
 	return (cmd);
 }

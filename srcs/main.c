@@ -84,7 +84,6 @@ void	init_data_prompt(t_datas_prompt *datas_prompt, char **envp)
 	datas_prompt->last_command_status = 0;
 	datas_prompt->home = find_in_env(envp, "HOME=", 5, 5);
 	datas_prompt->out_struct = NULL;
-	datas_prompt->old_command = NULL;
 	datas_prompt->cmds = NULL;
 	ft_putstr_fd("\033[2J", 1);
 	ft_putstr_fd(INPUT, 1);
@@ -172,24 +171,22 @@ int	main(int argc, char **argv, char **envp)
 			datas_prompt.cmds = gen_datas_cmd(test, &datas_prompt);
 			if (datas_prompt.cmds)
 			{
-				print_test(datas_prompt);
 				if (datas_prompt.cmds->type_hd)
 					ft_here_doc(datas_prompt.cmds, \
-						datas_prompt.cmds->magic_word[0]);
+						datas_prompt.cmds->magic_word);
 				pipe_rec(datas_prompt.cmds, datas_prompt.envp, fd, \
 					datas_prompt.cmds->cmd_first);
+
 				ft_free_datas_cmd(datas_prompt.cmds);
 			}
 			add_history(test);
-			ft_clean_mat(datas_prompt.envp);
-			datas_prompt.envp = conv_env_to_mat();
 		}
-		if (datas_prompt.old_command)
-			free(datas_prompt.old_command);
-		datas_prompt.old_command = test;
+		free(test);
 		free(prompt);
 	}
 	ft_new_free(datas_prompt.env_in_struct);
 	if (datas_prompt.out_struct)
 		ft_new_free(datas_prompt.out_struct);
+	if (datas_prompt.home)
+		free(datas_prompt.home);
 }
