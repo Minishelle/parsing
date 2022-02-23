@@ -6,7 +6,7 @@
 /*   By: mbucci <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/17 12:48:22 by mbucci            #+#    #+#             */
-/*   Updated: 2022/02/22 12:32:54 by mbucci           ###   ########.fr       */
+/*   Updated: 2022/02/23 16:17:36 by mbucci           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ int	compare_pwd(void)
 	path = getcwd(path, 0);
 	if (!path)
 		return (0);
-	ret = ft_strncmp(path, tmp, 0);
+	ret = ft_strcmp(path, tmp);
 	free(path);
 	path = NULL;
 	return (ret);

@@ -6,7 +6,7 @@
 /*   By: hgoorick <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/11 15:12:14 by hgoorick          #+#    #+#             */
-/*   Updated: 2022/02/18 15:54:46 by mbucci           ###   ########.fr       */
+/*   Updated: 2022/02/23 16:30:06 by mbucci           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,8 +25,6 @@
 # Dev by Lisa Buccheri, Matteo Bucci & Hugo Goorickx #\n\
 # (Version 0.6.2)                                    #\n\
 ######################################################\n"
-
-
 
 void		ft_free_one_cmd(t_one_cmd *first_cmd, int status);
 void		ft_free_datas_cmd(t_datas_cmd *datas_cmd);
@@ -80,5 +78,6 @@ t_one_cmd	*trans_cmd(char **cmds, t_datas_cmd	*data_command, int st, t_one_cmd *
 
 t_var_env	*conv_env(char **envp);
 t_var_env	*ft_new_var_env(char *str, t_var_env *old_struct);
+t_var_env	*ft_find_in_list(char *str, t_var_env *list);
 
 #endif

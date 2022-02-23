@@ -6,11 +6,10 @@
 /*   By: mbucci <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/26 16:22:49 by mbucci            #+#    #+#             */
-/*   Updated: 2022/02/22 11:27:58 by mbucci           ###   ########.fr       */
+/*   Updated: 2022/02/23 16:18:00 by mbucci           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stdio.h>
 #include "minishell.h"
 
 char	*ft_getenv(char *var_name, t_var_env *list)
@@ -28,17 +27,10 @@ char	*ft_getenv(char *var_name, t_var_env *list)
 
 void	env(void)
 {
-	t_var_env	*ptr;
+	int	i;
 
-	ptr = datas_prompt.env_in_struct;
-	if (!ptr)
-		return ;
-	while (ptr)
-	{
-		ft_putstr_fd(ptr->name_var, 1);
-		write(1, "=", 1);
-		ft_putendl_fd(ptr->var_txt, 1);
-		ptr = ptr->next;
-	}
+	i = -1;
+	while (datas_prompt.envp[++i])
+		ft_putendl_fd(datas_prompt.envp[i], 1);
 	datas_prompt.last_command_status = 0;
 }

@@ -6,17 +6,15 @@
 /*   By: mbucci <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/26 14:49:11 by mbucci            #+#    #+#             */
-/*   Updated: 2022/02/22 13:15:07 by mbucci           ###   ########.fr       */
+/*   Updated: 2022/02/23 16:46:23 by mbucci           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-t_var_env	*ft_find_in_list(char *str, t_var_env *list);
-
-/*	EXPORT NAME
- *	if NAME is already a variable it will be added to env
- *	if NAME has no value NAME
+/*	export name
+ *	if name is already a variable it will be added to env
+ *	if name has no value name
  * */
 
 /*void	export(int ac, char **av)
@@ -35,7 +33,7 @@ t_var_env	*ft_find_in_list(char *str, t_var_env *list);
 		while (++i < ac)
 		{
 			//	if (av[i] in sys_var or var does not have a value)
-				//	add to env list + delete sys_var List;
+				//	add to env list + delete sys_var list;
 		}
 	}
 }*/
@@ -61,49 +59,65 @@ t_var_env	*ft_find_in_list(char *str, t_var_env *list);
 		printf("%s\n", matrix[i]);
 }*/
 
-/*int	forbidden_char_in_name(char *s, int *ptr)
+void	var_error(char *funct, char *var)
 {
-	int		i;
-	char	*invalid;
+	ft_putstr_fd("minishell: ", STDERR_FILENO);
+	ft_putstr_fd(funct, STDERR_FILENO);
+	ft_putstr_fd(": `", STDERR_FILENO);
+	ft_putstr_fd(var, STDERR_FILENO);
+	ft_putstr_fd("': ", STDERR_FILENO);
+	ft_putendl_fd("not a valid identifier", STDERR_FILENO);
+}
 
-	i = 0;
-	while (s[i++])
+int	check_char_in_name(char *funct, char *s, int *ptr)
+{
+	int	i;
+
+	i = -1;
+	while (s[++i] && (ft_isalpha(s[i]) || (i != 0 && ft_isdigit(s[i])) || s[i] == '_'))
+		;
+	if (!s[i])
+		return (0);
+	else
 	{
-		if (!ft_strchr_up(invalid, s[i]) && invalid[0] != s[i])
-		{
-			var_error();
-			*ptr = 1;
-		}
+		var_error(funct, s);
+		*ptr = 1;
 	}
-}*/
+	return (1);
+}
 
 void	ft_remove_link(t_var_env *target, t_var_env **list)
 {
 	t_var_env	*tmp;
+	t_var_env	*ptr;
 
 	if (!list || !*list || !target)
 		return ;
-	if (target == *list)
+	ptr = *list;
+	if (target == ptr)
 	{
-		tmp = *list;
+		tmp = ptr;
 		*list = (*list)->next;
 	}
 	else
 	{
-		while (*list && (*list)->next != target)
-			*list = (*list)->next;
-		tmp = (*list)->next;
-		(*list)->next = (*list)->next->next;
+		while (ptr && ptr->next && ptr->next != target)
+			ptr = ptr->next;
+		tmp = ptr->next;
+		if (ptr->next->next)
+			ptr->next = ptr->next->next;
+		else
+			ptr->next = NULL;
 	}
 	free(tmp->var_txt);
 	free(tmp->name_var);
 	free(tmp);
-	tmp = NULL;
 }
 
 void	unset(int ac, char **av)
 {
 	int			i;
+	int			status;
 	t_var_env	*found;
 
 	if (ac == 1)
@@ -112,10 +126,11 @@ void	unset(int ac, char **av)
 		return ;
 	}
 	i = -1;
+	status = 0;
  	while (++i < ac)
 	{
-		//check for forbidden characters
-		//	if forbidden char print error message and keep going
+		if (check_char_in_name("unset", av[i], &status))
+			continue ;
 		found = ft_find_in_list(av[i], datas_prompt.env_in_struct);
 		if (found)
 			ft_remove_link(found, &datas_prompt.env_in_struct);
@@ -128,7 +143,8 @@ void	unset(int ac, char **av)
 	}
 	ft_clean_mat(datas_prompt.envp);
 	datas_prompt.envp = conv_env_to_mat();
-	datas_prompt.last_command_status = 0;
+	if (!status)
+		datas_prompt.last_command_status = 0;
 }
 
 void	ft_exit(void)
