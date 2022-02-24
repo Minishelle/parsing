@@ -6,7 +6,7 @@
 /*   By: hgoorick <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/11 15:12:14 by hgoorick          #+#    #+#             */
-/*   Updated: 2022/02/23 16:30:06 by mbucci           ###   ########.fr       */
+/*   Updated: 2022/02/24 11:47:50 by mbucci           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,6 +48,7 @@ void		pwd(void);
 void		unset(int ac, char **av);
 void		ft_exit(void);
 void		ft_clean_mat(char **mat);
+void		var_error(char *funct, char *var);
 
 int			ft_strchr_up(const char *str, int to_find);
 int			ft_strlen_up(char *str, char *search);
@@ -58,6 +59,7 @@ int			find_builtin(t_one_cmd *cmd);
 int			find_builtin_env(t_one_cmd *cmd);
 int			check_builtin(t_one_cmd *cmd);
 int			ft_open(t_one_cmd *cmd);
+int			check_char_in_name(char *funct, char *s, int *ptr);
 
 char		*find_in_env(char **envp, char *word, int len_word, int len_return);
 char		*start_prompt(char **env);
