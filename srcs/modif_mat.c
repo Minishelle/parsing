@@ -6,7 +6,7 @@
 /*   By: hgoorick <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/10 18:10:53 by hgoorick          #+#    #+#             */
-/*   Updated: 2022/02/10 18:10:57 by hgoorick         ###   ########.fr       */
+/*   Updated: 2022/02/24 22:29:12 by mbucci           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,7 +93,7 @@ char	*return_char(char *cmds, int y, char **envp, t_var_env *out_struct)
 	tmp = malloc(sizeof(char *) * 3);
 	if (!tmp)
 		exit (0);
-	tmp[0] = find_in_env(envp, &cmds[y + 1], size, size + 1);
+	tmp[0] = find_in_env(envp, &cmds[y + 1], size + 1);
 	if (tmp[0] == NULL)
 	{
 		tmp[0] = find_in_struct(&cmds[y + 1], out_struct);

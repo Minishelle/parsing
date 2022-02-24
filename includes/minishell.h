@@ -6,7 +6,7 @@
 /*   By: hgoorick <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/11 15:12:14 by hgoorick          #+#    #+#             */
-/*   Updated: 2022/02/24 11:47:50 by mbucci           ###   ########.fr       */
+/*   Updated: 2022/02/24 22:26:27 by mbucci           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,7 @@ int			check_builtin(t_one_cmd *cmd);
 int			ft_open(t_one_cmd *cmd);
 int			check_char_in_name(char *funct, char *s, int *ptr);
 
-char		*find_in_env(char **envp, char *word, int len_word, int len_return);
+char		*find_in_env(char **envp, char *word, int len_return);
 char		*start_prompt(char **env);
 char		*cpy_with_malloc(char *tmp);
 char		*ft_getenv(char *var_name, t_var_env *list);
