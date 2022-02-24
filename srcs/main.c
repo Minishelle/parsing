@@ -6,7 +6,7 @@
 /*   By: hgoorick <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/10 18:14:40 by hgoorick          #+#    #+#             */
-/*   Updated: 2022/02/18 15:54:23 by mbucci           ###   ########.fr       */
+/*   Updated: 2022/02/24 12:22:18 by mbucci           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -142,19 +142,23 @@ char	**conv_env_to_mat(void)
 {
 	char		**out_mat;
 	int			x;
+	int			i;
 	t_var_env	*tmp;
 
+	i = -1;
 	x = ft_lstsize_up(datas_prompt.env_in_struct);
 	out_mat = malloc(sizeof(char *) * (x + 1));
 	tmp = datas_prompt.env_in_struct;
 	out_mat[x] = NULL;
-	while (--x > -1)
+	while (++i < x)
 	{
-		out_mat[x] = malloc(sizeof(char) * (ft_strlen(tmp->var_txt) + \
+		while (!tmp->var_txt)
+			tmp = tmp->next;
+		out_mat[i] = malloc(sizeof(char) * (ft_strlen(tmp->var_txt) + \
 			ft_strlen(tmp->name_var) + 2));
-		ft_strlcpy(out_mat[x], tmp->name_var, ft_strlen(tmp->name_var));
-		ft_strlcpy(&out_mat[x][ft_strlen(tmp->name_var)], "=", 1);
-		ft_strlcpy(&out_mat[x][ft_strlen(tmp->name_var) + 1], tmp->var_txt, \
+		ft_strlcpy(out_mat[i], tmp->name_var, ft_strlen(tmp->name_var));
+		ft_strlcpy(&out_mat[i][ft_strlen(tmp->name_var)], "=", 1);
+		ft_strlcpy(&out_mat[i][ft_strlen(tmp->name_var) + 1], tmp->var_txt, \
 			ft_strlen(tmp->var_txt));
 		tmp = tmp->next;
 	}
@@ -163,10 +167,9 @@ char	**conv_env_to_mat(void)
 
 int	main(int argc, char **argv, char **envp)
 {
-	char			*prompt;
-	char			*test;
-	int				fd[2];
-	int x=-1;
+	char	*prompt;
+	char	*test;
+	int		fd[2];
 
 	fd[0] = 6;
 	fd[1] = 6;
@@ -174,7 +177,7 @@ int	main(int argc, char **argv, char **envp)
 	(void)argv;
 	init_data_prompt(&datas_prompt, envp);
 	if (!datas_prompt.envp)
-		exit (1);
+		exit(1);
 	while (19)
 	{
 		prompt = start_prompt(envp);

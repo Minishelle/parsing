@@ -45,3 +45,5 @@ SRC += cd.c
 SRC += echo.c
 SRC += env.c
 SRC += pwd.c
+SRC += unset.c
+SRC += var_utils.c
