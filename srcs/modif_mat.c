@@ -165,90 +165,94 @@ char	*return_char(char *cmds, int y, char **envp, t_var_env *out_struct)
 *
 ****************************************/
 
+char	*modif_mat2(char *cmd, int y, char **envp, t_var_env *out_struct)
+{
+	char	*tmp;
+	char	*tmp1;
+	if (cmd[y] == '$')
+	{
+		if (y <= (int)ft_strlen(cmd) - 1 && cmd[y + 1] == '?')
+		{
+			tmp1 = ft_itoa(datas_prompt.last_command_status);
+			tmp = ft_calloc(ft_strlen(cmd) - 2 + ft_strlen(tmp1), \
+				sizeof(char));
+			ft_strlcpy(tmp, cmd, y);
+			ft_strlcpy(&tmp[y], tmp1, ft_strlen(tmp1) + 1);
+			ft_strlcpy(&tmp[y + ft_strlen(tmp1)], &cmd[y + 2], \
+				ft_strlen(&cmd[y + 2]) + 1);
+			free(cmd);
+			cmd = tmp;
+		}
+		else if ((y > 0 && cmd[0] == '"') || (y == 0))
+			cmd = return_char(cmd, y, envp, out_struct);
+	}
+	return (cmd);
+}
+
+char	*replace_two_char(char *cmd, char erase)
+{
+	int x;
+	int y;
+	int count;
+	char *return_char;
+
+	x = -1;
+	y = -1;
+	return_char = malloc(sizeof(char) * ft_strlen(cmd) - 1);
+	if (!return_char)
+		return (NULL);
+	count = 0;
+	while (++x < (int)ft_strlen(cmd) && count != 2)
+	{
+		if (cmd[x] != erase)
+			return_char[++y] = cmd[x];
+		else
+			count++;
+	}
+	--x;
+	while (++x < (int)ft_strlen(cmd))
+		return_char[++y] = cmd[x];
+	return_char[++y] = '\0';
+	free(cmd);
+	return (return_char);
+}
+
 char	**modif_mat(char **cmds, char **envp, t_var_env *out_struct)
 {
 	int		x;
 	int		y;
-	int		stat;
-	char	*tmp;
-	char	*tmp1;
+	int		stat_simple;
+	int stat_double;
 
 	x = -1;
 	while (++x < ft_matrixlen(cmds))
 	{
 		y = -1;
+		stat_simple = 0;
+		stat_double = 0;
 		while (++y < (int)ft_strlen(cmds[x]))
 		{
-			if (cmds[x][y] == '$')
+			cmds[x] = modif_mat2(cmds[x], y, envp, out_struct);
+			if (cmds[x][y] == '"' && !stat_simple)
 			{
-				if (y <= (int)ft_strlen(cmds[x]) - 1 && cmds[x][y + 1] == '?')
+				stat_double++;
+				if (!(stat_double % 2))
 				{
-					tmp1 = ft_itoa(datas_prompt.last_command_status);
-					tmp = ft_calloc(ft_strlen(cmds[x]) - 2 + ft_strlen(tmp1), \
-						sizeof(char));
-					ft_strlcpy(tmp, cmds[x], y);
-					ft_strlcpy(&tmp[y], tmp1, ft_strlen(tmp1) + 1);
-					ft_strlcpy(&tmp[y + ft_strlen(tmp1)], &cmds[x][y + 2], \
-						ft_strlen(&cmds[x][y + 2]) + 1);
-					free(cmds[x]);
-					cmds[x] = tmp;
-				}
-				else if ((y > 0 && cmds[x][0] == '"') || (y == 0))
-					cmds[x] = return_char(cmds[x], y, envp, out_struct);
-			}
-			if (y == 0 && cmds[x][y] == '~' && ft_strlen(cmds[x]) == 1)
-			{
-				free(cmds[x]);
-				cmds[x] = cpy_with_malloc(datas_prompt.home);
-			}
-		}
-		if ((cmds[x][0] == '"' && cmds[x][ft_strlen(cmds[x]) - 1] == '"') \
-			|| (cmds[x][0] == '\'' && cmds[x][ft_strlen(cmds[x]) - 1] == '\''))
-		{
-			if (cmds[x][0] == '"' && cmds[x][ft_strlen(cmds[x]) - 1] == '"')
-			{
-				stat = ft_strchr_up(&cmds[x][1], '"') + 1;
-				while (stat < (int)ft_strlen(cmds[x]) - 1)
-				{
-					stat = ft_strchr_up(&cmds[x][stat], '"') + stat;
-					if (stat != (int)ft_strlen(cmds[x]) - 1)
-					{
-						tmp = ft_calloc(sizeof(char), ft_strlen(cmds[x]) - 1);
-						ft_strlcpy(tmp, &cmds[x][0], \
-								ft_strchr_up(&cmds[x][1], '"') + 1);
-						ft_strlcpy(&tmp[ft_strchr_up(&cmds[x][1], '"') + 1], \
-							&cmds[x][ft_strchr_up(&cmds[x][1], '"') + 3], \
-							ft_strlen(cmds[x]) - stat);
-						free(cmds[x]);
-						cmds[x] = tmp;
-					}
-					stat = ft_strchr_up(&cmds[x][stat], '"') + stat;
+					cmds[x] = replace_two_char(cmds[x], '"');
+					stat_double = 0;
+					y-=2;
 				}
 			}
-			else if (cmds[x][0] == 39 && cmds[x][ft_strlen(cmds[x]) - 1] == 39)
+			else if (cmds[x][y] == 39 && !stat_double)
 			{
-				stat = ft_strchr_up(&cmds[x][1], 39) + 1;
-				while (stat < (int)ft_strlen(cmds[x]) - 1)
+				stat_simple++;
+				if (!(stat_simple % 2))
 				{
-					stat = ft_strchr_up(&cmds[x][stat], 39) + stat;
-					if (stat != (int)ft_strlen(cmds[x]) - 1)
-					{
-						tmp = ft_calloc(sizeof(char), ft_strlen(cmds[x]) - 1);
-						ft_strlcpy(tmp, &cmds[x][0], \
-							ft_strchr_up(&cmds[x][1], 39) + 1);
-						ft_strlcpy(&tmp[ft_strchr_up(&cmds[x][1], 39) + 1], \
-							&cmds[x][ft_strchr_up(&cmds[x][1], 39) + 3], \
-							ft_strlen(cmds[x]) - stat);
-						free(cmds[x]);
-						cmds[x] = tmp;
-					}
-					stat = ft_strchr_up(&cmds[x][stat], 39) + stat;
+					cmds[x] = replace_two_char(cmds[x], 39);
+					stat_simple = 0;
+					y-=2;
 				}
 			}
-			tmp = ft_calloc(sizeof(char), ft_strlen(cmds[x]) - 1);
-			ft_strlcpy(tmp, &cmds[x][1], ft_strlen(cmds[x]) - 2);
-			free(cmds[x]);
-			cmds[x] = tmp;
 		}
 	}
 	return (cmds);

@@ -19,15 +19,15 @@ void	process(char *env[], char **cmd, t_one_cmd *cmd_struct, int to_exec)
 	char	*cmd_path;
 
 	i = -1;
+	if (ft_strlen(cmd_struct->cmd) > 2 && cmd_struct->cmd[0] == '.' && cmd_struct->cmd[1] == '/' && to_exec)
+		ft_end_process(cmd_struct->cmd, cmd_struct->all_cmd, NULL, env, cmd_struct);
 	paths = get_path(env);
 	if (!paths)
 		return ;
-	datas_prompt.last_command_status = 0;
 	if (!paths && to_exec)
 	{
 		if (access(cmd_struct->cmd, F_OK) == 0)
 		{
-			datas_prompt.last_command_status = 0;
 			ft_clean_mat(paths);
 			execve(cmd_struct->cmd, cmd, env);
 		}
@@ -64,17 +64,7 @@ void	process(char *env[], char **cmd, t_one_cmd *cmd_struct, int to_exec)
 			free(cmd_path);
 	}
 	if (to_exec)
-	{
-		datas_prompt.last_command_status = 0;
 		ft_end_process(cmd_path, cmd, paths, env, cmd_struct);
-	}
-	else if (cmd_struct->cmd)
-	{
-		if (access(cmd_path, F_OK) != 0 && !check_builtin(cmd_struct))
-			datas_prompt.last_command_status = 127;
-		//else if (!cmd_struct->next && (access(cmd_path, F_OK) == 0))
-		//	datas_prompt.last_command_status = 0;
-	}
 	if (cmd_path)
 		free(cmd_path);
 	ft_clean_mat(paths);
@@ -143,19 +133,33 @@ void	minishell_cmd(char **env, t_one_cmd *cmd)
 	execve(*cmd_shell, cmd_shell, env);
 }
 
+static void i_find_a_signal(int this_signal)
+{
+	if (this_signal == SIGQUIT)
+	{
+		ft_putstr_fd("QUIT: 3", 1);
+		kill(datas_prompt.pid, SIGKILL);
+		datas_prompt.last_command_status = 131;
+	}
+	else
+		datas_prompt.last_command_status = 130;
+	ft_putstr_fd("\n", 1);
+}
+
 void	pipe_rec(t_datas_cmd *cmds, char **env, int pre_fd[2], t_one_cmd *cmd)
 {
 	int		next_fd[2];
 	pid_t	pid;
+	int tmp;
 
-	if (cmd->cmd && !ft_strncmp("./", cmd->cmd, 2))
-		minishell_cmd(env, cmd);
-	else if (!ft_strlen(cmd->cmd) || ft_strncmp("exit", cmd->cmd, \
-		ft_strlen(cmd->cmd)))
+	/*if (cmd->cmd && !ft_strncmp("./", cmd->cmd, 2))
+		minishell_cmd(env, cmd);*/
+	if (!ft_strlen(cmd->cmd) || ft_strncmp(cmd->cmd, "exit",  4))
 	{
 		if (pipe(next_fd) == -1)
 			return (perror("pipe"));
 		pid = fork();
+		datas_prompt.pid = pid;
 		if (pid < 0)
 			return (perror("fork"));
 
@@ -179,8 +183,12 @@ void	pipe_rec(t_datas_cmd *cmds, char **env, int pre_fd[2], t_one_cmd *cmd)
 		}
 		else
 		{
+			signal(SIGINT, i_find_a_signal);
+			signal(SIGQUIT, i_find_a_signal);
 			close_pipe(pre_fd);
-			waitpid(pid, NULL, 0);
+			waitpid(pid, &tmp, 0);
+			if ((datas_prompt.last_command_status != 130 && datas_prompt.last_command_status != 131) && datas_prompt.last_command_status)
+				datas_prompt.last_command_status = tmp / 255;
 			if (cmd->cmd)
 				find_builtin_env(cmd);
 			if (cmd->next)

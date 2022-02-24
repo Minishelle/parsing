@@ -23,7 +23,7 @@ typedef struct s_var_env		t_var_env;
 struct s_datas_prompt
 {
 	t_datas_cmd	*cmds;
-	char		*home;
+    int         pid;
 	char		**envp;
 	int			last_command_status;
 	t_var_env	*env_in_struct;

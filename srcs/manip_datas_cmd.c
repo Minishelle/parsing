@@ -263,6 +263,8 @@ t_one_cmd	*move_fd(t_one_cmd *cmd_first, int nb_escape, t_datas_cmd *all)
 t_datas_cmd	*gen_datas_cmd(char *x, t_datas_prompt *datas_prompt)
 {
 	t_datas_cmd	*cmd;
+	t_var_env	*tmp;
+	t_var_env	*tmp1;
 
 	(void)datas_prompt;
 	cmd = malloc(sizeof(t_datas_cmd));
@@ -286,8 +288,31 @@ t_datas_cmd	*gen_datas_cmd(char *x, t_datas_prompt *datas_prompt)
 		if (cmd->cmd_first->cmd && (ft_strchr_up(cmd->cmd_first->cmd, '=') && (ft_strchr_up(cmd->cmd_first->cmd, '"') == 0
 					|| ft_strchr_up(cmd->cmd_first->cmd, '"') > ft_strchr_up(cmd->cmd_first->cmd, '='))))
 		{
-			datas_prompt->out_struct = \
-				ft_new_var_env(cmd->cmd_first->cmd, datas_prompt->out_struct);
+			tmp1 = ft_new_var_env(cmd->cmd_first->cmd, datas_prompt->out_struct);
+			if (ft_find_in_list(tmp1->name_var, datas_prompt->env_in_struct))
+			{
+				tmp = ft_find_in_list(tmp1->name_var, datas_prompt->env_in_struct);
+				if (tmp->var_txt)
+					free(tmp->var_txt);
+				tmp->var_txt = cpy_with_malloc(tmp1->var_txt);
+				free(tmp1->var_txt);
+				free(tmp1->name_var);
+				free(tmp1);
+				ft_clean_mat(datas_prompt->envp);
+				datas_prompt->envp = conv_env_to_mat();
+			}
+			else if (ft_find_in_list(tmp1->name_var, datas_prompt->out_struct))
+			{
+				tmp = ft_find_in_list(tmp1->name_var, datas_prompt->out_struct);
+				if (tmp->var_txt)
+					free(tmp->var_txt);
+				tmp->var_txt = cpy_with_malloc(tmp1->var_txt);
+				free(tmp1->var_txt);
+				free(tmp1->name_var);
+				free(tmp1);
+			}
+			else
+				datas_prompt->out_struct = tmp1;
 			ft_free_datas_cmd(cmd);
 			return (NULL);
 		}

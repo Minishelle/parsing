@@ -73,8 +73,11 @@ void	ft_end_process(char *cmd_path, char **cmd, char **paths, char **env, t_one_
 	if (!check_builtin(cmd_struct))
 		execve(cmd_path, cmd, env);
 	if (access(cmd_path, F_OK) != 0 && !check_builtin(cmd_struct))
+	{
+		datas_prompt.last_command_status = 127;
 		perror_cnf("command not found: ", cmd[0], 2);
+	}
 	free(cmd_path);
 	ft_free(paths, cmd);
-	exit(127);
+	exit(datas_prompt.last_command_status);
 }

@@ -6,7 +6,7 @@
 /*   By: hgoorick <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/10 18:14:40 by hgoorick          #+#    #+#             */
-/*   Updated: 2022/02/24 12:22:18 by mbucci           ###   ########.fr       */
+/*   Updated: 2022/02/18 15:54:23 by mbucci           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,14 +86,8 @@ void	init_data_prompt(t_datas_prompt *datas_prompt, char **envp)
 		ft_clean_mat(datas_prompt->envp);
 		return ;
 	}
-	datas_prompt->home = find_in_env(envp, "HOME=", 5, 5);
-	if (!datas_prompt->home)
-	{
-		ft_clean_mat(datas_prompt->envp);
-		ft_new_free(datas_prompt->env_in_struct);
-		return ;
-	}
 	datas_prompt->last_command_status = 0;
+	datas_prompt->pid=0;
 	datas_prompt->out_struct = NULL;
 	datas_prompt->cmds = NULL;
 	ft_putstr_fd(INPUT, 1);
@@ -138,38 +132,58 @@ int	check_builtin(t_one_cmd *cmd)
 		|| (!ft_strncmp("exit", cmd->cmd, 4)));
 }
 
-char	**conv_env_to_mat(void)
+char    **conv_env_to_mat(void)
 {
-	char		**out_mat;
-	int			x;
-	int			i;
-	t_var_env	*tmp;
+    char        **out_mat;
+    int            x;
+    int            i;
+    t_var_env    *tmp;
+    
+    i = -1;
+    x = ft_lstsize_up(datas_prompt.env_in_struct);
+    out_mat = malloc(sizeof(char *) * (x + 1));
+    tmp = datas_prompt.env_in_struct;
+    out_mat[x] = NULL;
+    while (++i < x)
+    {
+        while (!tmp->var_txt)
+            tmp = tmp->next;
+        out_mat[i] = malloc(sizeof(char) * (ft_strlen(tmp->var_txt) + \
+                                            ft_strlen(tmp->name_var) + 2));
+        ft_strlcpy(out_mat[i], tmp->name_var, ft_strlen(tmp->name_var));
+        ft_strlcpy(&out_mat[i][ft_strlen(tmp->name_var)], "=", 1);
+        ft_strlcpy(&out_mat[i][ft_strlen(tmp->name_var) + 1], tmp->var_txt, \
+                   ft_strlen(tmp->var_txt));
+        tmp = tmp->next;
+    }
+    return (out_mat);
+}
 
-	i = -1;
-	x = ft_lstsize_up(datas_prompt.env_in_struct);
-	out_mat = malloc(sizeof(char *) * (x + 1));
-	tmp = datas_prompt.env_in_struct;
-	out_mat[x] = NULL;
-	while (++i < x)
+
+static void i_find_a_signal(int this_signal)
+{
+	if (this_signal == SIGINT)
 	{
-		while (!tmp->var_txt)
-			tmp = tmp->next;
-		out_mat[i] = malloc(sizeof(char) * (ft_strlen(tmp->var_txt) + \
-			ft_strlen(tmp->name_var) + 2));
-		ft_strlcpy(out_mat[i], tmp->name_var, ft_strlen(tmp->name_var));
-		ft_strlcpy(&out_mat[i][ft_strlen(tmp->name_var)], "=", 1);
-		ft_strlcpy(&out_mat[i][ft_strlen(tmp->name_var) + 1], tmp->var_txt, \
-			ft_strlen(tmp->var_txt));
-		tmp = tmp->next;
+		ft_putstr_fd("\n", 1);
+		rl_on_new_line();
+		//rl_replace_line("", 0);
+		rl_redisplay();
+		datas_prompt.last_command_status = 130;
 	}
-	return (out_mat);
+	else if (this_signal == SIGQUIT)
+	{
+		rl_on_new_line();
+		rl_redisplay();
+		datas_prompt.last_command_status = 131;
+	}
 }
 
 int	main(int argc, char **argv, char **envp)
 {
-	char	*prompt;
-	char	*test;
-	int		fd[2];
+	char			*prompt;
+	char			*test;
+	int				fd[2];
+	//int x=-1;
 
 	fd[0] = 6;
 	fd[1] = 6;
@@ -177,14 +191,16 @@ int	main(int argc, char **argv, char **envp)
 	(void)argv;
 	init_data_prompt(&datas_prompt, envp);
 	if (!datas_prompt.envp)
-		exit(1);
+		exit (1);
 	while (19)
 	{
+		signal(SIGINT, i_find_a_signal);
+		signal(SIGQUIT, i_find_a_signal);
 		prompt = start_prompt(envp);
 		test = readline(prompt);
 		add_history(test);
 		free(prompt);
-		if (test[0] && ft_allisspace(test) != -1)
+		if (test && test[0] && ft_allisspace(test) != -1)
 		{
 			datas_prompt.cmds = gen_datas_cmd(test, &datas_prompt);
 			free(test);
@@ -197,6 +213,14 @@ int	main(int argc, char **argv, char **envp)
 					datas_prompt.cmds->cmd_first);
 				ft_free_datas_cmd(datas_prompt.cmds);
 			}
+		}
+		else if (!test)
+		{
+			ft_clean_mat(datas_prompt.envp);
+			ft_new_free(datas_prompt.env_in_struct);
+			if (datas_prompt.out_struct)
+				ft_new_free(datas_prompt.out_struct);
+			exit(0);
 		}
 	}
 }
