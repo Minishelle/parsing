@@ -22,6 +22,21 @@
 *
 ****************************************/
 
+char	*start_prompt1(char *output, char *tmp1)
+{
+	char	*tmp;
+
+	if (!datas_prompt.last_command_status)
+		tmp = ft_strjoin(output, " \033[0;92m>\033[0;39m ");
+	else
+		tmp = ft_strjoin(output, " \033[0;91m>\033[0;39m ");
+	free(output);
+	free(tmp1);
+	if (!tmp)
+		return (NULL);
+	return (tmp);
+}
+
 char	*start_prompt(char **env)
 {
 	char	*output;
@@ -44,13 +59,5 @@ char	*start_prompt(char **env)
 		free(tmp1);
 		return (NULL);
 	}
-	if (!datas_prompt.last_command_status)
-		tmp = ft_strjoin(output, " \033[0;92m>\033[0;39m ");
-	else
-		tmp = ft_strjoin(output, " \033[0;91m>\033[0;39m ");
-	free(output);
-	free(tmp1);
-	if (!tmp)
-		return (NULL);
-	return (tmp);
+	return (start_prompt1(output, tmp1));
 }

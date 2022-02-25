@@ -26,8 +26,8 @@
 # (Version 0.6.2)                                    #\n\
 ######################################################\n"
 
-void		ft_free_one_cmd(t_one_cmd *first_cmd, int status);
-void		ft_free_datas_cmd(t_datas_cmd *datas_cmd);
+void		*ft_free_one_cmd(t_one_cmd *first_cmd, int status);
+void		*ft_free_datas_cmd(t_datas_cmd *datas_cmd);
 void		ft_new_free(t_var_env *input);
 void		cmd_process(t_fd fds, char **argv, char *env[], int j);
 void		pipe_rec(t_datas_cmd *cmds, char *env[], int prev_fd[2], \
@@ -40,15 +40,17 @@ void		child(t_fd fds, char *argv[], char *env[], int fd[2]);
 void		perror_cnf(char *str, char *cmd, int fd);
 void		ft_end_process(char *cmd_path, char **cmd, char **path, char **env, \
 	t_one_cmd *cmd_struct);
-void		process(char *env[], char **cmd, t_one_cmd *cmd_struct, int to_exec);
-void 		cd(int ac, char **av);
+void		process(char *env[], char **cmd, t_one_cmd *cmd_struct, \
+	int to_exec);
+void		cd(int ac, char **av);
 void		echo(int ac, char **av);
-void 		env(void);
+void		env(void);
 void		pwd(void);
 void		unset(int ac, char **av);
 void		ft_exit(void);
 void		ft_clean_mat(char **mat);
 void		var_error(char *funct, char *var);
+void		search_hd(t_datas_cmd *cmd);
 
 int			ft_strchr_up(const char *str, int to_find);
 int			ft_strlen_up(char *str, char *search);
@@ -59,24 +61,38 @@ int			find_builtin(t_one_cmd *cmd);
 int			find_builtin_env(t_one_cmd *cmd);
 int			check_builtin(t_one_cmd *cmd);
 int			ft_open(t_one_cmd *cmd);
+int			er(char *str, int error, int status);
+int			search_forget(char *map, char forget);
+int			check_map2(char **map);
+int			check_map(char **map);
 int			check_char_in_name(char *funct, char *s, int *ptr);
 
 char		*find_in_env(char **envp, char *word, int len_return);
+char		*find_in_struct(char *var_env, t_var_env *out);
 char		*start_prompt(char **env);
 char		*cpy_with_malloc(char *tmp);
 char		*ft_getenv(char *var_name, t_var_env *list);
+char		*ft_free_little_matrice(char **mat, int x);
+char		*return_char(char *cmds, int y, char **envp, \
+	t_var_env *out_struct);
 
 char		**ft_first_cmd(char **all_cmds);
+char		**free_no_place(int y, char **magic_word, char **tmp);
+char		**one_word(t_datas_cmd *cmd, int x);
+char		**conv_env_to_mat(void);
 char		**get_path(char *env[]);
 char		**pipen_t(char **cmds);
 char		**modif_mat(char **cmds, char **envp, t_var_env *out_struct);
 char		**simple_mat(char **start_mat);
 char		**conv_env_to_mat(void);
+char		**ft_cpy_maic_word(t_datas_cmd *cmd, int x, int status);
 
-t_datas_cmd	*gen_datas_cmd(char *x, t_datas_prompt *datas_prompt);
+t_datas_cmd	*gen_datas_cmd(char *x);
+t_datas_cmd	*ft_free_no_place(t_datas_cmd *cmd);
 t_datas_cmd	*ft_parsing(char *cmd_one_line, t_datas_prompt *datas_prompt);
 
-t_one_cmd	*trans_cmd(char **cmds, t_datas_cmd	*data_command, int st, t_one_cmd *old_one);
+t_one_cmd	*trans_cmd(char **cmds, int st, t_datas_cmd	*data_command);
+t_one_cmd	*move_fd(t_one_cmd *cmd_first, int nb_escape, t_datas_cmd *all);
 
 t_var_env	*conv_env(char **envp);
 t_var_env	*ft_new_var_env(char *str, t_var_env *old_struct);

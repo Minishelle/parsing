@@ -47,111 +47,6 @@ char	*find_in_struct(char *var_env, t_var_env *out)
 
 /****************************************
 *
-*	Nom : ft_free_little_matrice
-*	Params : - Matrice de 3 liste de char
-*			 - L'index qui ne doit pas etre free
-*	Retour : Void
-*	Descritpion:
-*		Free les trois index de la matrice sauf si le nombre donne est compris
-*			entre 0 et 2, dans ce cas l'index egal au nombre ne sera pas free
-*
-****************************************/
-
-void	ft_free_little_matrice(char **mat, int x)
-{
-	int	y;
-
-	y = -1;
-	while (++y < 3)
-		if (y != x)
-			free(mat[y]);
-}
-
-/****************************************
-*
-*	Nom : return_char
-*	Params : - liste de chars liee a la Matrice de la commande
-*			 - la positon dans la liste de chars
-*			 - la matrice d'env
-*			 - la premiere stuct de la liste chainee
-*	Retour : Liste de char modifie ou on remplace la var d'env par sa liste de
-*				char liee
-*	Descritpion:
-*		Defini la longueur de la var d'env, prend ensuite la liste de char liee
-*			a la var d'env, cut avant et apres la variable d'env et colle les
-*			deux partie avec la liste de char liee a la var d'env
-*
-****************************************/
-
-char	*return_char(char *cmds, int y, char **envp, t_var_env *out_struct)
-{
-	int		size;
-	char	**tmp;
-	char	*tmp_out;
-
-	size = ft_strlen_up(&cmds[y + 1], " \"");
-	tmp = malloc(sizeof(char *) * 3);
-	if (!tmp)
-		exit (0);
-	tmp[0] = find_in_env(envp, &cmds[y + 1], size + 1);
-	if (tmp[0] == NULL)
-	{
-		tmp[0] = find_in_struct(&cmds[y + 1], out_struct);
-		if (tmp[0] == NULL)
-		{
-			tmp[0] = malloc(sizeof(char) * 2);
-			if (!tmp[0])
-			{
-				free(tmp);
-				return (NULL);
-			}
-			tmp[0][0] = '\0';
-		}
-	}
-	tmp[1] = ft_calloc(sizeof(char), y);
-	if (!tmp[1])
-	{
-		if (tmp[0])
-		{
-			free(tmp[0]);
-			free(tmp);
-		}
-		return (NULL);
-	}
-	ft_strlcpy(tmp[1], cmds, y);
-	tmp[2] = ft_strjoin(tmp[1], tmp[0]);
-	if (!tmp[2])
-	{
-		ft_free_little_matrice(tmp, 2);
-		return (NULL);
-	}
-	ft_free_little_matrice(tmp, 2);
-	tmp[0] = ft_calloc(sizeof(char), ft_strlen(&cmds[y + \
-		ft_strlen_up(&cmds[y + 1], " \"")]));
-	if (!tmp[0])
-	{
-		ft_free_little_matrice(tmp, 0);
-		return (NULL);
-	}
-	ft_strlcpy(tmp[0], &cmds[y + 1 + ft_strlen_up(&cmds[y + 1], " \"")], \
-		ft_strlen(&cmds[y + ft_strlen_up(&cmds[y + 1], " \"")]));
-	tmp[1] = ft_strjoin(tmp[2], tmp[0]);
-	if (!tmp[1])
-	{
-		ft_free_little_matrice(tmp, 1);
-		return (NULL);
-	}
-	ft_free_little_matrice(tmp, 1);
-	if (cmds)
-		free(cmds);
-	tmp_out = cpy_with_malloc(tmp[1]);
-	free(tmp[1]);
-	free(tmp);
-	return (tmp_out);
-}
-
-/****************************************
-*
 *	Nom : modif_mat
 *	Params : - La Matrice de la commande
 *			 - la matrice d'env
@@ -169,6 +64,7 @@ char	*modif_mat2(char *cmd, int y, char **envp, t_var_env *out_struct)
 {
 	char	*tmp;
 	char	*tmp1;
+
 	if (cmd[y] == '$')
 	{
 		if (y <= (int)ft_strlen(cmd) - 1 && cmd[y + 1] == '?')
@@ -191,10 +87,10 @@ char	*modif_mat2(char *cmd, int y, char **envp, t_var_env *out_struct)
 
 char	*replace_two_char(char *cmd, char erase)
 {
-	int x;
-	int y;
-	int count;
-	char *return_char;
+	int		x;
+	int		y;
+	int		count;
+	char	*return_char;
 
 	x = -1;
 	y = -1;
@@ -217,12 +113,37 @@ char	*replace_two_char(char *cmd, char erase)
 	return (return_char);
 }
 
+char	*modif_mat3(char *cmd, int *y, int *stat_simple, int *stat_double)
+{
+	if (cmd[(*y)] == '"' && !(*stat_simple))
+	{
+		(*stat_double)++;
+		if (!((*stat_double) % 2))
+		{
+			cmd = replace_two_char(cmd, '"');
+			(*stat_double) = 0;
+			(*y) -= 2;
+		}
+	}
+	else if (cmd[*y] == 39 && !*stat_double)
+	{
+		(*stat_simple)++;
+		if (!((*stat_simple) % 2))
+		{
+			cmd = replace_two_char(cmd, 39);
+			(*stat_simple) = 0;
+			(*y) -= 2;
+		}
+	}
+	return (cmd);
+}
+
 char	**modif_mat(char **cmds, char **envp, t_var_env *out_struct)
 {
 	int		x;
 	int		y;
 	int		stat_simple;
-	int stat_double;
+	int		stat_double;
 
 	x = -1;
 	while (++x < ft_matrixlen(cmds))
@@ -233,26 +154,7 @@ char	**modif_mat(char **cmds, char **envp, t_var_env *out_struct)
 		while (++y < (int)ft_strlen(cmds[x]))
 		{
 			cmds[x] = modif_mat2(cmds[x], y, envp, out_struct);
-			if (cmds[x][y] == '"' && !stat_simple)
-			{
-				stat_double++;
-				if (!(stat_double % 2))
-				{
-					cmds[x] = replace_two_char(cmds[x], '"');
-					stat_double = 0;
-					y-=2;
-				}
-			}
-			else if (cmds[x][y] == 39 && !stat_double)
-			{
-				stat_simple++;
-				if (!(stat_simple % 2))
-				{
-					cmds[x] = replace_two_char(cmds[x], 39);
-					stat_simple = 0;
-					y-=2;
-				}
-			}
+			cmds[x] = modif_mat3(cmds[x], &y, &stat_simple, &stat_double);
 		}
 	}
 	return (cmds);

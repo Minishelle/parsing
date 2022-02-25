@@ -19,8 +19,10 @@ void	process(char *env[], char **cmd, t_one_cmd *cmd_struct, int to_exec)
 	char	*cmd_path;
 
 	i = -1;
-	if (ft_strlen(cmd_struct->cmd) > 2 && cmd_struct->cmd[0] == '.' && cmd_struct->cmd[1] == '/' && to_exec)
-		ft_end_process(cmd_struct->cmd, cmd_struct->all_cmd, NULL, env, cmd_struct);
+	if (ft_strlen(cmd_struct->cmd) > 2 && cmd_struct->cmd[0] == '.'
+		&& cmd_struct->cmd[1] == '/' && to_exec)
+		ft_end_process(cmd_struct->cmd, cmd_struct->all_cmd, NULL, env, \
+				cmd_struct);
 	paths = get_path(env);
 	if (!paths)
 		return ;

@@ -15,8 +15,8 @@
 void	ft_here_doc2(t_datas_cmd *cmds, char *here_doc, char *join, int here_fd)
 {
 	char	*tmp;
-	char **tmp1;
-	int x;
+	char	**tmp1;
+	int		x;
 
 	tmp1 = ft_split(join, '\n');
 	if (!tmp1)

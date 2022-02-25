@@ -79,8 +79,8 @@ void	cd(int ac, char **av)
 		{
 			ret = chdir(ft_getenv("HOME", datas_prompt.env_in_struct));
 			if (ret)
-				return (cd_error("cd",
-				ft_getenv("HOME", datas_prompt.env_in_struct)));
+				return (cd_error("cd", \
+					ft_getenv("HOME", datas_prompt.env_in_struct)));
 		}
 	}
 	else
