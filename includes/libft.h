@@ -13,8 +13,8 @@
 #ifndef LIBFT_H
 # define LIBFT_H
 
-# include "struct.h"
 # include "includes.h"
+# include "struct.h"
 
 t_datas_prompt	datas_prompt;
 

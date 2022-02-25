@@ -24,6 +24,10 @@
 
 void	init_data_prompt(t_datas_prompt *datas_prompt, char **envp)
 {
+	tcgetattr(0, &datas_prompt->old);
+	tcgetattr(0, &datas_prompt->new);
+	datas_prompt->new.c_lflag &= ~(ECHOCTL);
+	tcsetattr(0, TCSANOW, &datas_prompt->new);
 	datas_prompt->envp = ft_matrixlcpy(envp, ft_matrixlen(envp));
 	if (!datas_prompt->envp)
 		return ;
@@ -44,16 +48,11 @@ static void	i_find_a_signal(int this_signal)
 {
 	if (this_signal == SIGINT)
 	{
+		rl_replace_line("", 0);
 		ft_putstr_fd("\n", 1);
 		rl_on_new_line();
-		//rl_replace_line("", 0);
 		rl_redisplay();
 		datas_prompt.last_command_status = 1;
-	}
-	else if (this_signal == SIGQUIT)
-	{
-		rl_on_new_line();
-		rl_redisplay();
 	}
 }
 
@@ -68,15 +67,11 @@ void	exec(char *test)
 	if (datas_prompt.cmds)
 	{
 		if (datas_prompt.cmds->type_hd)
-			ft_here_doc(datas_prompt.cmds, \
-				datas_prompt.cmds->magic_word);
+			ft_here_doc(datas_prompt.cmds->magic_word);
 		pipe_rec(datas_prompt.cmds, datas_prompt.envp, fd, \
 			datas_prompt.cmds->cmd_first);
 		ft_free_datas_cmd(datas_prompt.cmds);
-
 	}
-	else
-		ft_putstr_fd("here\n", 1);
 }
 
 void	need_to_exit(void)
@@ -85,6 +80,8 @@ void	need_to_exit(void)
 	ft_new_free(datas_prompt.env_in_struct);
 	if (datas_prompt.out_struct)
 		ft_new_free(datas_prompt.out_struct);
+	ft_putstr_fd("exit\n", 1);
+	tcsetattr(0, TCSANOW, &datas_prompt.new);
 	exit(0);
 }
 
@@ -98,10 +95,11 @@ int	main(int argc, char **argv, char **envp)
 	init_data_prompt(&datas_prompt, envp);
 	if (!datas_prompt.envp)
 		exit (1);
-	signal(SIGINT, i_find_a_signal);
-	signal(SIGQUIT, i_find_a_signal);
 	while (19)
 	{
+		signal(SIGINT, i_find_a_signal);
+		signal(SIGQUIT, SIG_IGN);
+		rl_on_new_line();
 		prompt = start_prompt(envp);
 		test = readline(prompt);
 		add_history(test);

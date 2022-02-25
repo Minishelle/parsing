@@ -22,12 +22,14 @@ typedef struct s_var_env		t_var_env;
 
 struct s_datas_prompt
 {
-	t_datas_cmd	*cmds;
-	int			pid;
-	char		**envp;
-	int			last_command_status;
-	t_var_env	*env_in_struct;
-	t_var_env	*out_struct;
+	t_datas_cmd		*cmds;
+	int				pid;
+	struct termios	old;
+	struct termios	new;
+	char			**envp;
+	int				last_command_status;
+	t_var_env		*env_in_struct;
+	t_var_env		*out_struct;
 };
 
 struct s_datas_cmd

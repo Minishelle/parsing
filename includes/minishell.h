@@ -23,7 +23,7 @@
 # /_/  /_/_/_/ /_/_/____/_/ /_/\\___/_/_/             #\n\
 #                                                    #\n\
 # Dev by Lisa Buccheri, Matteo Bucci & Hugo Goorickx #\n\
-# (Version 0.6.2)                                    #\n\
+# (Version 1.0.0)                                    #\n\
 ######################################################\n"
 
 void		*ft_free_one_cmd(t_one_cmd *first_cmd, int status);

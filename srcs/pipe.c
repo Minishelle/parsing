@@ -35,12 +35,15 @@ static void	i_find_a_signal(int this_signal)
 {
 	if (this_signal == SIGQUIT)
 	{
-		ft_putstr_fd("QUIT: 3", 1);
+		ft_putstr_fd("^\\QUIT: 3", 1);
 		kill(datas_prompt.pid, SIGKILL);
 		datas_prompt.last_command_status = 131;
 	}
 	else
+	{
+		ft_putstr_fd("^C", 1);
 		datas_prompt.last_command_status = 130;
+	}
 	ft_putstr_fd("\n", 1);
 }
 
@@ -65,8 +68,8 @@ void	child_process(t_datas_cmd *cds, t_one_cmd *cm, int n_fd[2], int p_fd[2])
 
 void	pipe_rec_2(t_datas_cmd *cmds, t_one_cmd *cmd, int tmp, int n_fd[2])
 {
-	if ((datas_prompt.last_command_status != 130
-			&& datas_prompt.last_command_status != 131))
+	/*if ((datas_prompt.last_command_status != 130
+			&& datas_prompt.last_command_status != 131))*/
 		datas_prompt.last_command_status = tmp / 255;
 	if (cmd->cmd)
 		find_builtin_env(cmd);

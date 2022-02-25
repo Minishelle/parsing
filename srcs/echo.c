@@ -40,11 +40,12 @@ void	echo(int ac, char **av)
 		flag = 0;
 		while (++i < ac && get_flag(av[i]))
 			flag = 1;
-		while (i < ac)
+		i--;
+		while (++i < ac)
 		{
-			if (i > 1)
+			ft_putstr_fd(av[i], 1);
+			if (i < ac - 1)
 				ft_putchar_fd(32, 1);
-			ft_putstr_fd(av[i++], 1);
 		}
 		if (!flag)
 			ft_putchar_fd('\n', 1);
