@@ -61,9 +61,9 @@ void	ft_free(char **paths, char **cmd)
 
 void	perror_cnf(char *str, char *cmd, int fd)
 {
-	write(fd, str, ft_strlen(str));
-	write(fd, cmd, ft_strlen(cmd));
-	write(fd, "\n", 1);
+	ft_putstr_fd(str, fd);
+	ft_putstr_fd(cmd, fd);
+	ft_putstr_fd("\n", fd);
 }
 
 void	ft_end_process(char *cmd_p, char **cmd, char **path, t_one_cmd *cmd_str)

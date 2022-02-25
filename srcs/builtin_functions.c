@@ -1,13 +1,13 @@
 /* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   builtin_functions.c                                :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: mbucci <marvin@42.fr>                      +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/01/26 14:49:11 by mbucci            #+#    #+#             */
-/*   Updated: 2022/02/25 18:10:54 by mbucci           ###   ########.fr       */
-/*                                                                            */
+/*																			*/
+/*														:::	  ::::::::   */
+/*   builtin_functions.c								:+:	  :+:	:+:   */
+/*													+:+ +:+		 +:+	 */
+/*   By: mbucci <marvin@42.fr>					  +#+  +:+	   +#+		*/
+/*												+#+#+#+#+#+   +#+		   */
+/*   Created: 2022/01/26 14:49:11 by mbucci			#+#	#+#			 */
+/*   Updated: 2022/02/25 19:19:49 by hgoorick         ###   ########.fr       */
+/*																			*/
 /* ************************************************************************** */
 
 #include "minishell.h"
@@ -211,54 +211,54 @@ int	check_builtin(t_one_cmd *cmd)
 		|| (!ft_strncmp("exit", cmd->cmd, 4)));
 }
 
-int    ft_exit_all(void)
+int	ft_exit_all(void)
 {
-    char **tmp;
-    int i;
+	char	**tmp;
+	int		i;
 
-    tmp = datas_prompt.cmds->cmd_first->all_cmd;
-    if (ft_matrixlen(tmp) > 1)
-    {
-        i = -1;
-        while (ft_isdigit(tmp[1][++i]))
-            ;
-        if (!ft_isdigit(tmp[1][i]) && i != (int)ft_strlen(tmp[1]))
-        {
-            ft_putstr_fd("Minishell: exit: ", 1);
-            ft_putstr_fd(tmp[1], 1);
-            ft_putstr_fd(": numeric argument required\n", 1);
-            return (255);
-        }
-        else if (ft_atoi(tmp[1]) && ft_matrixlen(tmp) > 2)
-        {
-            ft_putstr_fd("bash: exit: too many arguments\n", 1);
-            return (1);
-        }
-        return (ft_atoi(tmp[1]) % 255);
-    }
-    return (0);
+	tmp = datas_prompt.cmds->cmd_first->all_cmd;
+	if (ft_matrixlen(tmp) > 1)
+	{
+		i = -1;
+		while (ft_isdigit(tmp[1][++i]))
+			;
+		if (!ft_isdigit(tmp[1][i]) && i != (int)ft_strlen(tmp[1]))
+		{
+			ft_putstr_fd("Minishell: exit: ", 1);
+			ft_putstr_fd(tmp[1], 1);
+			ft_putstr_fd(": numeric argument required\n", 1);
+			return (255);
+		}
+		else if (ft_atoi(tmp[1]) && ft_matrixlen(tmp) > 2)
+		{
+			ft_putstr_fd("bash: exit: too many arguments\n", 1);
+			return (1);
+		}
+		return (ft_atoi(tmp[1]) % 255);
+	}
+	return (0);
 }
 
-void    ft_exit(void)
+void	ft_exit(void)
 {
-    //char    **tmp;
-    int val_return;
+	//char	**tmp;
+	int val_return;
 
-    /*tmp = malloc(sizeof(char *) * 3);
-     if (tmp)
-     {
-     tmp[0] = "rm";
-     tmp[1] = "-f";
-     tmp[2] = "tmp";
-     execve("/bin/rm", tmp, datas_prompt.envp);
-     free(tmp);
-     }*/
-    ft_putstr_fd("exit\n", 1);
-    val_return = ft_exit_all();
-    ft_free_datas_cmd(datas_prompt.cmds);
-    ft_new_free(datas_prompt.env_in_struct);
-    if (datas_prompt.out_struct)
-        ft_new_free(datas_prompt.out_struct);
-    tcsetattr(0, TCSANOW, &datas_prompt.new);
-    exit (val_return);
+	/*tmp = malloc(sizeof(char *) * 3);
+	 if (tmp)
+	 {
+	 tmp[0] = "rm";
+	 tmp[1] = "-f";
+	 tmp[2] = "tmp";
+	 execve("/bin/rm", tmp, datas_prompt.envp);
+	 free(tmp);
+	 }*/
+	ft_putstr_fd("exit\n", 1);
+	val_return = ft_exit_all();
+	ft_free_datas_cmd(datas_prompt.cmds);
+	ft_new_free(datas_prompt.env_in_struct);
+	if (datas_prompt.out_struct)
+		ft_new_free(datas_prompt.out_struct);
+	tcsetattr(0, TCSANOW, &datas_prompt.new);
+	exit (val_return);
 }

@@ -13,8 +13,6 @@
 
 int	no_path(char **paths, char **cmd, t_one_cmd *c_stru, int to_ex)
 {
-	if (!paths)
-		return (1);
 	if (!paths && to_ex)
 	{
 		if (access(c_stru->cmd, F_OK) == 0)
@@ -26,6 +24,7 @@ int	no_path(char **paths, char **cmd, t_one_cmd *c_stru, int to_ex)
 		{
 			perror_cnf("command not found: ", cmd[0], 2);
 			datas_prompt.last_command_status = 127;
+			exit (127);
 		}
 		return (1);
 	}

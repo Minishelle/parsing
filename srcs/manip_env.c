@@ -104,8 +104,8 @@ char	**conv_env_to_mat(void)
 		if (!tmp->var_txt)
 			out_mat[i] = (char *)malloc(ft_strlen(tmp->name_var) + 1);
 		else
-			out_mat[i] = malloc(ft_strlen(tmp->var_txt)
-				+ ft_strlen(tmp->name_var) + 2);
+			out_mat[i] = malloc(ft_strlen(tmp->var_txt) \
+					+ ft_strlen(tmp->name_var) + 2);
 		ft_strlcpy(out_mat[i], tmp->name_var, ft_strlen(tmp->name_var));
 		if (tmp->var_txt)
 		{

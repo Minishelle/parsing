@@ -43,8 +43,14 @@ static int	len_word(char const *s, int i)
 	status = 0;
 	while (s[i + lg_word] && (!ft_isspace(s[i + lg_word]) || status))
 	{
+		if (s[i + lg_word] == '"' && status == 0)
+			status = 1;
+		else if (s[i + lg_word] == 39 && status == 0)
+			status = 2;
+		else if ((s[i + lg_word] == '"' || s[i + lg_word] == 39) && status)
+			status = 0;
 		if (!status && (s[i + lg_word] == '|' || s[i + lg_word] == '>'
-				|| s[i + lg_word] == '<'))
+				|| s[i + lg_word] == '<') && status == 0)
 		{
 			if (!status && (s[i + lg_word] == s[i + lg_word + 1]))
 				lg_word += need_line(status, lg_word) * 2;
