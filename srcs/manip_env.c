@@ -6,7 +6,7 @@
 /*   By: hgoorick <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/10 18:43:32 by hgoorick          #+#    #+#             */
-/*   Updated: 2022/02/10 18:43:33 by hgoorick         ###   ########.fr       */
+/*   Updated: 2022/02/25 18:00:15 by mbucci           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,14 +101,18 @@ char	**conv_env_to_mat(void)
 	out_mat[x] = NULL;
 	while (++i < x)
 	{
-		while (!tmp->var_txt)
-			tmp = tmp->next;
-		out_mat[i] = malloc(sizeof(char) * (ft_strlen(tmp->var_txt) + \
-			ft_strlen(tmp->name_var) + 2));
+		if (!tmp->var_txt)
+			out_mat[i] = (char *)malloc(ft_strlen(tmp->name_var) + 1);
+		else
+			out_mat[i] = malloc(ft_strlen(tmp->var_txt)
+				+ ft_strlen(tmp->name_var) + 2);
 		ft_strlcpy(out_mat[i], tmp->name_var, ft_strlen(tmp->name_var));
-		ft_strlcpy(&out_mat[i][ft_strlen(tmp->name_var)], "=", 1);
-		ft_strlcpy(&out_mat[i][ft_strlen(tmp->name_var) + 1], tmp->var_txt, \
-		ft_strlen(tmp->var_txt));
+		if (tmp->var_txt)
+		{
+			ft_strlcpy(&out_mat[i][ft_strlen(tmp->name_var)], "=", 1);
+			ft_strlcpy(&out_mat[i][ft_strlen(tmp->name_var) + 1], tmp->var_txt, \
+			ft_strlen(tmp->var_txt));
+		}
 		tmp = tmp->next;
 	}
 	return (out_mat);

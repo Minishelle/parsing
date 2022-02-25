@@ -6,7 +6,7 @@
 /*   By: hgoorick <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/10 18:59:11 by hgoorick          #+#    #+#             */
-/*   Updated: 2022/02/24 12:22:16 by mbucci           ###   ########.fr       */
+/*   Updated: 2022/02/25 17:54:47 by mbucci           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,5 @@ int	ft_lstsize_up(t_var_env *lst)
 		return (0);
 	if (lst->next == 0)
 		return (1);
-	if (!lst->var_txt)
-		return (ft_lstsize_up(lst->next));
 	return (1 + ft_lstsize_up(lst->next));
 }
