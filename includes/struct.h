@@ -28,6 +28,7 @@ struct s_datas_prompt
 	struct termios	new;
 	char			**envp;
 	int				last_command_status;
+	int				last_command_status_tmp;
 	t_var_env		*env_in_struct;
 	t_var_env		*out_struct;
 };

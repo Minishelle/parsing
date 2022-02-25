@@ -52,7 +52,7 @@ void	ft_here_doc2(t_datas_cmd *cmds, char *here_doc, char *join, int here_fd)
 	tmp = malloc((ft_strlen(join) * sizeof(char)) + 1);
 	if (!tmp)
 		return ;
-	here_fd = open("tmp", O_RDONLY, 0644);
+	here_fd = open(".tmp", O_RDONLY, 0644);
 	free(here_doc);
 	if (cmds->nb_cmds && cmds->cmd_first->cmd)
 		cmds->cmd_first->infile = here_fd;
@@ -103,7 +103,7 @@ void	ft_here_doc(char **end_word)
 	join = ft_calloc(1, 1);
 	if (!join)
 		return ;
-	here_fd = open("tmp", O_CREAT | O_WRONLY | O_TRUNC, 0644);
+	here_fd = open(".tmp", O_CREAT | O_WRONLY | O_TRUNC, 0644);
 	if (here_fd == -1)
 		return (perror("open"));
 	get_here_doc(join, end_word, here_fd);
