@@ -12,18 +12,17 @@
 
 #include "minishell.h"
 
-void	ft_here_doc2(t_datas_cmd *cmds, char *here_doc, char *join, int here_fd)
+char	*return_hd(t_datas_cmd *cmds, char **tmp1, char *join)
 {
-	char	*tmp;
-	char	**tmp1;
 	int		x;
+	char	*tmp;
 
+	x = -1;
 	tmp1 = ft_split(join, '\n');
 	if (!tmp1)
-		return ;
+		return (NULL);
 	if (ft_matrixlen(tmp1) == cmds->type_hd - 1)
-		return ;
-	x = -1;
+		return (NULL);
 	while (++x < (ft_matrixlen(tmp1) + 1) - cmds->type_hd)
 	{
 		if (!x)
@@ -33,9 +32,19 @@ void	ft_here_doc2(t_datas_cmd *cmds, char *here_doc, char *join, int here_fd)
 		if (!tmp)
 		{
 			ft_clean_mat(tmp1);
-			return ;
+			return (NULL);
 		}
 	}
+	return (tmp);
+}
+
+void	ft_here_doc2(t_datas_cmd *cmds, char *here_doc, char *join, int here_fd)
+{
+	char	*tmp;
+	char	**tmp1;
+
+	tmp1 = NULL;
+	tmp = return_hd(cmds, tmp1, join);
 	ft_clean_mat(tmp1);
 	ft_putstr_fd(tmp, here_fd);
 	close(here_fd);
@@ -57,20 +66,13 @@ void	ft_here_doc2(t_datas_cmd *cmds, char *here_doc, char *join, int here_fd)
 	free(tmp);
 }
 
-void	ft_here_doc(t_datas_cmd *cmds, char **end_word)
+void	get_here_doc(char *join, char **end_word, int here_fd)
 {
-	char	*here_doc;
-	char	*join;
-	int		here_fd;
 	int		i;
+	char	*here_doc;
 
-	join = malloc(1);
-	if (!join)
-		return ;
-	here_fd = open("tmp", O_CREAT | O_WRONLY | O_TRUNC, 0644);
 	i = 0;
-	if (here_fd == -1)
-		return (perror("open"));
+	end_word = datas_prompt.cmds->magic_word;
 	while (1)
 	{
 		ft_putstr_fd("heredoc>", 1);
@@ -80,7 +82,7 @@ void	ft_here_doc(t_datas_cmd *cmds, char **end_word)
 				i++;
 		else
 			i = 0;
-		if (i == cmds->type_hd)
+		if (i == datas_prompt.cmds->type_hd)
 			break ;
 		join = ft_strjoin_up(join, here_doc);
 		free(here_doc);
@@ -90,5 +92,19 @@ void	ft_here_doc(t_datas_cmd *cmds, char **end_word)
 			return ;
 		}
 	}
-	ft_here_doc2(cmds, here_doc, join, here_fd);
+	ft_here_doc2(datas_prompt.cmds, here_doc, join, here_fd);
+}
+
+void	ft_here_doc(char **end_word)
+{
+	char	*join;
+	int		here_fd;
+
+	join = ft_calloc(1, 1);
+	if (!join)
+		return ;
+	here_fd = open("tmp", O_CREAT | O_WRONLY | O_TRUNC, 0644);
+	if (here_fd == -1)
+		return (perror("open"));
+	get_here_doc(join, end_word, here_fd);
 }

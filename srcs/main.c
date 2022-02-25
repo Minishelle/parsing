@@ -73,7 +73,10 @@ void	exec(char *test)
 		pipe_rec(datas_prompt.cmds, datas_prompt.envp, fd, \
 			datas_prompt.cmds->cmd_first);
 		ft_free_datas_cmd(datas_prompt.cmds);
+
 	}
+	else
+		ft_putstr_fd("here\n", 1);
 }
 
 void	need_to_exit(void)

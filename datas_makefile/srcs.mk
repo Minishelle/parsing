@@ -52,3 +52,4 @@ SRC += return_char.c
 SRC += manip_datas_cmd1.c
 SRC += search_hd.c
 SRC += ft_free_all2.c
+SRC += pipe_utils_2.c

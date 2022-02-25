@@ -32,13 +32,13 @@ void		ft_new_free(t_var_env *input);
 void		cmd_process(t_fd fds, char **argv, char *env[], int j);
 void		pipe_rec(t_datas_cmd *cmds, char *env[], int prev_fd[2], \
 	t_one_cmd *cmd);
-void		ft_here_doc(t_datas_cmd *cmds, char **end_word);
+void		ft_here_doc(char **end_word);
 void		ft_free(char **paths, char **cmd);
 void		close_pipe(int fd[2]);
 void		parent(t_fd fds, char *argv[], char *env[], int fd[2]);
 void		child(t_fd fds, char *argv[], char *env[], int fd[2]);
 void		perror_cnf(char *str, char *cmd, int fd);
-void		ft_end_process(char *cmd_path, char **cmd, char **path, char **env, \
+void		ft_end_process(char *cmd_path, char **cmd, char **path, \
 	t_one_cmd *cmd_struct);
 void		process(char *env[], char **cmd, t_one_cmd *cmd_struct, \
 	int to_exec);
@@ -51,6 +51,10 @@ void		ft_exit(void);
 void		ft_clean_mat(char **mat);
 void		var_error(char *funct, char *var);
 void		search_hd(t_datas_cmd *cmd);
+void		ft_redirection(int fd_in, int fd_out, int simple, int first);
+void		multi_pipe(t_datas_cmd *cmds, int n_fd[2], int pr_fd[2], \
+	t_one_cmd *cmd);
+void		clean_mat_and_exit(char **paths);
 
 int			ft_strchr_up(const char *str, int to_find);
 int			ft_strlen_up(char *str, char *search);
@@ -66,6 +70,7 @@ int			search_forget(char *map, char forget);
 int			check_map2(char **map);
 int			check_map(char **map);
 int			check_char_in_name(char *funct, char *s, int *ptr);
+int			no_path(char **paths, char **cmd, t_one_cmd *c_stru, int to_ex);
 
 char		*find_in_env(char **envp, char *word, int len_return);
 char		*find_in_struct(char *var_env, t_var_env *out);
@@ -75,6 +80,7 @@ char		*ft_getenv(char *var_name, t_var_env *list);
 char		*ft_free_little_matrice(char **mat, int x);
 char		*return_char(char *cmds, int y, char **envp, \
 	t_var_env *out_struct);
+char		*find_cmd_path(char **paths, t_one_cmd *c_stru, char **cmd);
 
 char		**ft_first_cmd(char **all_cmds);
 char		**free_no_place(int y, char **magic_word, char **tmp);
