@@ -37,8 +37,8 @@ t_one_cmd	*trans_cmd1(char **cmds)
 	char		**envp;
 	t_var_env	*out_struct;
 
-	envp = datas_prompt.envp;
-	out_struct = datas_prompt.out_struct;
+	envp = g_datas.envp;
+	out_struct = g_datas.out_struct;
 	cmd = malloc(sizeof(t_one_cmd));
 	if (!cmd)
 		return (NULL);

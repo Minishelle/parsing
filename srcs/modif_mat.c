@@ -69,7 +69,7 @@ char	*modif_mat2(char *cmd, int y, char **envp, t_var_env *out_struct)
 	{
 		if (y <= (int)ft_strlen(cmd) - 1 && cmd[y + 1] == '?')
 		{
-			tmp1 = ft_itoa(datas_prompt.last_command_status);
+			tmp1 = ft_itoa(g_datas.last_command_status);
 			tmp = ft_calloc(ft_strlen(cmd) - 2 + ft_strlen(tmp1), \
 				sizeof(char));
 			ft_strlcpy(tmp, cmd, y);

@@ -15,7 +15,9 @@
 
 # include "libft.h"
 
-# define INPUT "######################################################\n\
+t_datas	g_datas;
+
+# define INPUT "\033[2J######################################################\n\
 #     __  ____       _      __         ____          #\n\
 #    /  |/  (_)___  (_)____/ /_  ___  / / /          #\n\
 #   / /|_/ / / __ \\/ / ___/ __ \\/ _ \\/ / /           #\n\
@@ -97,7 +99,7 @@ char		**ft_cpy_maic_word(t_datas_cmd *cmd, int x, int status);
 
 t_datas_cmd	*gen_datas_cmd(char *x);
 t_datas_cmd	*ft_free_no_place(t_datas_cmd *cmd);
-t_datas_cmd	*ft_parsing(char *cmd_one_line, t_datas_prompt *datas_prompt);
+t_datas_cmd	*ft_parsing(char *cmd_one_line, t_datas *datas_prompt);
 
 t_one_cmd	*trans_cmd(char **cmds, int st, t_datas_cmd	*data_command);
 t_one_cmd	*move_fd(t_one_cmd *cmd_first, int nb_escape, t_datas_cmd *all);

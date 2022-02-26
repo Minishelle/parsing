@@ -16,8 +16,8 @@ int	find_builtin_env(t_one_cmd *cmd)
 {
 	if (!ft_strncmp("cd", cmd->cmd, 2))
 		cd(ft_matrixlen(cmd->all_cmd), cmd->all_cmd);
-	else if (!ft_strncmp("export", cmd->cmd, 6))
-		ft_export(ft_matrixlen(cmd->all_cmd), cmd->all_cmd);
+	/*else if (!ft_strncmp("export", cmd->cmd, 6))
+		ft_export(ft_matrixlen(cmd->all_cmd), cmd->all_cmd);*/
 	else if (!ft_strncmp("unset", cmd->cmd, 5))
 		unset(ft_matrixlen(cmd->all_cmd), cmd->all_cmd);
 	else
@@ -56,7 +56,7 @@ int	ft_exit_all(void)
 	char	**tmp;
 	int		i;
 
-	tmp = datas_prompt.cmds->cmd_first->all_cmd;
+	tmp = g_datas.cmds->cmd_first->all_cmd;
 	if (ft_matrixlen(tmp) > 1)
 	{
 		i = -1;
@@ -82,23 +82,13 @@ int	ft_exit_all(void)
 void	ft_exit(void)
 {
 	int	val_return;
-	//char	**tmp;
 
-	/*tmp = malloc(sizeof(char *) * 3);
-	 if (tmp)
-	 {
-	 tmp[0] = "rm";
-	 tmp[1] = "-f";
-	 tmp[2] = "tmp";
-	 execve("/bin/rm", tmp, datas_prompt.envp);
-	 free(tmp);
-	 }*/
 	ft_putstr_fd("exit\n", 1);
 	val_return = ft_exit_all();
-	ft_free_datas_cmd(datas_prompt.cmds);
-	ft_new_free(datas_prompt.env_in_struct);
-	if (datas_prompt.out_struct)
-		ft_new_free(datas_prompt.out_struct);
-	tcsetattr(0, TCSANOW, &datas_prompt.new);
+	ft_free_datas_cmd(g_datas.cmds);
+	ft_new_free(g_datas.env_in_struct);
+	if (g_datas.out_struct)
+		ft_new_free(g_datas.out_struct);
+	tcsetattr(0, TCSANOW, &g_datas.new);
 	exit (val_return);
 }

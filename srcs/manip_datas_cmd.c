@@ -44,14 +44,14 @@ char	**ft_cpy_maic_word(t_datas_cmd *cmd, int x, int status)
 *
 *	Nom : gen_datas_cmd
 *	Params : - La ligne complete de commandes
-*			 - La strcut de datas_prompt
+*			 - La strcut de g_datas
 *	Retour : La struct relative a toute la ligne de commande (datas_cmd)
 *	Descritpion:
 *		A parti de la chaine de char, la strcuture va stocker un split_up de la
 *			chaine (separations par des espaces, des tabs et d'autes cas plus
 *			specifiques), met en evidence le path pour pipex, lan la fct
 *			trans_cmd qui va permettre de creer une strcut par commande, reprend
-*			datas_prompt pour le repointer et init le nombre de commandes
+*			g_datas pour le repointer et init le nombre de commandes
 *
 ****************************************/
 
@@ -59,22 +59,22 @@ void	in_env(t_var_env *tmp1)
 {
 	t_var_env	*tmp;
 
-	tmp = ft_find_in_list(tmp1->name_var, datas_prompt.env_in_struct);
+	tmp = ft_find_in_list(tmp1->name_var, g_datas.env_in_struct);
 	if (tmp->var_txt)
 		free(tmp->var_txt);
 	tmp->var_txt = cpy_with_malloc(tmp1->var_txt);
 	free(tmp1->var_txt);
 	free(tmp1->name_var);
 	free(tmp1);
-	ft_clean_mat(datas_prompt.envp);
-	datas_prompt.envp = conv_env_to_mat();
+	ft_clean_mat(g_datas.envp);
+	g_datas.envp = conv_env_to_mat();
 }
 
 void	in_var(t_var_env *tmp1)
 {
 	t_var_env	*tmp;
 
-	tmp = ft_find_in_list(tmp1->name_var, datas_prompt.out_struct);
+	tmp = ft_find_in_list(tmp1->name_var, g_datas.out_struct);
 	if (tmp->var_txt)
 		free(tmp->var_txt);
 	tmp->var_txt = cpy_with_malloc(tmp1->var_txt);
@@ -119,13 +119,14 @@ t_datas_cmd	*gen_datas_cmd(char *x)
 				&& (ft_strchr_up(tmp, '"') == 0
 					|| ft_strchr_up(tmp, '"') > ft_strchr_up(tmp, '=')))))
 	{
-		tmp1 = ft_new_var_env(cmd->cmd_first->cmd, datas_prompt.out_struct);
-		if (ft_find_in_list(tmp1->name_var, datas_prompt.env_in_struct))
+		g_datas.last_command_status = 0;
+		tmp1 = ft_new_var_env(cmd->cmd_first->cmd, g_datas.out_struct);
+		if (ft_find_in_list(tmp1->name_var, g_datas.env_in_struct))
 			in_env(tmp1);
-		else if (ft_find_in_list(tmp1->name_var, datas_prompt.out_struct))
+		else if (ft_find_in_list(tmp1->name_var, g_datas.out_struct))
 			in_var(tmp1);
 		else
-			datas_prompt.out_struct = tmp1;
+			g_datas.out_struct = tmp1;
 		ft_free_datas_cmd(cmd);
 		return (NULL);
 	}

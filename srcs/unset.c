@@ -64,8 +64,8 @@ void	ft_remove_link(t_var_env *target, t_var_env **list)
 
 void	update_env(void)
 {
-	ft_clean_mat(datas_prompt.envp);
-	datas_prompt.envp = conv_env_to_mat();
+	ft_clean_mat(g_datas.envp);
+	g_datas.envp = conv_env_to_mat();
 }
 
 void	unset(int ac, char **av)
@@ -80,15 +80,15 @@ void	unset(int ac, char **av)
 	{
 		if (check_char_in_name(av[i], &status))
 			continue ;
-		found = ft_find_in_list(av[i], datas_prompt.env_in_struct);
+		found = ft_find_in_list(av[i], g_datas.env_in_struct);
 		if (found)
-			ft_remove_link(found, &datas_prompt.env_in_struct);
+			ft_remove_link(found, &g_datas.env_in_struct);
 		else
-			found = ft_find_in_list(av[i], datas_prompt.out_struct);
+			found = ft_find_in_list(av[i], g_datas.out_struct);
 		if (found)
-			ft_remove_link(found, &datas_prompt.out_struct);
+			ft_remove_link(found, &g_datas.out_struct);
 	}
 	if (ac)
 		update_env();
-	datas_prompt.last_command_status = status;
+	g_datas.last_command_status = status;
 }

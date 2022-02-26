@@ -19,11 +19,11 @@ int	er(char *str, int error, int status)
 		ft_putstr_fd("Minishell: ", 1);
 		ft_putstr_fd(str, 1);
 		ft_putstr_fd(": No such file or directory\n", 1);
-		datas_prompt.last_command_status = error;
+		g_datas.last_command_status = error;
 		return (1);
 	}
 	ft_putstr_fd(str, 1);
-	datas_prompt.last_command_status = error;
+	g_datas.last_command_status = error;
 	return (1);
 }
 

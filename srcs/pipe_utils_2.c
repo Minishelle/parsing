@@ -18,12 +18,12 @@ int	no_path(char **paths, char **cmd, t_one_cmd *c_stru, int to_ex)
 		if (access(c_stru->cmd, F_OK) == 0)
 		{
 			ft_clean_mat(paths);
-			execve(c_stru->cmd, cmd, datas_prompt.envp);
+			execve(c_stru->cmd, cmd, g_datas.envp);
 		}
 		else if (!check_builtin(c_stru))
 		{
 			perror_cnf("command not found: ", cmd[0], 2);
-			datas_prompt.last_command_status = 127;
+			g_datas.last_command_status = 127;
 			exit (127);
 		}
 		return (1);

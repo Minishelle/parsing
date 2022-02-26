@@ -72,7 +72,7 @@ void	get_here_doc(char *join, char **end_word, int here_fd)
 	char	*here_doc;
 
 	i = 0;
-	end_word = datas_prompt.cmds->magic_word;
+	end_word = g_datas.cmds->magic_word;
 	while (1)
 	{
 		ft_putstr_fd("heredoc>", 1);
@@ -82,7 +82,7 @@ void	get_here_doc(char *join, char **end_word, int here_fd)
 			i++;
 		else
 			i = 0;
-		if (i == datas_prompt.cmds->type_hd)
+		if (i == g_datas.cmds->type_hd)
 			break ;
 		join = ft_strjoin_up(join, here_doc);
 		free(here_doc);
@@ -92,7 +92,7 @@ void	get_here_doc(char *join, char **end_word, int here_fd)
 			return ;
 		}
 	}
-	ft_here_doc2(datas_prompt.cmds, here_doc, join, here_fd);
+	ft_here_doc2(g_datas.cmds, here_doc, join, here_fd);
 }
 
 void	ft_here_doc(char **end_word)
