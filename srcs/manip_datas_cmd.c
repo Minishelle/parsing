@@ -98,7 +98,10 @@ t_datas_cmd	*gen_datas_cmd1(char *x)
 		return (NULL);
 	}
 	if (check_map(cmd->all_cmds))
+	{
+		g_datas.last_command_status = 1;
 		return (ft_free_no_place(cmd));
+	}
 	cmd->cmd_first = move_fd(trans_cmd(cmd->all_cmds, 0, cmd), 0, cmd);
 	if (!cmd->cmd_first)
 		return (ft_free_no_place(cmd));

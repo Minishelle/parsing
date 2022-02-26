@@ -6,7 +6,7 @@
 /*   By: hgoorick <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/25 09:58:09 by hgoorick          #+#    #+#             */
-/*   Updated: 2022/02/25 09:58:13 by hgoorick         ###   ########.fr       */
+/*   Updated: 2022/02/26 12:51:24 by lbuccher         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,13 +63,13 @@ char	*return_char3(char *cmd, int y)
 	char	*tmp;
 
 	tmp = ft_calloc(sizeof(char), ft_strlen(&cmd[y + \
-		ft_strlen_up(&cmd[y + 1], " \"\'")]));
+		ft_strlen_up(&cmd[y + 1], " \"\'$")]));
 	if (!tmp)
 	{
 		return (NULL);
 	}
-	ft_strlcpy(tmp, &cmd[y + 1 + ft_strlen_up(&cmd[y + 1], " \"\'")], \
-		ft_strlen(&cmd[y + ft_strlen_up(&cmd[y + 1], " \"\'")]));
+	ft_strlcpy(tmp, &cmd[y + 1 + ft_strlen_up(&cmd[y + 1], " \"\'$")], \
+		ft_strlen(&cmd[y + ft_strlen_up(&cmd[y + 1], " \"\'$")]));
 	return (tmp);
 }
 

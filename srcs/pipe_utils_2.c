@@ -66,20 +66,24 @@ void	ft_redirection(int fd_in, int fd_out, int simple, int first)
 	{
 		close(fd_in);
 		if (dup2(fd_out, 1) < 0)
-			return (perror("first: fd"));
+			return (perror("fd"));
 		close(fd_out);
 	}
 	else if (simple == 1 && first == 0)
 	{
 		close(fd_out);
 		if (dup2(fd_in, 0) < 0)
-			return (perror("last: fd"));
+			return (perror("fd"));
 		close(fd_in);
 	}
 	else
 	{
 		if (dup2(fd_out, 1) < 0 || dup2(fd_in, 0) < 0)
-			return (perror("middle: fd"));
+		{
+			ft_putnbr_fd(fd_out, 1);
+			ft_putnbr_fd(fd_in, 1);
+			return (perror("fd"));
+		}
 		close(fd_out);
 		close(fd_in);
 	}

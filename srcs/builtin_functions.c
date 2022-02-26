@@ -16,8 +16,8 @@ int	find_builtin_env(t_one_cmd *cmd)
 {
 	if (!ft_strncmp("cd", cmd->cmd, 2))
 		cd(ft_matrixlen(cmd->all_cmd), cmd->all_cmd);
-	/*else if (!ft_strncmp("export", cmd->cmd, 6))
-		ft_export(ft_matrixlen(cmd->all_cmd), cmd->all_cmd);*/
+	else if (!ft_strncmp("export", cmd->cmd, 6))
+		ft_export(ft_matrixlen(cmd->all_cmd), cmd->all_cmd);
 	else if (!ft_strncmp("unset", cmd->cmd, 5))
 		unset(ft_matrixlen(cmd->all_cmd), cmd->all_cmd);
 	else

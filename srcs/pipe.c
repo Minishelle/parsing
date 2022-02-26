@@ -6,7 +6,7 @@
 /*   By: lbuccher <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/12 16:51:00 by lbuccher          #+#    #+#             */
-/*   Updated: 2022/02/26 01:05:38 by mbucci           ###   ########.fr       */
+/*   Updated: 2022/02/26 12:48:34 by lbuccher         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "minishell.h"
@@ -33,12 +33,15 @@ static void	i_find_a_signal(int this_signal)
 {
 	if (this_signal == SIGQUIT)
 	{
-		ft_putstr_fd("QUIT: 3", 1);
+		ft_putstr_fd("^\\QUIT: 3", 1);
 		g_datas.last_command_status_tmp = 131;
 		kill(g_datas.pid, SIGKILL);
 	}
 	else
+	{
+		ft_putstr_fd("^C", 1);
 		g_datas.last_command_status_tmp = 130;
+	}
 	ft_putstr_fd("\n", 1);
 }
 
@@ -47,7 +50,7 @@ void	child_process(t_datas_cmd *cds, t_one_cmd *cm, int n_fd[2], int p_fd[2])
 	if (cds->nb_cmds == 1)
 	{
 		if (dup2(cm->outfile, 1) < 0 || dup2(cm->infile, 0) < 0)
-			return (perror("one cmd: fd"));
+			return (perror("fd"));
 	}
 	else
 		multi_pipe(cds, n_fd, p_fd, cm);
