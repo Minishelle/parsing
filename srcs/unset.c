@@ -6,11 +6,32 @@
 /*   By: mbucci <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/24 11:43:51 by mbucci            #+#    #+#             */
-/*   Updated: 2022/02/24 15:09:23 by mbucci           ###   ########.fr       */
+/*   Updated: 2022/02/26 02:36:47 by mbucci           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+int	check_char_in_name(char *s, int *ptr)
+{
+	int	i;
+
+	i = -1;
+	while (s[++i] && (ft_isalpha(s[i]) || (i != 0 && ft_isdigit(s[i]))
+			|| s[i] == '_'))
+		;
+	if (!s[i])
+		return (0);
+	else
+	{
+		ft_putstr_fd("minishell: unset: `", STDERR_FILENO);
+		ft_putstr_fd(s, STDERR_FILENO);
+		ft_putstr_fd("': ", STDERR_FILENO);
+		ft_putendl_fd("not a valid identifier", STDERR_FILENO);
+		*ptr = 1;
+	}
+	return (1);
+}
 
 void	ft_remove_link(t_var_env *target, t_var_env **list)
 {
@@ -41,34 +62,33 @@ void	ft_remove_link(t_var_env *target, t_var_env **list)
 	free(tmp);
 }
 
+void	update_env(void)
+{
+	ft_clean_mat(datas_prompt.envp);
+	datas_prompt.envp = conv_env_to_mat();
+}
+
 void	unset(int ac, char **av)
 {
 	int			i;
 	int			status;
 	t_var_env	*found;
 
-	if (ac == 1)
-	{
-		datas_prompt.last_command_status = 0;
-		return ;
-	}
 	i = -1;
 	status = 0;
 	while (++i < ac)
 	{
-		if (check_char_in_name("unset", av[i], &status))
+		if (check_char_in_name(av[i], &status))
 			continue ;
 		found = ft_find_in_list(av[i], datas_prompt.env_in_struct);
 		if (found)
 			ft_remove_link(found, &datas_prompt.env_in_struct);
 		else
-		{
 			found = ft_find_in_list(av[i], datas_prompt.out_struct);
-			if (found)
-				ft_remove_link(found, &datas_prompt.out_struct);
-		}
+		if (found)
+			ft_remove_link(found, &datas_prompt.out_struct);
 	}
-	ft_clean_mat(datas_prompt.envp);
-	datas_prompt.envp = conv_env_to_mat();
+	if (ac)
+		update_env();
 	datas_prompt.last_command_status = status;
 }

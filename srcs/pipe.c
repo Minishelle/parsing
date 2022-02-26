@@ -6,18 +6,16 @@
 /*   By: lbuccher <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/12 16:51:00 by lbuccher          #+#    #+#             */
-/*   Updated: 2022/02/25 12:14:14 by lbuccher         ###   ########.fr       */
+/*   Updated: 2022/02/26 01:05:38 by mbucci           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "minishell.h"
 
 void	process(char *env[], char **cmd, t_one_cmd *cmd_struct, int to_exec)
 {
-	int		i;
 	char	**paths;
 	char	*cmd_path;
 
-	i = -1;
 	if (ft_strlen(cmd_struct->cmd) > 2 && cmd_struct->cmd[0] == '.'
 		&& cmd_struct->cmd[1] == '/' && to_exec)
 		ft_end_process(cmd_struct->cmd, cmd_struct->all_cmd, NULL, cmd_struct);

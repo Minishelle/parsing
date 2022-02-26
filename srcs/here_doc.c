@@ -6,7 +6,7 @@
 /*   By: lbuccher <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/16 12:07:00 by lbuccher          #+#    #+#             */
-/*   Updated: 2022/02/16 12:07:03 by lbuccher         ###   ########.fr       */
+/*   Updated: 2022/02/26 01:33:43 by mbucci           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,7 +79,7 @@ void	get_here_doc(char *join, char **end_word, int here_fd)
 		here_doc = get_next_line(1);
 		if (here_doc && (ft_strlen(end_word[i]) == ft_strlen(here_doc) - 1)
 			&& !ft_strncmp(here_doc, end_word[i], ft_strlen(end_word[i])))
-				i++;
+			i++;
 		else
 			i = 0;
 		if (i == datas_prompt.cmds->type_hd)
