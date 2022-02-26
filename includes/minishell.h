@@ -82,8 +82,7 @@ char		*start_prompt(char **env);
 char		*cpy_with_malloc(char *tmp);
 char		*ft_getenv(char *var_name, t_var_env *list);
 char		*ft_free_little_matrice(char **mat, int x);
-char		*return_char(char *cmds, int y, char **envp, \
-	t_var_env *out_struct);
+char		*return_char(char *cmds, int y, t_var_env *out_struct);
 char		*find_cmd_path(char **paths, t_one_cmd *c_stru, char **cmd);
 
 char		**ft_first_cmd(char **all_cmds);
@@ -92,7 +91,7 @@ char		**one_word(t_datas_cmd *cmd, int x);
 char		**conv_env_to_mat(void);
 char		**get_path(char *env[]);
 char		**pipen_t(char **cmds);
-char		**modif_mat(char **cmds, char **envp, t_var_env *out_struct);
+char		**modif_mat(char **cmds, t_var_env *out_struct);
 char		**simple_mat(char **start_mat);
 char		**conv_env_to_mat(void);
 char		**ft_cpy_maic_word(t_datas_cmd *cmd, int x, int status);

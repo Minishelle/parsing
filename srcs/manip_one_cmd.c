@@ -45,7 +45,7 @@ t_one_cmd	*trans_cmd1(char **cmds)
 	cmd->all_cmd = ft_matrixlcpy(cmds, find_next_char(cmds, '|'));
 	if (!cmd->all_cmd)
 		free(cmd);
-	cmd->all_cmd = modif_mat(cmd->all_cmd, envp, out_struct);
+	cmd->all_cmd = modif_mat(cmd->all_cmd, out_struct);
 	if (!cmd->all_cmd)
 		free(cmd);
 	cmd->infile = infile(cmd->all_cmd);

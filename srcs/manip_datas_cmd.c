@@ -101,7 +101,7 @@ t_datas_cmd	*gen_datas_cmd1(char *x)
 		return (ft_free_no_place(cmd));
 	cmd->cmd_first = move_fd(trans_cmd(cmd->all_cmds, 0, cmd), 0, cmd);
 	if (!cmd->cmd_first)
-		return (NULL);
+		return (ft_free_no_place(cmd));
 	return (cmd);
 }
 
@@ -112,8 +112,8 @@ t_datas_cmd	*gen_datas_cmd(char *x)
 	t_var_env	*tmp1;
 
 	cmd = gen_datas_cmd1(x);
-	if (!cmd->cmd_first)
-		return ((t_datas_cmd *)ft_free_datas_cmd(cmd));
+	if (!cmd)
+		return (NULL);
 	tmp = cmd->cmd_first->cmd;
 	if (!cmd->cmd_first->next && (tmp && (ft_strchr_up(tmp, '=')
 				&& (ft_strchr_up(tmp, '"') == 0

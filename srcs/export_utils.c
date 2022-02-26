@@ -12,56 +12,6 @@
 
 #include "minishell.h"
 
-void	var_not_defined(char *s)
-{
-	t_var_env	*ptr;
-
-	if (ft_find_in_list(s, datas_prompt.env_in_struct))
-		return ;
-	else if (ft_find_in_list(s, datas_prompt.out_struct))
-		ft_move_link(s, &datas_prompt.out_struct,
-			datas_prompt.env_in_struct);
-	else
-	{
-		ptr = (t_var_env *)malloc(sizeof(t_var_env));
-		if (!ptr)
-			return ;
-		ptr->next = datas_prompt.env_in_struct;
-		datas_prompt.env_in_struct = ptr;
-		ptr->name_var = ft_strdup(s);
-		ptr->var_txt = NULL;
-	}
-}
-
-void	var_is_defined(char *s)
-{
-	char		*s_name;
-	t_var_env	*tmp1;
-	t_var_env	*tmp2;
-
-	s_name = ft_substr(s, 0, ft_strchr_up(s, '='));
-	if (!s_name)
-		return ;
-	tmp1 = ft_find_in_list(s_name, datas_prompt.env_in_struct);
-	tmp2 = ft_find_in_list(s_name, datas_prompt.out_struct);
-	if (!tmp1 && !tmp2)
-		datas_prompt.env_in_struct = ft_new_var_env(s,
-				datas_prompt.env_in_struct);
-	else if (tmp1)
-	{
-		if (redefine_text(tmp1, s, s_name))
-			return ;
-	}
-	else if (tmp2)
-	{
-		if (redefine_text(tmp2, s, s_name))
-			return ;
-		ft_move_link(s_name, &datas_prompt.out_struct,
-			datas_prompt.env_in_struct);
-	}
-	free(s_name);
-}
-
 void	ft_move_link(char *s, t_var_env **src, t_var_env *dst)
 {
 	t_var_env	*tmp;
@@ -95,12 +45,58 @@ int	redefine_text(t_var_env *ptr, char *s, char *name)
 	return (0);
 }
 
-int	add_to_env(char *s)
+void	var_not_defined(char *s)
+{
+	t_var_env	*ptr;
+
+	if (ft_find_in_list(s, g_datas.env_in_struct))
+		return ;
+	else if (ft_find_in_list(s, g_datas.out_struct))
+		ft_move_link(s, &g_datas.out_struct,
+			g_datas.env_in_struct);
+	else
+	{
+		ptr = (t_var_env *)malloc(sizeof(t_var_env));
+		if (!ptr)
+			return ;
+		ptr->next = g_datas.env_in_struct;
+		g_datas.env_in_struct = ptr;
+		ptr->name_var = ft_strdup(s);
+		ptr->var_txt = NULL;
+	}
+}
+
+void	var_is_defined(char *s)
 {
 	char		*s_name;
 	t_var_env	*tmp1;
 	t_var_env	*tmp2;
 
+	s_name = ft_substr(s, 0, ft_strchr_up(s, '='));
+	if (!s_name)
+		return ;
+	tmp1 = ft_find_in_list(s_name, g_datas.env_in_struct);
+	tmp2 = ft_find_in_list(s_name, g_datas.out_struct);
+	if (!tmp1 && !tmp2)
+		g_datas.env_in_struct = ft_new_var_env(s,
+				g_datas.env_in_struct);
+	else if (tmp1)
+	{
+		if (redefine_text(tmp1, s, s_name))
+			return ;
+	}
+	else if (tmp2)
+	{
+		if (redefine_text(tmp2, s, s_name))
+			return ;
+		ft_move_link(s_name, &g_datas.out_struct,
+			g_datas.env_in_struct);
+	}
+	free(s_name);
+}
+
+int	add_to_env(char *s)
+{
 	if (!ft_strchr(s, '='))
 		var_not_defined(s);
 	else
